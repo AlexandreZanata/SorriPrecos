@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
                     }
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    TextButton(onClick = onFavorite, contentPadding = PaddingValues(horizontal = 0.dp)) { Text(if (favorite) "♥ Salvo nos favoritos" else "♡ Salvar nos favoritos", fontSize = 12.sp) }
+                    TextButton(onClick = onFavorite, contentPadding = PaddingValues(horizontal = 0.dp)) { AppIcon(Glyph.Heart, Modifier.size(16.dp), MaterialTheme.colorScheme.primary, filled = favorite); Spacer(Modifier.width(5.dp)); Text(if (favorite) "Salvo nos favoritos" else "Salvar nos favoritos", fontSize = 12.sp) }
                     TextButton(onClick = onRefresh) { AppIcon(Glyph.Refresh, Modifier.size(15.dp), MaterialTheme.colorScheme.primary); Spacer(Modifier.width(5.dp)); Text("Atualizar", fontSize = 12.sp) }
                 }
                 if (onAdd != null) {
@@ -77,7 +77,7 @@ import kotlinx.coroutines.launch
                 item { EmptyCard("A mesma embalagem, sempre", "${product.name}\nMarca: ${product.brand}\nConteúdo: ${product.pack}\nApresentação: ${product.presentation}\nGTIN: ${product.gtin ?: "Não informado"}\n${if(product.isDemo)"Produto sintético de demonstração." else "Correspondência conservadora por GTIN ou nome, marca e embalagem."}") }
                 item { Text("Referências de origem", fontSize = 18.sp, fontWeight = FontWeight.Bold) }
                 items(offers.filter { it.sourceUrl != null }, key = { it.branchId }) { o ->
-                    TextButton(onClick = { openSource(o.sourceUrl!!) }) { Text("${o.supermarketName} · ${o.branchName} ↗") }
+                    TextButton(onClick = { openSource(o.sourceUrl!!) }) { Text("${o.supermarketName} · ${o.branchName}", Modifier.weight(1f, fill = false)); Spacer(Modifier.width(5.dp)); AppIcon(Glyph.External, Modifier.size(16.dp), MaterialTheme.colorScheme.primary) }
                 }
                 if (offers.none { it.sourceUrl != null }) item { Text(if(product.isDemo) "Dados fictícios. Não há site de oferta real." else "Sem URLs de produtos informadas pelas fontes.", fontSize = 13.sp) }
             } else {
@@ -181,7 +181,7 @@ import kotlinx.coroutines.launch
                                 verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                                 AppIcon(Glyph.Document, Modifier.size(17.dp), colors.primary)
                                 Text("Detalhes da oferta", Modifier.weight(1f), fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                                Text("⌃", fontSize = 18.sp)
+                                AppIcon(Glyph.Collapse, Modifier.size(20.dp))
                             }
                             OfferDetail(Glyph.Pin, "Endereço", offer.address)
                             HorizontalDivider(color = colors.outlineVariant)
@@ -223,7 +223,7 @@ import kotlinx.coroutines.launch
         if (lowest) Surface(Modifier.padding(start = 14.dp), shape = RoundedCornerShape(7.dp), color = colors.primary) {
             Row(Modifier.padding(horizontal = 8.dp, vertical = 3.dp), horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically) {
-                AppIcon(Glyph.Crown, Modifier.size(12.dp), colors.onPrimary)
+                AppIcon(Glyph.Star, Modifier.size(12.dp), colors.onPrimary)
                 Text(if (offer.isDemo) "Menor preço · DEMO" else "Menor preço", fontSize = 10.sp,
                     lineHeight = 12.sp, fontWeight = FontWeight.Bold, color = colors.onPrimary)
             }

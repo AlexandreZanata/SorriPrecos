@@ -1,9 +1,13 @@
 package br.com.sorriprecos
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -12,14 +16,8 @@ import coil3.compose.AsyncImage
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
@@ -27,9 +25,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
 
 internal val BrandGreen = Color(0xFF087D13)
 internal val BrandNavy = Color(0xFF082A50)
@@ -52,54 +47,48 @@ internal val AppContrast = darkColorScheme(
     outline = Color(0xFFC6D2C6), outlineVariant = Color(0xFF7D907D)
 )
 
-internal enum class Glyph { Cart, Search, Home, Heart, Settings, Back, Chevron, Close, Refresh, Contrast, Pin, Clock, Info, Check, Calendar, Document, Link, External, Copy, Crown, Bottle, Bread, Spray, Pump, Paw, Grid }
+internal enum class Glyph {
+    Cart, Search, Home, Heart, Settings, Back, Chevron, Close, Refresh, Contrast, Pin, Clock, Info, Check, Calendar, Document, Link, External, Copy, Star, Bottle, Bread, Spray, Pump, Paw, Grid, Add, Remove, Store, Package, Collapse
+}
 
-@Composable internal fun AppIcon(glyph: Glyph, modifier: Modifier = Modifier, tint: Color = MaterialTheme.colorScheme.onSurface, filled: Boolean = false) {
-    Canvas(modifier.size(24.dp)) {
-        withTransform({ scale(size.width / 24f, size.height / 24f, pivot = Offset.Zero) }) {
-            val stroke = Stroke(1.8f, cap = StrokeCap.Round)
-            fun line(x: Float, y: Float, x2: Float, y2: Float) = drawLine(tint, Offset(x,y), Offset(x2,y2), 1.8f, StrokeCap.Round)
-            fun path(vararg points: Pair<Float,Float>) {
-                drawPath(Path().apply { points.forEachIndexed { i,p -> if(i==0)moveTo(p.first,p.second) else lineTo(p.first,p.second) } }, tint, style=stroke)
-            }
-            when(glyph) {
-                Glyph.Cart -> { path(2f to 3f,5f to 3f,8f to 16f,19f to 16f,22f to 7f,6f to 7f); drawCircle(tint,1.5f,Offset(9f,21f));drawCircle(tint,1.5f,Offset(19f,21f)) }
-                Glyph.Search -> { drawCircle(tint,7f,Offset(10f,10f),style=stroke);line(15f,15f,22f,22f) }
-                Glyph.Home -> { val p=Path().apply {moveTo(3f,11f);lineTo(12f,3f);lineTo(21f,11f);lineTo(21f,22f);lineTo(15f,22f);lineTo(15f,15f);lineTo(9f,15f);lineTo(9f,22f);lineTo(3f,22f);close()};drawPath(p,tint,style=if(filled) androidx.compose.ui.graphics.drawscope.Fill else stroke) }
-                Glyph.Heart -> { val p=Path().apply {moveTo(12f,21f);cubicTo(7f,17f,2f,13f,2f,8f);cubicTo(2f,2f,9f,1f,12f,6f);cubicTo(15f,1f,22f,2f,22f,8f);cubicTo(22f,13f,17f,17f,12f,21f);close()};drawPath(p,tint,style=if(filled) androidx.compose.ui.graphics.drawscope.Fill else stroke) }
-                Glyph.Settings -> {drawCircle(tint,7f,Offset(12f,12f),style=stroke);drawCircle(tint,2.5f,Offset(12f,12f),style=stroke);repeat(8){val a=it*PI/4;line((12+8*cos(a)).toFloat(),(12+8*sin(a)).toFloat(),(12+10.5*cos(a)).toFloat(),(12+10.5*sin(a)).toFloat())}}
-                Glyph.Back -> {path(11f to 4f,3f to 12f,11f to 20f);line(3f,12f,22f,12f)}
-                Glyph.Chevron -> path(9f to 5f,16f to 12f,9f to 19f)
-                Glyph.Close -> {line(5f,5f,19f,19f);line(19f,5f,5f,19f)}
-                Glyph.Refresh -> {drawArc(tint,40f,280f,false,Offset(3f,3f),Size(18f,18f),style=stroke);path(21f to 3f,21f to 10f,14f to 10f)}
-                Glyph.Contrast -> {drawCircle(tint,9f,Offset(12f,12f),style=stroke);drawArc(tint,90f,180f,true,Offset(3f,3f),Size(18f,18f))}
-                Glyph.Pin -> {val p=Path().apply {moveTo(12f,22f);cubicTo(9f,17f,4f,12f,4f,8f);cubicTo(4f,-2f,20f,-2f,20f,8f);cubicTo(20f,12f,15f,17f,12f,22f);close()};drawPath(p,tint,style=stroke);drawCircle(tint,2.5f,Offset(12f,8f),style=stroke)}
-                Glyph.Clock -> {drawCircle(tint,9f,Offset(12f,12f),style=stroke);path(12f to 6f,12f to 12f,16f to 14f)}
-                Glyph.Info -> {drawCircle(tint,9f,Offset(12f,12f),style=stroke);line(12f,11f,12f,17f);drawCircle(tint,1f,Offset(12f,7f))}
-                Glyph.Calendar -> { path(4f to 5f,20f to 5f,20f to 21f,4f to 21f,4f to 5f); line(4f,10f,20f,10f); line(8f,3f,8f,7f); line(16f,3f,16f,7f) }
-                Glyph.Document -> { path(5f to 3f,14f to 3f,19f to 8f,19f to 21f,5f to 21f,5f to 3f);path(14f to 3f,14f to 8f,19f to 8f);line(8f,12f,16f,12f);line(8f,16f,13f,16f) }
-                Glyph.Link -> {path(10f to 7f,14f to 3f,19f to 3f,21f to 7f,17f to 11f);path(14f to 17f,10f to 21f,5f to 21f,3f to 17f,7f to 13f);line(8f,16f,16f,8f)}
-                Glyph.External -> {path(11f to 5f,4f to 5f,4f to 20f,19f to 20f,19f to 13f);path(14f to 3f,21f to 3f,21f to 10f);line(10f,14f,21f,3f)}
-                Glyph.Copy -> {path(8f to 3f,21f to 3f,21f to 16f,8f to 16f,8f to 3f);path(4f to 7f,4f to 21f,17f to 21f)}
-                Glyph.Crown -> {path(3f to 6f,7f to 11f,12f to 5f,17f to 11f,21f to 6f,18f to 17f,6f to 17f,3f to 6f);line(7f,21f,17f,21f)}
-                Glyph.Bottle -> path(9f to 3f,15f to 3f,15f to 7f,18f to 10f,18f to 21f,6f to 21f,6f to 10f,9f to 7f,9f to 3f)
-                Glyph.Bread -> {
-                    drawOval(tint,Offset(2f,6f),Size(20f,13f),style=stroke)
-                    line(8f,7f,10f,11f); line(13f,7f,15f,11f)
-                }
-                Glyph.Spray -> { path(6f to 3f,17f to 3f,20f to 6f,13f to 6f,13f to 10f,17f to 14f,17f to 21f,7f to 21f,7f to 14f,10f to 10f,10f to 6f,6f to 6f,6f to 3f); line(7f,7f,4f,10f) }
-                Glyph.Pump -> { path(8f to 8f,16f to 8f,18f to 11f,18f to 21f,6f to 21f,6f to 11f,8f to 8f); path(12f to 8f,12f to 3f,17f to 3f) }
-                Glyph.Paw -> {
-                    drawOval(tint,Offset(6f,12f),Size(12f,9f),style=stroke)
-                    listOf(4f to 9f,9f to 5f,15f to 5f,20f to 9f).forEach { (x,y) -> drawCircle(tint,1.7f,Offset(x,y),style=stroke) }
-                }
-                Glyph.Grid -> for (x in listOf(3f,13f)) for (y in listOf(3f,13f)) {
-                    drawRoundRect(tint,Offset(x,y),Size(8f,8f),androidx.compose.ui.geometry.CornerRadius(2f),style=stroke)
-                }
-                Glyph.Check -> path(4f to 12f,9f to 17f,20f to 6f)
-            }
-        }
+@Composable internal fun AppIcon(
+    glyph: Glyph, modifier: Modifier = Modifier.size(24.dp),
+    tint: Color = MaterialTheme.colorScheme.onSurface, filled: Boolean = false
+) {
+    val icon = when (glyph) {
+        Glyph.Cart -> Icons.Outlined.ShoppingCart
+        Glyph.Search -> Icons.Outlined.Search
+        Glyph.Home -> Icons.Outlined.Home
+        Glyph.Heart -> if (filled) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder
+        Glyph.Settings -> Icons.Outlined.Settings
+        Glyph.Back -> Icons.AutoMirrored.Outlined.ArrowBack
+        Glyph.Chevron -> Icons.Outlined.ChevronRight
+        Glyph.Close -> Icons.Outlined.Close
+        Glyph.Refresh -> Icons.Outlined.Refresh
+        Glyph.Contrast -> Icons.Outlined.Contrast
+        Glyph.Pin -> Icons.Outlined.LocationOn
+        Glyph.Clock -> Icons.Outlined.Schedule
+        Glyph.Info -> Icons.Outlined.Info
+        Glyph.Check -> Icons.Outlined.Check
+        Glyph.Calendar -> Icons.Outlined.CalendarToday
+        Glyph.Document -> Icons.Outlined.Description
+        Glyph.Link -> Icons.Outlined.Link
+        Glyph.External -> Icons.AutoMirrored.Outlined.OpenInNew
+        Glyph.Copy -> Icons.Outlined.ContentCopy
+        Glyph.Star -> Icons.Outlined.StarBorder
+        Glyph.Bottle -> Icons.Outlined.LocalDrink
+        Glyph.Bread -> Icons.Outlined.BakeryDining
+        Glyph.Spray -> Icons.Outlined.CleaningServices
+        Glyph.Pump -> Icons.Outlined.Soap
+        Glyph.Paw -> Icons.Outlined.Pets
+        Glyph.Grid -> Icons.Outlined.GridView
+        Glyph.Add -> Icons.Outlined.Add
+        Glyph.Remove -> Icons.Outlined.Remove
+        Glyph.Store -> Icons.Outlined.Storefront
+        Glyph.Package -> Icons.Outlined.Inventory2
+        Glyph.Collapse -> Icons.Outlined.ExpandLess
     }
+    Icon(icon, contentDescription = null, modifier = modifier, tint = tint)
 }
 
 @Composable internal fun CartMark(size: Dp = 52.dp) {
@@ -116,13 +105,13 @@ internal enum class Glyph { Cart, Search, Home, Heart, Settings, Back, Chevron, 
 
 internal val LocalPhotoOrigin = staticCompositionLocalOf { "" }
 
-@Composable internal fun ProductArtwork(product: Product) {
+@Composable internal fun ProductArtwork(product: Product, modifier: Modifier = Modifier.padding(end = 10.dp).size(width = 76.dp, height = 93.dp).clip(RoundedCornerShape(10.dp))) {
     val path = product.photoPath ?: return
     if (path != "/v1/products/${product.id}/photo") return
     AsyncImage(
         model = LocalPhotoOrigin.current.trimEnd('/') + path,
         contentDescription = "Foto de ${product.name}",
         contentScale = ContentScale.Fit,
-        modifier = Modifier.padding(end = 10.dp).size(width = 76.dp, height = 93.dp).clip(RoundedCornerShape(10.dp))
+        modifier = modifier
     )
 }

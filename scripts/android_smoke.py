@@ -57,13 +57,13 @@ def main():
         phone.tap('Arroz');root=phone.wait('R$ 22,70')
         assert not any('1 kg' in t for t in phone.texts(root))
         phone.screenshot(args.output/'search.png');passed('Busca API por arroz 5kg sem misturar embalagem de 1kg')
-        phone.tap('Comparar ›');root=phone.wait('Mercado Cerrado · DEMO')
+        phone.tap('Comparar');root=phone.wait('Mercado Cerrado · DEMO')
         texts=phone.texts(root)
         assert texts.index('R$ 22,70')<texts.index('R$ 23,90')
         assert 'Filial de demonstração' in texts
         phone.screenshot(args.output/'comparison.png');passed('Comparação ordenada com filial e data')
-        if '♡ Salvar nos favoritos' in texts:phone.tap('♡ Salvar nos favoritos')
-        phone.wait('♥ Salvo nos favoritos');phone.tap('Voltar');phone.tap('Favoritos');phone.wait('Arroz branco DEMO')
+        if 'Salvar nos favoritos' in texts:phone.tap('Salvar nos favoritos')
+        phone.wait('Salvo nos favoritos');phone.tap('Voltar');phone.tap('Favoritos');phone.wait('Arroz branco DEMO')
         phone.screenshot(args.output/'favorites.png');passed('Favorito salvo localmente')
         phone.launch();phone.tap('Favoritos');phone.wait('Arroz branco DEMO');passed('Favorito persiste após reiniciar o processo')
         phone.tap('Arroz branco DEMO');phone.wait('Mercado Cerrado · DEMO')
@@ -80,7 +80,7 @@ def main():
         phone.screenshot(args.output/'reconnected.png');passed('Reconexão ao backend após restaurar USB')
         # Verify Android system Back returns from comparison to the favorites screen.
         phone.command('shell','input','keyevent','4');phone.wait('Sua lista de favoritos');passed('Botão Voltar do Android')
-        phone.tap('Início');phone.tap('Arroz');phone.wait('R$ 22,70');phone.tap('Comparar ›');phone.wait('Mercado Cerrado · DEMO')
+        phone.tap('Início');phone.tap('Arroz');phone.wait('R$ 22,70');phone.tap('Comparar');phone.wait('Mercado Cerrado · DEMO')
         report['status']='passed'
     finally:
         phone.command('reverse','tcp:8080','tcp:8080')

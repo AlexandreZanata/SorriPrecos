@@ -1,8 +1,5 @@
 package br.com.sorriprecos
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,13 +10,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -130,7 +125,7 @@ import kotlinx.coroutines.launch
                 topBar = {
                     if (selected != null || screen != "home") AppToolbar(
                         title = if (selected != null) "Comparar preços" else when (screen) {
-                            "search" -> "Resultados da busca"; "favorites" -> "Favoritos"; "cart" -> "Carrinho"; "sources" -> "Fontes e filiais"; else -> "Ajustes"
+                            "search" -> "Resultados da busca"; "favorites" -> "Favoritos"; "cart" -> if (demo) "Carrinho de demonstração" else "Meu carrinho"; "sources" -> "Fontes e filiais"; else -> "Ajustes"
                         },
                         onBack = { if (selected != null) selected = null else navigate("home") },
                         accessibility = selected != null, largeText = largeText, contrast = contrast,
@@ -182,7 +177,7 @@ import kotlinx.coroutines.launch
                                     }, enabled = !searching, modifier = Modifier.fillMaxWidth()) { Text("Carregar mais") } }
                                 }
                             }
-                            "cart" -> CartScreen(repo, cart, demo, ::setQuantity, { navigate("search") }, { selected = it })
+                            "cart" -> CartScreen(repo, cart, ::setQuantity, { navigate("search") }, { selected = it })
                             "favorites" -> LazyColumn(contentPadding = PaddingValues(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                                 item { Text("Sua lista de favoritos", fontSize = 23.sp, fontWeight = FontWeight.Bold); Text("Salvos neste aparelho, sem cadastro.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 6.dp, bottom = 8.dp)) }
                                 if (favorites.isEmpty()) item { EmptyCard("Guarde o que você compra", "Toque no coração de um produto para acompanhar os preços depois.") }
@@ -224,30 +219,39 @@ import kotlinx.coroutines.launch
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable private fun AppToolbar(title: String, onBack: () -> Unit, accessibility: Boolean, largeText: Boolean, contrast: Boolean, onText: (Boolean) -> Unit, onContrast: () -> Unit) {
-    Surface(color = MaterialTheme.colorScheme.background) {
-        Row(Modifier.fillMaxWidth().statusBarsPadding().padding(horizontal = 8.dp).heightIn(min = 56.dp), verticalAlignment = Alignment.CenterVertically) {
+    TopAppBar(
+        title = { Text(title, fontWeight = FontWeight.Bold) },
+        navigationIcon = {
             IconButton(onClick = onBack, modifier = Modifier.semantics { contentDescription = "Voltar" }) { AppIcon(Glyph.Back) }
-            Text(title, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f).padding(horizontal = 2.dp))
+        },
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        actions = {
             if (accessibility) {
                 TextButton(onClick = { onText(false) }, contentPadding = PaddingValues(0.dp), modifier = Modifier.width(40.dp).semantics { contentDescription = "Tamanho de texto padrão" }) { Text("A", color = if (!largeText) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, fontSize = 16.sp) }
                 TextButton(onClick = { onText(true) }, contentPadding = PaddingValues(0.dp), modifier = Modifier.width(40.dp).semantics { contentDescription = "Aumentar texto" }) { Text("A+", fontSize = 17.sp, fontWeight = FontWeight.Bold, color = if (largeText) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface) }
                 IconButton(onClick = onContrast, modifier = Modifier.semantics { contentDescription = if (contrast) "Desativar alto contraste" else "Ativar alto contraste" }) { AppIcon(Glyph.Contrast, Modifier.size(21.dp)) }
             }
         }
-    }
+    )
 }
 
 @Composable private fun BottomNavigation(screen: String, onNavigate: (String) -> Unit) {
-    Surface(color = MaterialTheme.colorScheme.surface, shadowElevation = 3.dp) {
-        Row(Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 12.dp, vertical = 7.dp), horizontalArrangement = Arrangement.SpaceAround) {
-            listOf(Triple("home", Glyph.Home, "Início"), Triple("search", Glyph.Search, "Buscar"), Triple("cart", Glyph.Cart, "Carrinho"), Triple("favorites", Glyph.Heart, "Favoritos"), Triple("settings", Glyph.Settings, "Ajustes")).forEach { (id, icon, label) ->
-                val active = screen == id || id == "settings" && screen == "sources"
-                Column(Modifier.weight(1f).clip(RoundedCornerShape(15.dp)).background(if (active) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface).selectable(selected = active, role = Role.Tab, onClick = { onNavigate(id) }).padding(vertical = 7.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    AppIcon(icon, Modifier.size(22.dp), if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, filled = active)
-                    Text(label, fontSize = 10.sp, color = if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, fontWeight = if (active) FontWeight.Bold else FontWeight.Normal, modifier = Modifier.padding(top = 3.dp))
-                }
-            }
+    NavigationBar(containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 2.dp) {
+        val tabs = listOf(
+            Triple("home", Glyph.Home, "Início"), Triple("search", Glyph.Search, "Buscar"),
+            Triple("cart", Glyph.Cart, "Carrinho"), Triple("favorites", Glyph.Heart, "Favoritos"),
+            Triple("settings", Glyph.Settings, "Ajustes")
+        )
+        tabs.forEach { (id, icon, label) ->
+            val selected = screen == id || (id == "settings" && screen == "sources")
+            NavigationBarItem(
+                selected = selected, onClick = { onNavigate(id) },
+                icon = { AppIcon(icon, tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant) },
+                label = { Text(label, maxLines = 1, fontSize = 10.sp) },
+                colors = NavigationBarItemDefaults.colors(indicatorColor = MaterialTheme.colorScheme.primaryContainer)
+            )
         }
     }
 }

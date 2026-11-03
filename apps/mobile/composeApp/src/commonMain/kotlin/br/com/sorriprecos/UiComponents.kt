@@ -86,7 +86,7 @@ import androidx.compose.ui.unit.sp
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 IconButton(onClick = onFavorite, modifier = Modifier.size(34.dp).semantics { contentDescription = if (favorite) "Remover favorito ${p.name}" else "Favoritar ${p.name}" }) { AppIcon(Glyph.Heart, Modifier.size(18.dp), if (favorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant, filled = favorite) }
-                IconButton(onClick = onClick, modifier = Modifier.size(34.dp).semantics { contentDescription = "Comparar ›" }) { AppIcon(Glyph.Chevron, Modifier.size(17.dp)) }
+                IconButton(onClick = onClick, modifier = Modifier.size(34.dp).semantics { contentDescription = "Comparar" }) { AppIcon(Glyph.Chevron, Modifier.size(17.dp)) }
             }
         }
     }
