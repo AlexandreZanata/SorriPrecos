@@ -424,6 +424,254 @@
       "status": "pending",
       "public_page": "https://marmitaria-da-kau-kau-deliveri.ueniweb.com/",
       "reason": "Página local com valores estáticos e sem confirmação de vigência ou disponibilidade"
+    },
+    {
+      "market": "alento-comidas-caseiras-e-congelados",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/alento-comidas-caseiras-e-congelados",
+      "seller_id": 140834,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "andressa-doces-caseirinhos",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/andressa-doces-caseirinhos",
+      "seller_id": 143031,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "bendita-fatia-doces-gourmet",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/bendita-fatia-doces-gourmet",
+      "seller_id": 135991,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "delicatta-doces",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/delicatta-doces",
+      "seller_id": 132167,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "doces-da-tina",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/doces-da-tina",
+      "seller_id": 146614,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "doces-dimaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/doces-dimaria",
+      "seller_id": 125368,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "fran-abreu-doces",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/fran-abreu-doces",
+      "seller_id": 19279,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "fran-abreu-doces-shopping",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/fran-abreu-doces-shopping",
+      "seller_id": 120831,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "imperio-doces",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/imperio-doces",
+      "seller_id": 137838,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "isabella-doces-artesanais",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/isabella-doces-artesanais",
+      "seller_id": 130977,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "italy-doces-cia",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/italy-doces-cia",
+      "seller_id": 145524,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "mais-que-pao",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/mais-que-pao",
+      "seller_id": 113719,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "pao-com-linguica-casanova",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/pao-com-linguica-casanova",
+      "seller_id": 21890,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "pasta-parma",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/pasta-parma",
+      "seller_id": 103859,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "posto-e-conveniencia-avanti",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/posto-e-conveniencia-avanti",
+      "seller_id": 131569,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "so-massas-congeladas",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/so-massas-congeladas",
+      "seller_id": 117001,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "tentacao-doces",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/tentacao-doces",
+      "seller_id": 140616,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "billy-agropet",
+      "platform": "aiqfome",
+      "status": "out_of_scope",
+      "public_page": "https://aiqfome.com/MT/sorriso/billy-agropet",
+      "reason": "Catálogo inspecionado contém produtos e medicamentos para animais."
+    },
+    {
+      "market": "blumenau-bebidas",
+      "platform": "aiqfome",
+      "status": "pending_response_too_large",
+      "public_page": "https://aiqfome.com/MT/sorriso/blumenau-bebidas",
+      "reason": "Resposta excedeu limite de 8 MiB; catálogo e identidade não verificados nesta rodada."
+    },
+    {
+      "market": "borges-distribuidora",
+      "platform": "aiqfome",
+      "status": "pending_category_review",
+      "public_page": "https://aiqfome.com/MT/sorriso/borges-distribuidora",
+      "reason": "Vende gás, cigarros e bebidas; categorias e embalagens alimentícias ainda precisam de seleção e teste."
+    },
+    {
+      "market": "copao-de-coxinha",
+      "platform": "aiqfome",
+      "status": "pending_duplicate_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/copao-de-coxinha",
+      "reason": "Mesmo CNPJ e endereço da vitrine Imperador Disk Bebidas; evitar duplicação enquanto o vínculo é avaliado."
+    },
+    {
+      "market": "emporio-doceria",
+      "platform": "aiqfome",
+      "status": "pending_address_review",
+      "public_page": "https://aiqfome.com/MT/sorriso/emporio-doceria",
+      "reason": "CEP publicado 78360-000 diverge da faixa 788xx dos demais endereços locais; exige confirmação."
+    },
+    {
+      "market": "emporio-dos-pets",
+      "platform": "aiqfome",
+      "status": "out_of_scope",
+      "public_page": "https://aiqfome.com/MT/sorriso/emporio-dos-pets",
+      "reason": "Catálogo inspecionado contém produtos e medicamentos para animais."
+    },
+    {
+      "market": "flash-distribuidora",
+      "platform": "aiqfome",
+      "status": "pending_category_review",
+      "public_page": "https://aiqfome.com/MT/sorriso/flash-distribuidora",
+      "reason": "Vende bebidas, cigarros e outros itens; requer seleção de categorias e revisão de preços condicionados."
+    },
+    {
+      "market": "gt-bebidas",
+      "platform": "aiqfome",
+      "status": "pending_duplicate_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/gt-bebidas",
+      "reason": "Mesmo CNPJ que JL Distribuidora, com números de endereço diferentes; confirmar identidade e evitar duplicação."
+    },
+    {
+      "market": "imperador-disk-bebidas",
+      "platform": "aiqfome",
+      "status": "pending_duplicate_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/imperador-disk-bebidas",
+      "reason": "Mesmo CNPJ e endereço da vitrine Copão de Coxinha; categorias misturam alimentos, bebidas, cigarros e acessórios."
+    },
+    {
+      "market": "jl-distribuidora-e-conveniencia",
+      "platform": "aiqfome",
+      "status": "pending_duplicate_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/jl-distribuidora-e-conveniencia",
+      "reason": "Mesmo CNPJ que GT Bebidas, com números de endereço diferentes; a vitrine informa exigência de vasilhame para retornáveis."
+    },
+    {
+      "market": "magnata-distribuidora-01",
+      "platform": "aiqfome",
+      "status": "pending_category_review",
+      "public_page": "https://aiqfome.com/MT/sorriso/magnata-distribuidora-01",
+      "reason": "Bebidas e outros itens com categorias mistas; precisa de seleção e revisão."
+    },
+    {
+      "market": "mineiros-bebidas",
+      "platform": "aiqfome",
+      "status": "pending_category_review",
+      "public_page": "https://aiqfome.com/MT/sorriso/mineiros-bebidas",
+      "reason": "Vitrine de bebidas requer revisão de categorias e condições de embalagens retornáveis."
+    },
+    {
+      "market": "pet-casa-agroshop",
+      "platform": "aiqfome",
+      "status": "out_of_scope",
+      "public_page": "https://aiqfome.com/MT/sorriso/pet-casa-agroshop",
+      "reason": "Catálogo inspecionado contém produtos e medicamentos para animais."
+    },
+    {
+      "market": "pitbull-distribuidora",
+      "platform": "aiqfome",
+      "status": "pending_category_review",
+      "public_page": "https://aiqfome.com/MT/sorriso/pitbull-distribuidora",
+      "reason": "Bebidas e itens não alimentícios misturados; precisa de seleção e revisão."
+    },
+    {
+      "market": "portal-bebidas",
+      "platform": "aiqfome",
+      "status": "pending_duplicate_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/portal-bebidas",
+      "reason": "Mesmo CNPJ e endereço do Açougue Portal já cadastrado; evitar duplicar a filial antes de definir integração de outra vitrine."
+    },
+    {
+      "market": "restaurante-e-churrascaria-galpao-crioulo",
+      "platform": "aiqfome",
+      "status": "pending_category_review",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-e-churrascaria-galpao-crioulo",
+      "reason": "Vitrine de refeições e bebidas precisa de seleção e validação dos produtos e suas condições."
     }
   ],
   "alternate_sources": [
@@ -462,6 +710,24 @@
       "status": "pending_sorriso_context",
       "url": "https://casaaurora.com.br/lojas/sorriso-mt/",
       "evidence": "CEP publicado na ficha da filial. A sessão visitante consultou as rotas de retirada e entrega em teste isolado. Sete requisições e zero ofertas; a filial local não apareceu."
+    },
+    {
+      "name": "NutraBake",
+      "status": "pending_catalogue_validation",
+      "url": "https://nutrabake-site.vercel.app/",
+      "evidence": "Página indexada informa endereço de Sorriso e pedidos pelo WhatsApp, porém catálogo, preços e disponibilidade não foram validados no coletor."
+    },
+    {
+      "name": "Steakhouse 67",
+      "status": "pending_catalogue_validation",
+      "url": "https://www.steakhouse67.com/shop",
+      "evidence": "Página apresenta endereço e CNPJ em Sorriso e um preço; também contém aviso de pandemia. A atualidade e estrutura de catálogo precisam ser verificadas."
+    },
+    {
+      "name": "bysell Sorriso",
+      "status": "pending_discovery",
+      "url": "https://app.bysell.com.br/lista/sorriso-mt/",
+      "evidence": "Diretório encontrado na pesquisa; estabelecimentos e dados individuais ainda não foram validados."
     }
   ]
 }

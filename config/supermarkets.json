@@ -617,5 +617,243 @@
         "source_id": "aiqfome:146727:cnpj:09460311000108"
       }
     ]
+  },
+  {
+    "id": "alento-comidas-caseiras-e-congelados",
+    "name": "Alento Comidas Caseiras e Congelados",
+    "website": "https://aiqfome.com/MT/sorriso/alento-comidas-caseiras-e-congelados",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "alento-comidas-caseiras-e-congelados-sorriso",
+        "name": "Sorriso",
+        "address": "Vale Dourado, 1671 · Sorriso-MT",
+        "source_id": "aiqfome:140834:cnpj:37670066000107"
+      }
+    ]
+  },
+  {
+    "id": "andressa-doces-caseirinhos",
+    "name": "Andressa Doces & Caseirinhos",
+    "website": "https://aiqfome.com/MT/sorriso/andressa-doces-caseirinhos",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "andressa-doces-caseirinhos-sorriso",
+        "name": "Sorriso",
+        "address": "RUA SERRA DO MAR, 344 · Sorriso-MT",
+        "source_id": "aiqfome:143031:cnpj:67852529000104"
+      }
+    ]
+  },
+  {
+    "id": "bendita-fatia-doces-gourmet",
+    "name": "Bendita Fatia Doces Gourmet",
+    "website": "https://aiqfome.com/MT/sorriso/bendita-fatia-doces-gourmet",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "bendita-fatia-doces-gourmet-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Turin, 1236 · Sorriso-MT",
+        "source_id": "aiqfome:135991:cnpj:51367769000183"
+      }
+    ]
+  },
+  {
+    "id": "delicatta-doces",
+    "name": "Delicatta Doces",
+    "website": "https://aiqfome.com/MT/sorriso/delicatta-doces",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "delicatta-doces-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Cancun, 503 · Sorriso-MT",
+        "source_id": "aiqfome:132167:cnpj:62048153000166"
+      }
+    ]
+  },
+  {
+    "id": "doces-da-tina",
+    "name": "Doces da Tina",
+    "website": "https://aiqfome.com/MT/sorriso/doces-da-tina",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "doces-da-tina-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Lupicinio Rodrigues, Sorriso - MT, 1038 · Sorriso-MT",
+        "source_id": "aiqfome:146614:cnpj:68034160000195"
+      }
+    ]
+  },
+  {
+    "id": "doces-dimaria",
+    "name": "Doces Dimaria",
+    "website": "https://aiqfome.com/MT/sorriso/doces-dimaria",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "doces-dimaria-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Indaia, 247 · Sorriso-MT",
+        "source_id": "aiqfome:125368:cnpj:52180176000176"
+      }
+    ]
+  },
+  {
+    "id": "fran-abreu-doces",
+    "name": "Fran Abreu Doces",
+    "website": "https://aiqfome.com/MT/sorriso/fran-abreu-doces",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "fran-abreu-doces-sorriso",
+        "name": "Sorriso",
+        "address": "Avenida Natalino João Brescansin, 1968 · Sorriso-MT",
+        "source_id": "aiqfome:19279:cnpj:34123569000166"
+      }
+    ]
+  },
+  {
+    "id": "fran-abreu-doces-shopping",
+    "name": "Fran Abreu Doces Shopping",
+    "website": "https://aiqfome.com/MT/sorriso/fran-abreu-doces-shopping",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "fran-abreu-doces-shopping-sorriso",
+        "name": "Sorriso",
+        "address": "Av. Tancredo Neves, 543 · Sorriso-MT",
+        "source_id": "aiqfome:120831:cnpj:34123569000247"
+      }
+    ]
+  },
+  {
+    "id": "imperio-doces",
+    "name": "Imperio Doces",
+    "website": "https://aiqfome.com/MT/sorriso/imperio-doces",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "imperio-doces-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Florida, 1701 · Sorriso-MT",
+        "source_id": "aiqfome:137838:cnpj:64554158000196"
+      }
+    ]
+  },
+  {
+    "id": "isabella-doces-artesanais",
+    "name": "Isabella Doces Artesanais",
+    "website": "https://aiqfome.com/MT/sorriso/isabella-doces-artesanais",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "isabella-doces-artesanais-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Bom Sucesso, 393B · Sorriso-MT",
+        "source_id": "aiqfome:130977:cnpj:54557458000175"
+      }
+    ]
+  },
+  {
+    "id": "italy-doces-cia",
+    "name": "Italy Doces & Cia",
+    "website": "https://aiqfome.com/MT/sorriso/italy-doces-cia",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "italy-doces-cia-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Vale Dourado, 729 · Sorriso-MT",
+        "source_id": "aiqfome:145524:cnpj:60218148000129"
+      }
+    ]
+  },
+  {
+    "id": "mais-que-pao",
+    "name": "Mais Que Pão ",
+    "website": "https://aiqfome.com/MT/sorriso/mais-que-pao",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "mais-que-pao-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Mato Grosso, 669 · Sorriso-MT",
+        "source_id": "aiqfome:113719:cnpj:49788388000126"
+      }
+    ]
+  },
+  {
+    "id": "pao-com-linguica-casanova",
+    "name": "Pão com Linguiça Casanova",
+    "website": "https://aiqfome.com/MT/sorriso/pao-com-linguica-casanova",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "pao-com-linguica-casanova-sorriso",
+        "name": "Sorriso",
+        "address": "Av. Luiz Amadeu Lodi, 536 · Sorriso-MT",
+        "source_id": "aiqfome:21890:cnpj:30666724000130"
+      }
+    ]
+  },
+  {
+    "id": "pasta-parma",
+    "name": "Pasta Parma",
+    "website": "https://aiqfome.com/MT/sorriso/pasta-parma",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "pasta-parma-sorriso",
+        "name": "Sorriso",
+        "address": "Av. Blumenau Sul, 1030 · Sorriso-MT",
+        "source_id": "aiqfome:103859:cnpj:38598602000165"
+      }
+    ]
+  },
+  {
+    "id": "posto-e-conveniencia-avanti",
+    "name": "Posto e Conveniência Avanti",
+    "website": "https://aiqfome.com/MT/sorriso/posto-e-conveniencia-avanti",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "posto-e-conveniencia-avanti-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA PERIMETRAL SUDOESTE, 3493 · Sorriso-MT",
+        "source_id": "aiqfome:131569:cnpj:27423855000181"
+      }
+    ]
+  },
+  {
+    "id": "so-massas-congeladas",
+    "name": "Só Massas Congeladas",
+    "website": "https://aiqfome.com/MT/sorriso/so-massas-congeladas",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "so-massas-congeladas-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA NATALINO JOAO BRESCANSIN, 3344 · Sorriso-MT",
+        "source_id": "aiqfome:117001:cnpj:46180034000106"
+      }
+    ]
+  },
+  {
+    "id": "tentacao-doces",
+    "name": "Tentação - Doces",
+    "website": "https://aiqfome.com/MT/sorriso/tentacao-doces",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "tentacao-doces-sorriso",
+        "name": "Sorriso",
+        "address": "RUA NIAGARA, 1321 · Sorriso-MT",
+        "source_id": "aiqfome:140616:cnpj:66338429000100"
+      }
+    ]
   }
 ]

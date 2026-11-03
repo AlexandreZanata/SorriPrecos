@@ -1,0 +1,330 @@
+{
+  "date": "2026-11-03",
+  "directory": "https://aiqfome.com/restaurantes/sorriso-MT",
+  "directory_candidate_urls": 532,
+  "method": "Triagem por nomes ligados a alimentos, mais uma revalidação de Padaria Popular; sem alegação de revisão individual das demais URLs. Coleta de teste em SQLite isolado e primeira coleta no banco local.",
+  "sources": [
+    {
+      "url": "https://aiqfome.com/MT/sorriso/alento-comidas-caseiras-e-congelados",
+      "status": "enabled",
+      "seller_id": 140834,
+      "published_variants_all_categories": 138,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 123,
+        "normalized_items": 14,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/andressa-doces-caseirinhos",
+      "status": "enabled",
+      "seller_id": 143031,
+      "published_variants_all_categories": 24,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 22,
+        "normalized_items": 20,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/bendita-fatia-doces-gourmet",
+      "status": "enabled",
+      "seller_id": 135991,
+      "published_variants_all_categories": 32,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 26,
+        "normalized_items": 20,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/billy-agropet",
+      "status": "out_of_scope",
+      "reason": "Catálogo inspecionado contém produtos e medicamentos para animais.",
+      "published_variants_all_categories": 464
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/blumenau-bebidas",
+      "status": "pending_response_too_large",
+      "reason": "Resposta excedeu limite de 8 MiB; catálogo e identidade não verificados nesta rodada."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/borges-distribuidora",
+      "status": "pending_category_review",
+      "reason": "Vende gás, cigarros e bebidas; categorias e embalagens alimentícias ainda precisam de seleção e teste.",
+      "published_variants_all_categories": 34
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/copao-de-coxinha",
+      "status": "pending_duplicate_identity",
+      "reason": "Mesmo CNPJ e endereço da vitrine Imperador Disk Bebidas; evitar duplicação enquanto o vínculo é avaliado.",
+      "published_variants_all_categories": 99
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/delicatta-doces",
+      "status": "enabled",
+      "seller_id": 132167,
+      "published_variants_all_categories": 23,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 18,
+        "normalized_items": 3,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/doces-da-tina",
+      "status": "enabled",
+      "seller_id": 146614,
+      "published_variants_all_categories": 5,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 4,
+        "normalized_items": 4,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/doces-dimaria",
+      "status": "enabled",
+      "seller_id": 125368,
+      "published_variants_all_categories": 20,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 18,
+        "normalized_items": 18,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/emporio-doceria",
+      "status": "pending_address_review",
+      "reason": "CEP publicado 78360-000 diverge da faixa 788xx dos demais endereços locais; exige confirmação.",
+      "published_variants_all_categories": 55
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/emporio-dos-pets",
+      "status": "out_of_scope",
+      "reason": "Catálogo inspecionado contém produtos e medicamentos para animais.",
+      "published_variants_all_categories": 614
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/flash-distribuidora",
+      "status": "pending_category_review",
+      "reason": "Vende bebidas, cigarros e outros itens; requer seleção de categorias e revisão de preços condicionados.",
+      "published_variants_all_categories": 81
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/fran-abreu-doces",
+      "status": "enabled",
+      "seller_id": 19279,
+      "published_variants_all_categories": 55,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 39,
+        "normalized_items": 30,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/fran-abreu-doces-shopping",
+      "status": "enabled",
+      "seller_id": 120831,
+      "published_variants_all_categories": 52,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 36,
+        "normalized_items": 27,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/gt-bebidas",
+      "status": "pending_duplicate_identity",
+      "reason": "Mesmo CNPJ que JL Distribuidora, com números de endereço diferentes; confirmar identidade e evitar duplicação.",
+      "published_variants_all_categories": 193
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/imperador-disk-bebidas",
+      "status": "pending_duplicate_identity",
+      "reason": "Mesmo CNPJ e endereço da vitrine Copão de Coxinha; categorias misturam alimentos, bebidas, cigarros e acessórios.",
+      "published_variants_all_categories": 1176
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/imperio-doces",
+      "status": "enabled",
+      "seller_id": 137838,
+      "published_variants_all_categories": 55,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 43,
+        "normalized_items": 32,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/isabella-doces-artesanais",
+      "status": "enabled",
+      "seller_id": 130977,
+      "published_variants_all_categories": 15,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 15,
+        "normalized_items": 15,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/italy-doces-cia",
+      "status": "enabled",
+      "seller_id": 145524,
+      "published_variants_all_categories": 9,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 8,
+        "normalized_items": 7,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/jl-distribuidora-e-conveniencia",
+      "status": "pending_duplicate_identity",
+      "reason": "Mesmo CNPJ que GT Bebidas, com números de endereço diferentes; a vitrine informa exigência de vasilhame para retornáveis.",
+      "published_variants_all_categories": 450
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/magnata-distribuidora-01",
+      "status": "pending_category_review",
+      "reason": "Bebidas e outros itens com categorias mistas; precisa de seleção e revisão.",
+      "published_variants_all_categories": 257
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/mais-que-pao",
+      "status": "enabled",
+      "seller_id": 113719,
+      "published_variants_all_categories": 135,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 40,
+        "normalized_items": 40,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/mineiros-bebidas",
+      "status": "pending_category_review",
+      "reason": "Vitrine de bebidas requer revisão de categorias e condições de embalagens retornáveis.",
+      "published_variants_all_categories": 220
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/pao-com-linguica-casanova",
+      "status": "enabled",
+      "seller_id": 21890,
+      "published_variants_all_categories": 56,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 23,
+        "normalized_items": 23,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/pasta-parma",
+      "status": "enabled",
+      "seller_id": 103859,
+      "published_variants_all_categories": 116,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 73,
+        "normalized_items": 55,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/pet-casa-agroshop",
+      "status": "out_of_scope",
+      "reason": "Catálogo inspecionado contém produtos e medicamentos para animais.",
+      "published_variants_all_categories": 583
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/pitbull-distribuidora",
+      "status": "pending_category_review",
+      "reason": "Bebidas e itens não alimentícios misturados; precisa de seleção e revisão.",
+      "published_variants_all_categories": 200
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/portal-bebidas",
+      "status": "pending_duplicate_identity",
+      "reason": "Mesmo CNPJ e endereço do Açougue Portal já cadastrado; evitar duplicar a filial antes de definir integração de outra vitrine.",
+      "published_variants_all_categories": 448
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/posto-e-conveniencia-avanti",
+      "status": "enabled",
+      "seller_id": 131569,
+      "published_variants_all_categories": 347,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 75,
+        "normalized_items": 54,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-e-churrascaria-galpao-crioulo",
+      "status": "pending_category_review",
+      "reason": "Vitrine de refeições e bebidas precisa de seleção e validação dos produtos e suas condições.",
+      "published_variants_all_categories": 52
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/so-massas-congeladas",
+      "status": "enabled",
+      "seller_id": 117001,
+      "published_variants_all_categories": 17,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 7,
+        "normalized_items": 7,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/tentacao-doces",
+      "status": "enabled",
+      "seller_id": 140616,
+      "published_variants_all_categories": 35,
+      "collection_selected_categories": {
+        "status": "success",
+        "requests": 1,
+        "raw_items": 35,
+        "normalized_items": 31,
+        "scope_rejected": 0
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/padaria-popular",
+      "status": "pending_public_catalogue",
+      "reason": "GET direto retornou vendedor e menu vazios, apesar dos preços indexados.",
+      "published_variants_all_categories": 0
+    }
+  ]
+}

@@ -304,5 +304,324 @@
     "postcode": "78894067",
     "categories": [],
     "allow_portions": true
+  },
+  {
+    "supermarket_id": "alento-comidas-caseiras-e-congelados",
+    "branch_id": "alento-comidas-caseiras-e-congelados-sorriso",
+    "slug": "alento-comidas-caseiras-e-congelados",
+    "seller_id": 140834,
+    "cnpj": "37670066000107",
+    "street": "Vale Dourado",
+    "number": "1671",
+    "postcode": "78895082",
+    "categories": [
+      "strogonoff",
+      "biscoitos amanteigados",
+      "congelados",
+      "lasanhas",
+      "escondidinhos",
+      "caldos quentes",
+      "tortas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "andressa-doces-caseirinhos",
+    "branch_id": "andressa-doces-caseirinhos-sorriso",
+    "slug": "andressa-doces-caseirinhos",
+    "seller_id": 143031,
+    "cnpj": "67852529000104",
+    "street": "RUA SERRA DO MAR",
+    "number": "344",
+    "postcode": "78892269",
+    "categories": [
+      "massas dos caseirinhos",
+      "copo da felicidade",
+      "bolo vulcao",
+      "brigadeiros"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "bendita-fatia-doces-gourmet",
+    "branch_id": "bendita-fatia-doces-gourmet-sorriso",
+    "slug": "bendita-fatia-doces-gourmet",
+    "seller_id": 135991,
+    "cnpj": "51367769000183",
+    "street": "Rua Turin",
+    "number": "1236",
+    "postcode": "78890000",
+    "categories": [
+      "fatias",
+      "brownie",
+      "tortas",
+      "coxinha",
+      "mine ovos",
+      "morango do amor",
+      "delicias de sao joao",
+      "morangos"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "delicatta-doces",
+    "branch_id": "delicatta-doces-sorriso",
+    "slug": "delicatta-doces",
+    "seller_id": 132167,
+    "cnpj": "62048153000166",
+    "street": "Rua Cancun",
+    "number": "503",
+    "postcode": "78891207",
+    "categories": [
+      "tortas doces",
+      "bolo gelado",
+      "tortinhas",
+      "sobremesas sob encomenda tortas inteiras sobremesas com frutas ou paves",
+      "bombom"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "doces-da-tina",
+    "branch_id": "doces-da-tina-sorriso",
+    "slug": "doces-da-tina",
+    "seller_id": 146614,
+    "cnpj": "68034160000195",
+    "street": "Rua Lupicinio Rodrigues, Sorriso - MT",
+    "number": "1038",
+    "postcode": "78890075",
+    "categories": [
+      "cones trufados"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "doces-dimaria",
+    "branch_id": "doces-dimaria-sorriso",
+    "slug": "doces-dimaria",
+    "seller_id": 125368,
+    "cnpj": "52180176000176",
+    "street": "Rua Indaia",
+    "number": "247",
+    "postcode": "78897217",
+    "categories": [
+      "bolo no pote",
+      "bolo gelado",
+      "salgados",
+      "torta no pote",
+      "bombom de morango"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "fran-abreu-doces",
+    "branch_id": "fran-abreu-doces-sorriso",
+    "slug": "fran-abreu-doces",
+    "seller_id": 19279,
+    "cnpj": "34123569000166",
+    "street": "Avenida Natalino João Brescansin",
+    "number": "1968",
+    "postcode": "78890000",
+    "categories": [
+      "salgados",
+      "doses diarias",
+      "os queridinhos da fran abreu",
+      "sobremesas para compartilhar",
+      "bolos comemore",
+      "bolos gelado",
+      "copos da felicidade",
+      "bolos de pote"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "fran-abreu-doces-shopping",
+    "branch_id": "fran-abreu-doces-shopping-sorriso",
+    "slug": "fran-abreu-doces-shopping",
+    "seller_id": 120831,
+    "cnpj": "34123569000247",
+    "street": "Av. Tancredo Neves",
+    "number": "543",
+    "postcode": "78896959",
+    "categories": [
+      "os queridinhos da fran abreu",
+      "doses diarias",
+      "bolos gelado",
+      "copos da felicidade",
+      "bolos de pote",
+      "bolos comemore",
+      "sobremesas para compartilhar"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "imperio-doces",
+    "branch_id": "imperio-doces-sorriso",
+    "slug": "imperio-doces",
+    "seller_id": 137838,
+    "cnpj": "64554158000196",
+    "street": "Rua Florida",
+    "number": "1701",
+    "postcode": "78890000",
+    "categories": [
+      "mini salgadinhos",
+      "caseirinhos",
+      "pastel",
+      "sucos",
+      "bolo no pote"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "isabella-doces-artesanais",
+    "branch_id": "isabella-doces-artesanais-sorriso",
+    "slug": "isabella-doces-artesanais",
+    "seller_id": 130977,
+    "cnpj": "54557458000175",
+    "street": "Rua Bom Sucesso",
+    "number": "393B",
+    "postcode": "78890000",
+    "categories": [
+      "brigadeiros",
+      "coxinhas de morango",
+      "morango do amor",
+      "cookies",
+      "cones trufados",
+      "palha italiana"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "italy-doces-cia",
+    "branch_id": "italy-doces-cia-sorriso",
+    "slug": "italy-doces-cia",
+    "seller_id": 145524,
+    "cnpj": "60218148000129",
+    "street": "Rua Vale Dourado",
+    "number": "729",
+    "postcode": "78895082",
+    "categories": [
+      "geladinho",
+      "doces"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "mais-que-pao",
+    "branch_id": "mais-que-pao-sorriso",
+    "slug": "mais-que-pao",
+    "seller_id": 113719,
+    "cnpj": "49788388000126",
+    "street": "Rua Mato Grosso",
+    "number": "669",
+    "postcode": "78890000",
+    "categories": [
+      "paes",
+      "salgados fritos",
+      "salgados assados",
+      "cento de salgados coqueteis",
+      "sanduiches",
+      "sonho",
+      "churros doce",
+      "bolo de pote fatia"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "pao-com-linguica-casanova",
+    "branch_id": "pao-com-linguica-casanova-sorriso",
+    "slug": "pao-com-linguica-casanova",
+    "seller_id": 21890,
+    "cnpj": "30666724000130",
+    "street": "Av. Luiz Amadeu Lodi",
+    "number": "536",
+    "postcode": "78890000",
+    "categories": [
+      "pao com linguica",
+      "cachorro quente",
+      "salame",
+      "linguica crua"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "pasta-parma",
+    "branch_id": "pasta-parma-sorriso",
+    "slug": "pasta-parma",
+    "seller_id": 103859,
+    "cnpj": "38598602000165",
+    "street": "Av. Blumenau Sul",
+    "number": "1030",
+    "postcode": "78890000",
+    "categories": [
+      "lasanhas congeladas",
+      "sucos 100 natural",
+      "sopa fresca",
+      "files parmegiana congelados",
+      "escondidinho congelados",
+      "paozinho congelado",
+      "massa caseira",
+      "pao de queijo",
+      "sobremesas",
+      "congelados",
+      "molhos prontos",
+      "marmita fit",
+      "focaccia italiana assada",
+      "pasteis"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "posto-e-conveniencia-avanti",
+    "branch_id": "posto-e-conveniencia-avanti-sorriso",
+    "slug": "posto-e-conveniencia-avanti",
+    "seller_id": 131569,
+    "cnpj": "27423855000181",
+    "street": "AVENIDA PERIMETRAL SUDOESTE",
+    "number": "3493",
+    "postcode": "78890000",
+    "categories": [
+      "mercearia",
+      "padaria",
+      "acai",
+      "sorvetes potes",
+      "biscoitos"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "so-massas-congeladas",
+    "branch_id": "so-massas-congeladas-sorriso",
+    "slug": "so-massas-congeladas",
+    "seller_id": 117001,
+    "cnpj": "46180034000106",
+    "street": "AVENIDA NATALINO JOAO BRESCANSIN",
+    "number": "3344",
+    "postcode": "78890000",
+    "categories": [
+      "massas congeladas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "tentacao-doces",
+    "branch_id": "tentacao-doces-sorriso",
+    "slug": "tentacao-doces",
+    "seller_id": 140616,
+    "cnpj": "66338429000100",
+    "street": "RUA NIAGARA",
+    "number": "1321",
+    "postcode": "78894208",
+    "categories": [
+      "cookies",
+      "pipocas",
+      "cones recheados",
+      "brownie recheado",
+      "salgado",
+      "mini vulcao caseirinho",
+      "bombom",
+      "bolo gelado"
+    ],
+    "allow_portions": true
   }
 ]
