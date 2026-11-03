@@ -1,10 +1,8 @@
 package br.com.sorriprecos
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,277 +11,266 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-private val Green=Color(0xFF176B48)
-private val Lime=Color(0xFFE3F7B1)
-private val light=lightColorScheme(primary=Green,onPrimary=Color.White,primaryContainer=Color(0xFFE3EEDC),onPrimaryContainer=Color(0xFF153F2F),secondaryContainer=Color(0xFFD8E9DC),onSecondaryContainer=Green,background=Color(0xFFF6F7F2),onBackground=Color(0xFF182B23),surface=Color(0xFFF6F7F2),surfaceVariant=Color(0xFFE8ECE3),onSurface=Color(0xFF182B23),onSurfaceVariant=Color(0xFF526259),outlineVariant=Color(0xFFD9E0D5))
-private val dark=darkColorScheme(primary=Color(0xFF9CD3AE),primaryContainer=Color(0xFF254C37),onPrimaryContainer=Color(0xFFE3F7B1),secondaryContainer=Color(0xFF254C37),onSecondaryContainer=Color(0xFFE3F7B1),background=Color(0xFF101B15),onBackground=Color(0xFFE5EDE4),surface=Color(0xFF101B15),surfaceVariant=Color(0xFF213027),onSurface=Color(0xFFE5EDE4),onSurfaceVariant=Color(0xFFBDCABC),outlineVariant=Color(0xFF35463A))
+@Composable fun App(store: LocalStore) {
+    var baseUrl by remember { mutableStateOf(store.get("api-url") ?: "http://127.0.0.1:8080") }
+    var demo by remember { mutableStateOf(store.get("demo") == "true") }
+    var contrast by remember { mutableStateOf(store.get("ui-contrast") == "true") }
+    var largeText by remember { mutableStateOf(store.get("ui-large-text") == "true") }
+    val repo = remember(baseUrl) { Repository(store, baseUrl) }
+    DisposableEffect(repo) { onDispose { repo.client.close() } }
+    var screen by remember { mutableStateOf("home") }
+    var query by remember { mutableStateOf("") }
+    var selected by remember { mutableStateOf<Product?>(null) }
+    var favorites by remember(repo) { mutableStateOf(repo.favorites()) }
+    var markets by remember { mutableStateOf<List<Supermarket>>(emptyList()) }
+    var catalog by remember { mutableStateOf(CatalogStatus()) }
+    var results by remember { mutableStateOf<List<Product>>(emptyList()) }
+    var nextAfter by remember { mutableStateOf<Long?>(null) }
+    var searching by remember { mutableStateOf(false) }
+    var sourceLoading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var offline by remember { mutableStateOf(false) }
+    var searchOffline by remember { mutableStateOf(false) }
+    var refresh by remember { mutableStateOf(0) }
+    var connectionDialog by remember { mutableStateOf(false) }
+    var marketDialog by remember { mutableStateOf<Supermarket?>(null) }
+    var paginationJob by remember { mutableStateOf<Job?>(null) }
+    val scope = rememberCoroutineScope()
+    val focus = LocalFocusManager.current
+    val uri = LocalUriHandler.current
+    val snack = remember { SnackbarHostState() }
 
-@Composable fun App(store:LocalStore) {
-    var baseUrl by remember {mutableStateOf(store.get("api-url")?:"http://127.0.0.1:8080")}
-    var demo by remember {mutableStateOf(store.get("demo")=="true")}
-    val repo=remember(baseUrl){Repository(store,baseUrl)}
-    DisposableEffect(repo){onDispose{repo.client.close()}}
-    var screen by remember {mutableStateOf("home")}
-    var query by remember {mutableStateOf("")}
-    var selected by remember {mutableStateOf<Product?>(null)}
-    var favorites by remember(repo){mutableStateOf(repo.favorites())}
-    var markets by remember {mutableStateOf<List<Supermarket>>(emptyList())}
-    var catalog by remember {mutableStateOf(CatalogStatus())}
-    var results by remember {mutableStateOf<List<Product>>(emptyList())}
-    var nextAfter by remember {mutableStateOf<Long?>(null)}
-    var searching by remember {mutableStateOf(false)}
-    var sourceLoading by remember {mutableStateOf(false)}
-    var error by remember {mutableStateOf<String?>(null)}
-    var offline by remember {mutableStateOf(false)}
-    var searchOffline by remember {mutableStateOf(false)}
-    var refresh by remember {mutableStateOf(0)}
-    var settings by remember {mutableStateOf(false)}
-    var paginationJob by remember {mutableStateOf<Job?>(null)}
-    val scope=rememberCoroutineScope()
-    val focus=LocalFocusManager.current
-
-    LaunchedEffect(repo,demo,refresh) {
-        sourceLoading=true;error=null
+    LaunchedEffect(repo, demo, refresh) {
+        sourceLoading = true; error = null
         try {
-            val status=repo.status();catalog=status.data
-            val sources=repo.markets(demo);markets=sources.data.items
-            offline=status.offline || sources.offline
-        } catch(e:CancellationException){throw e} catch(e:Exception){error=e.message} finally {sourceLoading=false}
+            val status = repo.status(); catalog = status.data
+            val sources = repo.markets(demo); markets = sources.data.items
+            offline = status.offline || sources.offline
+        } catch (e: CancellationException) { throw e }
+        catch (e: Exception) { error = e.message }
+        finally { sourceLoading = false }
     }
-    LaunchedEffect(query,demo,repo,refresh) {
+    LaunchedEffect(query, demo, repo, refresh) {
         paginationJob?.cancelAndJoin()
-        results=emptyList();nextAfter=null;searchOffline=false
-        if(query.trim().length<2){searching=false;return@LaunchedEffect}
-        searching=true;error=null
-        try {delay(350);val loaded=repo.search(query.trim(),demo);results=loaded.data.items;nextAfter=loaded.data.nextAfter;searchOffline=loaded.offline}
-        catch(e:CancellationException){throw e} catch(e:Exception){error=e.message} finally{searching=false}
+        results = emptyList(); nextAfter = null; searchOffline = false
+        if (query.trim().length < 2) { searching = false; return@LaunchedEffect }
+        searching = true; error = null
+        try {
+            delay(350)
+            val loaded = repo.search(query.trim(), demo)
+            results = loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline
+        } catch (e: CancellationException) { throw e }
+        catch (e: Exception) { error = e.message }
+        finally { searching = false }
     }
-    fun toggleFavorite(p:Product) {
-        favorites=if(favorites.any{it.id==p.id})favorites.filterNot{it.id==p.id} else favorites+p
+    fun favorite(p: Product) {
+        favorites = if (favorites.any { it.id == p.id }) favorites.filterNot { it.id == p.id } else favorites + p
         repo.saveFavorites(favorites)
     }
-    NavigationBackHandler(selected!=null || screen!="home" || query.isNotEmpty()) {
-        if(selected!=null)selected=null else if(screen!="home")screen="home" else query=""
+    fun navigate(destination: String) { selected = null; screen = destination; focus.clearFocus() }
+    fun search(value: String) { query = value; navigate("search") }
+    fun toggleDemo() { demo = !demo; store.put("demo", demo.toString()); query = ""; selected = null }
+    fun setLarge(value: Boolean) { largeText = value; store.put("ui-large-text", value.toString()) }
+    fun setContrast(value: Boolean) { contrast = value; store.put("ui-contrast", value.toString()) }
+    NavigationBackHandler(selected != null || screen != "home") {
+        if (selected != null) selected = null else navigate("home")
     }
-
-    MaterialTheme(colorScheme=if(isSystemInDarkTheme())dark else light) {
-        Scaffold(containerColor=MaterialTheme.colorScheme.background,
-            bottomBar={if(selected==null)NavigationBar(containerColor=MaterialTheme.colorScheme.surface) {
-                listOf(Triple("home","⌂","Início"),Triple("favorites","♡","Favoritos"),Triple("sources","≡","Fontes")).forEach { (id,icon,label)->
-                    NavigationBarItem(selected=screen==id,onClick={screen=id;focus.clearFocus()},icon={Text(icon,fontSize=25.sp)},label={Text(label)})
-                }
-            }}
-        ) { padding->
-            Column(Modifier.fillMaxSize().padding(padding)) {
-                Row(Modifier.fillMaxWidth().padding(horizontal=22.dp,vertical=14.dp),verticalAlignment=Alignment.CenterVertically) {
-                    if(selected!=null)TextButton(onClick={selected=null}){Text("‹ Voltar")} else SmileMark()
-                    Spacer(Modifier.width(10.dp))
-                    Column(Modifier.weight(1f)) {
-                        Text("SorriPreços",fontSize=23.sp,fontWeight=FontWeight.ExtraBold,letterSpacing=(-0.8).sp)
-                        if(selected==null)Text("SORRISO, MATO GROSSO",fontSize=9.sp,letterSpacing=1.5.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,fontWeight=FontWeight.SemiBold)
-                    }
-                    if(selected==null)TextButton(onClick={settings=true},modifier=Modifier.semantics{contentDescription="Configurar conexão"}){Text("Conexão",fontSize=12.sp)}
-                }
-                if(demo)Notice("MODO DEMO · Preços fictícios para testar o app",demo=true)
-                if(!demo && catalog.historicalProducts>0 && catalog.recentProducts==0)Notice("DADOS REAIS HISTÓRICOS · Procon-MT / março de 2026. Nenhuma oferta atual confirmada.")
-                if(selected!=null) {
-                    ComparisonScreen(repo,selected!!,favorites.any{it.id==selected!!.id},onFavorite={toggleFavorite(selected!!)},refresh=refresh,onRefresh={refresh++})
-                } else {
-                    if(offline || searchOffline)Notice("Offline · Mostrando dados salvos. Atualize antes de comprar.")
-                    when(screen) {
-                        "home"->LazyColumn(Modifier.fillMaxSize(),contentPadding=PaddingValues(start=22.dp,end=22.dp,bottom=24.dp),verticalArrangement=Arrangement.spacedBy(15.dp)) {
-                            item {
-                                Spacer(Modifier.height(13.dp))
-                                Text("Sua compra pode\ncustar menos.",fontSize=34.sp,lineHeight=37.sp,fontWeight=FontWeight.Bold,letterSpacing=(-1.2).sp)
-                                Text("Compare preços nos mercados de Sorriso",color=MaterialTheme.colorScheme.onSurfaceVariant,fontSize=14.sp,modifier=Modifier.padding(top=9.dp,bottom=22.dp))
-                                OutlinedTextField(value=query,onValueChange={query=it.take(100)},singleLine=true,label={Text("O que você procura?")},placeholder={Text("Ex.: arroz 5kg")},leadingIcon={Text("⌕",fontSize=28.sp)},trailingIcon={if(query.isNotEmpty())TextButton(onClick={query=""}){Text("Limpar")}},shape=RoundedCornerShape(16.dp),modifier=Modifier.fillMaxWidth(),keyboardOptions=KeyboardOptions(imeAction=ImeAction.Search),keyboardActions=KeyboardActions(onSearch={focus.clearFocus();refresh++}))
-                            }
-                            if(query.trim().length>=2) {
-                                item {Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically){Text("Resultados",fontWeight=FontWeight.Bold,fontSize=18.sp);TextButton(onClick={refresh++}){Text("Atualizar")}}}
-                                if(searching)item{LinearProgressIndicator(Modifier.fillMaxWidth())}
-                                if(error!=null)item{ErrorCard(error!!){refresh++}}
-                                if(!searching && results.isEmpty() && error==null)item{EmptyCard("Nenhum produto encontrado","Tente outro nome ou embalagem. As fontes ainda podem estar pendentes.")}
-                                items(results,key={it.id}) {p->ProductCard(p,favorites.any{it.id==p.id},onClick={selected=p;focus.clearFocus()},onFavorite={toggleFavorite(p)},offline=searchOffline)}
-                                if(nextAfter!=null)item{OutlinedButton(onClick={paginationJob=scope.launch {searching=true;try{val loaded=repo.search(query.trim(),demo,nextAfter!!);results=results+loaded.data.items;nextAfter=loaded.data.nextAfter;searchOffline=loaded.offline}catch(e:CancellationException){throw e}catch(e:Exception){error=e.message}finally{searching=false}}},enabled=!searching,modifier=Modifier.fillMaxWidth()){Text("Carregar mais")}}
-                            } else {
-                                item {Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){(if(!demo && catalog.historicalProducts>0)listOf("Chocolate","Lacta","Bacalhau") else listOf("Arroz 5kg","Café","Leite")).forEach{suggestion->SuggestionChip(onClick={query=suggestion},label={Text(suggestion)})}}}
-                                item {Surface(shape=RoundedCornerShape(20.dp),color=Green) {
-                                    Column(Modifier.padding(22.dp)) {
-                                        Text(if(demo)"EXPLORE O MVP" else if(catalog.realProducts>0)"REGISTROS REAIS · SORRISO-MT" else "PREÇOS COM ORIGEM",fontSize=10.sp,fontWeight=FontWeight.Bold,letterSpacing=1.4.sp,color=Lime)
-                                        Text(if(demo)"Compare. Favorite.\nTeste sem cadastro." else if(catalog.realProducts>0)"Registros reais.\nOrigem e data visíveis." else "Cada preço tem\numa filial e uma data.",fontSize=24.sp,lineHeight=29.sp,fontWeight=FontWeight.Bold,color=Color.White,modifier=Modifier.padding(vertical=13.dp))
-                                        Text(if(demo)"12 produtos de demonstração. Nenhum valor representa uma oferta real." else if(catalog.historicalProducts>0)"O arquivo público do Procon contém preços observados em março de 2026. Use para testar a busca; esses valores estão desatualizados." else "Estamos preparando as primeiras fontes autorizadas. Você já pode conhecer a experiência.",fontSize=13.sp,color=Color(0xFFD8E9DC),lineHeight=20.sp)
+    val density = LocalDensity.current
+    CompositionLocalProvider(LocalDensity provides Density(density.density, density.fontScale * if (largeText) 1.2f else 1f)) {
+        MaterialTheme(colorScheme = if (contrast) AppContrast else AppLight) {
+            PlatformAppearance(contrast)
+            Scaffold(
+                containerColor = MaterialTheme.colorScheme.background,
+                snackbarHost = { SnackbarHost(snack) },
+                topBar = {
+                    if (selected != null || screen != "home") AppToolbar(
+                        title = if (selected != null) "Comparar preços" else when (screen) {
+                            "search" -> "Resultados da busca"; "favorites" -> "Favoritos"; "sources" -> "Fontes e filiais"; else -> "Ajustes"
+                        },
+                        onBack = { if (selected != null) selected = null else navigate("home") },
+                        accessibility = selected != null, largeText = largeText, contrast = contrast,
+                        onText = { setLarge(it) }, onContrast = { setContrast(!contrast) }
+                    )
+                },
+                bottomBar = { if (selected == null) BottomNavigation(screen, ::navigate) }
+            ) { padding ->
+                Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
+                    if (screen != "home" || selected != null) Box(Modifier.padding(horizontal = 18.dp, vertical = 5.dp)) { DataDisclosure(demo, catalog) }
+                    if (selected != null) {
+                        ComparisonScreen(repo, selected!!, favorites.any { it.id == selected!!.id },
+                            onFavorite = { favorite(selected!!) }, refresh = refresh, onRefresh = { refresh++ })
+                    } else {
+                        if (offline || searchOffline) Notice("Offline · Mostrando dados salvos. Atualize antes de comprar.")
+                        when (screen) {
+                            "home" -> LazyColumn(contentPadding = PaddingValues(18.dp, 10.dp, 18.dp, 22.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                item {
+                                    Column(Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                                        CartMark(54.dp); Spacer(Modifier.height(6.dp)); Wordmark()
+                                        Text("Compare preços nos mercados\nde Sorriso-MT", textAlign = TextAlign.Center, fontSize = 14.sp, lineHeight = 19.sp, modifier = Modifier.padding(top = 6.dp))
                                     }
-                                }}
-                                item {Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically){Text("Cobertura transparente",fontSize=19.sp,fontWeight=FontWeight.Bold);TextButton(onClick={screen="sources"}){Text("Ver fontes ›")}}}
-                                item {Row(horizontalArrangement=Arrangement.spacedBy(10.dp)){Metric("${catalog.discoveredSupermarkets}","mapeados",Modifier.weight(1f));Metric("${catalog.importedSupermarkets}","com registros",Modifier.weight(1f));Metric("${catalog.realProducts}","produtos reais",Modifier.weight(1f))}}
-                                if(sourceLoading)item{LinearProgressIndicator(Modifier.fillMaxWidth())}
-                                if(error!=null)item{ErrorCard(error!!){refresh++}}
-                                item {Text(if(demo)"Ambiente de demonstração" else if(catalog.importedSupermarkets>0)"Fontes e registros históricos" else "Fontes em preparação",fontSize=13.sp,fontWeight=FontWeight.SemiBold,color=MaterialTheme.colorScheme.onSurfaceVariant)}
-                                items(markets.take(if(demo)3 else 4),key={it.id}) {MarketRow(it)}
-                                item {OutlinedButton(onClick={demo=!demo;store.put("demo",demo.toString());query="";selected=null},modifier=Modifier.fillMaxWidth()){Text(if(demo)"Sair da demonstração" else "Experimentar com dados DEMO")}}
-                                item {Text("Menor preço conhecido entre as fontes disponíveis. A cobertura da cidade ainda está em expansão.",fontSize=11.sp,lineHeight=17.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
+                                }
+                                item { HomeSearch(onClick = { navigate("search") }) }
+                                item { Suggestions(demo, catalog, ::search) }
+                                item { DataDisclosure(demo, catalog) }
+                                item {
+                                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                                        Text(if (demo) "Mercados de demonstração" else "Mercados de Sorriso", fontWeight = FontWeight.Bold, fontSize = 19.sp, modifier = Modifier.weight(1f))
+                                        TextButton(onClick = { navigate("sources") }) { Text("Fontes", fontSize = 12.sp) }
+                                    }
+                                    Text(if (demo) "Lojas fictícias para explorar o aplicativo" else "${catalog.discoveredSupermarkets} mapeados · ${catalog.importedSupermarkets} com registros", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                }
+                                if (sourceLoading) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
+                                if (error != null) item { ErrorCard(error!!) { refresh++ } }
+                                items((if(demo) markets.take(3) else listOf("delmoro", "sorriso", "sorrinorte", "machado", "casa-aurora", "delnorte").mapNotNull { id -> markets.find { it.id == id } }).chunked(3)) { row ->
+                                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                                        row.forEach { m -> MarketTile(m, Modifier.weight(1f)) { marketDialog = m } }
+                                        repeat(3-row.size) { Spacer(Modifier.weight(1f)) }
+                                    }
+                                }
+                                item { UpdateStrip(catalog, demo) { refresh++ } }
+                                item {
+                                    TextButton(onClick = { toggleDemo() }, modifier = Modifier.fillMaxWidth()) { Text(if (demo) "Sair da demonstração" else "Experimentar com dados DEMO", fontSize = 12.sp) }
+                                    Text("Cobertura em expansão. Consulte a origem e confirme os valores com a loja.", textAlign = TextAlign.Center, fontSize = 10.sp, lineHeight = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.fillMaxWidth())
+                                }
+                            }
+                            "search" -> LazyColumn(contentPadding = PaddingValues(18.dp, 10.dp, 18.dp, 20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                item { SearchField(query, onChange = { query = it.take(100) }, onSearch = { focus.clearFocus(); refresh++ }) }
+                                if (query.trim().length < 2) {
+                                    item { Text("Encontre o produto que você procura", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp)) }
+                                    item { Suggestions(demo, catalog, ::search) }
+                                } else {
+                                    item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                                        Text(if (searching) "Buscando produtos…" else "${results.size} produtos encontrados${if(nextAfter!=null)" nesta página" else ""}", fontSize = 12.sp)
+                                        IconButton(onClick = { refresh++ }, modifier = Modifier.size(36.dp).semantics { contentDescription = "Atualizar busca" }) { AppIcon(Glyph.Refresh, Modifier.size(18.dp)) }
+                                    } }
+                                    if (searching) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
+                                    if (error != null) item { ErrorCard(error!!) { refresh++ } }
+                                    if (!searching && results.isEmpty() && error == null) item { EmptyCard("Nenhum produto encontrado", "Tente outro nome ou embalagem. As fontes ainda podem estar pendentes.") }
+                                    items(results, key = { it.id }) { p -> ProductCard(p, favorites.any { it.id == p.id }, onClick = { selected = p; focus.clearFocus() }, onFavorite = { favorite(p) }, offline = searchOffline) }
+                                    if (nextAfter != null) item { OutlinedButton(onClick = {
+                                        paginationJob = scope.launch {
+                                            searching = true
+                                            try { val loaded = repo.search(query.trim(), demo, nextAfter!!); results += loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline }
+                                            catch (e: CancellationException) { throw e } catch (e: Exception) { error = e.message } finally { searching = false }
+                                        }
+                                    }, enabled = !searching, modifier = Modifier.fillMaxWidth()) { Text("Carregar mais") } }
+                                }
+                            }
+                            "favorites" -> LazyColumn(contentPadding = PaddingValues(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                item { Text("Sua lista de favoritos", fontSize = 23.sp, fontWeight = FontWeight.Bold); Text("Salvos neste aparelho, sem cadastro.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 6.dp, bottom = 8.dp)) }
+                                if (favorites.isEmpty()) item { EmptyCard("Guarde o que você compra", "Toque no coração de um produto para acompanhar os preços depois.") }
+                                items(favorites, key = { it.id }) { p -> ProductCard(p, true, onClick = { selected = p }, onFavorite = { favorite(p) }, offline = true) }
+                            }
+                            "sources" -> LazyColumn(contentPadding = PaddingValues(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                item { Text("De onde vêm os preços", fontSize = 23.sp, fontWeight = FontWeight.Bold); Text("${catalog.discoveredSupermarkets} estabelecimentos mapeados · ${catalog.discoveredBranches} filiais referenciadas", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 6.dp)) }
+                                item { Notice(if (demo) "Estas lojas são fictícias." else "Registros públicos históricos não significam integração atual com a loja. Confira a data e a origem de cada preço.") }
+                                item { TextButton(onClick = { refresh++ }) { AppIcon(Glyph.Refresh, Modifier.size(17.dp), MaterialTheme.colorScheme.primary); Spacer(Modifier.width(8.dp)); Text("Atualizar") } }
+                                if (sourceLoading) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
+                                if (error != null) item { ErrorCard(error!!) { refresh++ } }
+                                items(markets, key = { it.id }) { m -> MarketRow(m) { marketDialog = m } }
+                                item { OutlinedButton(onClick = { toggleDemo() }, modifier = Modifier.fillMaxWidth()) { Text(if (demo) "Ver fontes reais" else "Experimentar com dados DEMO") } }
+                            }
+                            else -> LazyColumn(contentPadding = PaddingValues(18.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                                item { Text("Do seu jeito", fontSize = 25.sp, fontWeight = FontWeight.Bold); Text("Mais conforto para comparar.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 5.dp)) }
+                                item { SettingsToggle("Texto maior", "Aumenta em 20% e respeita o tamanho do sistema.", largeText, ::setLarge) }
+                                item { SettingsToggle("Alto contraste", "Fundo escuro e cores com mais contraste.", contrast, ::setContrast) }
+                                item { SettingsLink("Fontes e filiais", "Veja a cobertura de Sorriso-MT.", Glyph.Cart) { navigate("sources") } }
+                                item { SettingsLink("Conexão", baseUrl, Glyph.Refresh) { connectionDialog = true } }
+                                item { SettingsToggle("Modo DEMO", "Produtos e preços fictícios, separados dos reais.", demo) { toggleDemo() } }
+                                item { EmptyCard("Feito para Sorriso", "Sem cadastro. Favoritos e preferências ficam neste aparelho. Registros históricos nunca são apresentados como ofertas atuais.") }
                             }
                         }
-                        "favorites"->LazyColumn(contentPadding=PaddingValues(22.dp),verticalArrangement=Arrangement.spacedBy(14.dp)) {
-                            item {Text("Sua lista de favoritos",fontSize=28.sp,fontWeight=FontWeight.Bold);Text("Salvos neste aparelho, sem cadastro.",color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=7.dp,bottom=10.dp))}
-                            if(favorites.isEmpty())item{EmptyCard("Guarde o que você compra","Toque no coração de um produto para acompanhar os preços depois.")}
-                            items(favorites,key={it.id}) {p->ProductCard(p,true,onClick={selected=p},onFavorite={toggleFavorite(p)},offline=true)}
-                        }
-                        "sources"->LazyColumn(contentPadding=PaddingValues(22.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
-                            item {Text("De onde vêm os preços",fontSize=28.sp,lineHeight=32.sp,fontWeight=FontWeight.Bold);Text("${catalog.discoveredSupermarkets} estabelecimentos mapeados · ${catalog.discoveredBranches} filiais referenciadas",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=10.dp))}
-                            item {Notice(if(demo)"Estas lojas são fictícias. Saia do DEMO para consultar o levantamento real." else "Registros públicos históricos não significam integração atual com a loja. Confira a data e a origem de cada preço.")}
-                            item {Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text(if(demo)"Fontes DEMO" else "Levantamento inicial",fontWeight=FontWeight.Bold);TextButton(onClick={refresh++}){Text("Atualizar")}}}
-                            if(sourceLoading)item{LinearProgressIndicator(Modifier.fillMaxWidth())}
-                            if(error!=null)item{ErrorCard(error!!){refresh++}}
-                            items(markets,key={it.id}) {MarketRow(it)}
-                            item {OutlinedButton(onClick={demo=!demo;store.put("demo",demo.toString());query=""},modifier=Modifier.fillMaxWidth()){Text(if(demo)"Ver fontes reais" else "Experimentar com dados DEMO")}}
-                        }
                     }
                 }
             }
+            if (connectionDialog) ConnectionDialog(baseUrl, onDismiss = { connectionDialog = false }, onSave = { baseUrl = it; store.put("api-url", it); query = ""; selected = null; connectionDialog = false; refresh++ })
+            marketDialog?.let { market ->
+                AlertDialog(onDismissRequest = { marketDialog = null }, title = { Text(market.name) }, text = { Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text("Sorriso-MT · ${market.branchCount} filial(is) referenciada(s)")
+                    Text(if (market.isDemo) "Loja fictícia de demonstração." else if (market.productCount > 0) "${market.productCount} produtos com registros. Última observação: ${age(market.lastCollectedAt)}. Histórico não confirma preço nem estoque atual." else "Coleta pendente. Ainda não há preços dessa loja disponíveis no aplicativo.", fontSize = 14.sp)
+                } }, confirmButton = { TextButton(onClick = { marketDialog = null }) { Text("Fechar") } }, dismissButton = {
+                    market.website?.let { site -> TextButton(onClick = { try { uri.openUri(site) } catch (_: Exception) { scope.launch { snack.showSnackbar("Não foi possível abrir o site") } } }) { Text("Abrir site") } }
+                })
+            }
         }
-        if(settings)ConnectionDialog(baseUrl,onDismiss={settings=false},onSave={baseUrl=it;store.put("api-url",it);query="";selected=null;settings=false;refresh++})
     }
 }
 
-@Composable private fun SmileMark() {
-    Canvas(Modifier.size(39.dp).clip(RoundedCornerShape(12.dp)).background(Green).padding(9.dp)) {
-        drawLine(Lime,Offset(size.width*.18f,size.height*.18f),Offset(size.width*.18f,size.height*.3f),strokeWidth=3.dp.toPx(),cap=StrokeCap.Round)
-        drawLine(Lime,Offset(size.width*.82f,size.height*.18f),Offset(size.width*.82f,size.height*.3f),strokeWidth=3.dp.toPx(),cap=StrokeCap.Round)
-        drawArc(Lime,10f,160f,false,Offset(0f,size.height*.2f),Size(size.width,size.height*.7f),style=Stroke(width=3.dp.toPx(),cap=StrokeCap.Round))
-    }
-}
-@Composable private fun Notice(text:String,demo:Boolean=false) {
-    Surface(color=if(demo)MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,modifier=Modifier.fillMaxWidth()) {
-        Text(text,modifier=Modifier.padding(horizontal=22.dp,vertical=10.dp),fontSize=11.sp,lineHeight=16.sp,fontWeight=if(demo)FontWeight.Bold else FontWeight.Normal)
-    }
-}
-@Composable private fun Metric(value:String,label:String,modifier:Modifier=Modifier) {
-    Surface(modifier=modifier,shape=RoundedCornerShape(14.dp),color=MaterialTheme.colorScheme.surfaceVariant) {
-        Column(Modifier.padding(13.dp)){Text(value,fontWeight=FontWeight.Bold,fontSize=25.sp);Text(label,fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
-    }
-}
-@Composable private fun EmptyCard(title:String,body:String) {
-    Surface(shape=RoundedCornerShape(16.dp),color=MaterialTheme.colorScheme.surfaceVariant,modifier=Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(20.dp)){Text(title,fontSize=17.sp,fontWeight=FontWeight.Bold);Text(body,fontSize=13.sp,lineHeight=20.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=8.dp))}
-    }
-}
-@Composable private fun ErrorCard(message:String,retry:()->Unit) {
-    Column {Text(message,color=MaterialTheme.colorScheme.error,fontSize=13.sp);TextButton(onClick=retry){Text("Tentar novamente")}}
-}
-@Composable private fun MarketRow(m:Supermarket) {
-    Row(Modifier.fillMaxWidth().padding(vertical=7.dp),verticalAlignment=Alignment.CenterVertically) {
-        Box(Modifier.size(9.dp).clip(RoundedCornerShape(5.dp)).background(if(m.productCount>0 && m.lastCollectedAt?.let{platformNow()-it<=172800}==true)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline))
-        Spacer(Modifier.width(12.dp))
-        Column(Modifier.weight(1f)){Text(m.name,fontSize=14.sp,fontWeight=FontWeight.SemiBold);Text("${m.branchCount} filial(is) · ${if(m.productCount>0)age(m.lastCollectedAt) else "Coleta pendente"}",fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
-        Text(if(m.isDemo)"DEMO" else if(m.integrationStatus=="authorized")"Integrado" else if(m.productCount>0)"Histórico" else "Pendente",fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-@Composable private fun ProductCard(p:Product,favorite:Boolean,onClick:()->Unit,onFavorite:()->Unit,offline:Boolean) {
-    Surface(shape=RoundedCornerShape(17.dp),color=MaterialTheme.colorScheme.surface,modifier=Modifier.fillMaxWidth().border(1.dp,MaterialTheme.colorScheme.outlineVariant,RoundedCornerShape(17.dp)).clickable(onClick=onClick)) {
-        Column(Modifier.padding(17.dp)) {
-            Row(verticalAlignment=Alignment.Top) {
-                Column(Modifier.weight(1f)) {Text(p.category.uppercase(),fontSize=9.sp,letterSpacing=1.sp,color=MaterialTheme.colorScheme.primary,fontWeight=FontWeight.Bold);Text(p.name,fontWeight=FontWeight.SemiBold,fontSize=17.sp,modifier=Modifier.padding(top=6.dp));Text("${p.brand} · ${p.pack} · ${p.presentation}",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=5.dp))}
-                TextButton(onClick=onFavorite,modifier=Modifier.size(46.dp).semantics{contentDescription=if(favorite)"Remover favorito ${p.name}" else "Favoritar ${p.name}"},contentPadding=PaddingValues(0.dp)){Text(if(favorite)"♥" else "♡",fontSize=26.sp)}
+@Composable private fun AppToolbar(title: String, onBack: () -> Unit, accessibility: Boolean, largeText: Boolean, contrast: Boolean, onText: (Boolean) -> Unit, onContrast: () -> Unit) {
+    Surface(color = MaterialTheme.colorScheme.background) {
+        Row(Modifier.fillMaxWidth().statusBarsPadding().padding(horizontal = 8.dp).heightIn(min = 56.dp), verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onBack, modifier = Modifier.semantics { contentDescription = "Voltar" }) { AppIcon(Glyph.Back) }
+            Text(title, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f).padding(horizontal = 2.dp))
+            if (accessibility) {
+                TextButton(onClick = { onText(false) }, contentPadding = PaddingValues(0.dp), modifier = Modifier.width(40.dp).semantics { contentDescription = "Tamanho de texto padrão" }) { Text("A", color = if (!largeText) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, fontSize = 16.sp) }
+                TextButton(onClick = { onText(true) }, contentPadding = PaddingValues(0.dp), modifier = Modifier.width(40.dp).semantics { contentDescription = "Aumentar texto" }) { Text("A+", fontSize = 17.sp, fontWeight = FontWeight.Bold, color = if (largeText) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface) }
+                IconButton(onClick = onContrast, modifier = Modifier.semantics { contentDescription = if (contrast) "Desativar alto contraste" else "Ativar alto contraste" }) { AppIcon(Glyph.Contrast, Modifier.size(21.dp)) }
             }
-            HorizontalDivider(Modifier.padding(vertical=13.dp),color=MaterialTheme.colorScheme.outlineVariant)
-            Row(verticalAlignment=Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text(if(!p.isDemo && p.minPriceCents==null && p.historicalBranchCount>0)"REGISTRO HISTÓRICO · DESATUALIZADO" else if(offline)"REFERÊNCIA SALVA" else if(p.isDemo)"MENOR PREÇO DEMO" else "MENOR PREÇO CONHECIDO",fontSize=9.sp,letterSpacing=.7.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
-                    val current=p.lastCollectedAt?.let{platformNow()-it<=172800}==true
-                    val reference=if(current && p.minPriceCents!=null)p.minPriceCents else if(p.historicalBranchCount>0)p.referencePriceCents else null
-                    Text(money(reference),fontWeight=FontWeight.Bold,fontSize=if(reference!=null)25.sp else 13.sp,color=MaterialTheme.colorScheme.primary,modifier=Modifier.padding(top=3.dp))
+        }
+    }
+}
+
+@Composable private fun BottomNavigation(screen: String, onNavigate: (String) -> Unit) {
+    Surface(color = MaterialTheme.colorScheme.surface, shadowElevation = 3.dp) {
+        Row(Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 12.dp, vertical = 7.dp), horizontalArrangement = Arrangement.SpaceAround) {
+            listOf(Triple("home", Glyph.Home, "Início"), Triple("search", Glyph.Search, "Buscar"), Triple("favorites", Glyph.Heart, "Favoritos"), Triple("settings", Glyph.Settings, "Ajustes")).forEach { (id, icon, label) ->
+                val active = screen == id || id == "settings" && screen == "sources"
+                Column(Modifier.weight(1f).clip(RoundedCornerShape(15.dp)).background(if (active) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface).selectable(selected = active, role = Role.Tab, onClick = { onNavigate(id) }).padding(vertical = 7.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    AppIcon(icon, Modifier.size(22.dp), if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, filled = active)
+                    Text(label, fontSize = 10.sp, color = if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, fontWeight = if (active) FontWeight.Bold else FontWeight.Normal, modifier = Modifier.padding(top = 3.dp))
                 }
-                Column(horizontalAlignment=Alignment.End){Text("Comparar ›",fontSize=12.sp,fontWeight=FontWeight.Bold);Text(if(p.branchCount>0)"${p.branchCount} filiais" else if(p.historicalBranchCount>0)"${p.historicalBranchCount} registros antigos" else "Sem preço recente",fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
             }
         }
     }
 }
 
-@Composable private fun ComparisonScreen(repo:Repository,selected:Product,favorite:Boolean,onFavorite:()->Unit,refresh:Int,onRefresh:()->Unit) {
-    var loaded by remember(selected.id,repo){mutableStateOf<Loaded<Comparison>?>(null)}
-    var loading by remember {mutableStateOf(true)}
-    var error by remember {mutableStateOf<String?>(null)}
-    var details by remember {mutableStateOf(false)}
-    val uri=LocalUriHandler.current
-    val snack=remember {SnackbarHostState()};val scope=rememberCoroutineScope()
-    LaunchedEffect(selected.id,repo,refresh) {
-        loading=true;error=null
-        try {loaded=repo.prices(selected.id)}catch(e:CancellationException){throw e}catch(e:Exception){error=e.message}finally{loading=false}
-    }
-    val product=loaded?.data?.product?:selected
-    val offers=loaded?.data?.items.orEmpty()
-    fun isCurrent(o:Offer)=o.status=="recent" && o.collectedAt?.let{platformNow()-it<=172800}==true && (o.validUntil==null || o.validUntil>=platformNow())
-    val best=offers.filter{isCurrent(it)}.mapNotNull{it.effectivePriceCents}.minOrNull()
-    Box(Modifier.fillMaxSize()) {
-        LazyColumn(contentPadding=PaddingValues(start=22.dp,end=22.dp,bottom=28.dp),verticalArrangement=Arrangement.spacedBy(13.dp)) {
-            if(loaded?.offline==true)item{Notice("Offline · Comparação salva. Preços podem ter mudado.")}
-            item {
-                Spacer(Modifier.height(8.dp))
-                Text(product.category.uppercase(),fontSize=10.sp,fontWeight=FontWeight.Bold,color=MaterialTheme.colorScheme.primary,letterSpacing=1.sp)
-                Text(product.name,fontSize=30.sp,lineHeight=35.sp,fontWeight=FontWeight.Bold,modifier=Modifier.padding(top=9.dp))
-                Text("${product.brand} · ${product.pack}",fontSize=16.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=8.dp))
-                Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){TextButton(onClick=onFavorite){Text(if(favorite)"♥ Salvo nos favoritos" else "♡ Salvar nos favoritos")};TextButton(onClick=onRefresh){Text("Atualizar")}}
-                Row(horizontalArrangement=Arrangement.spacedBy(10.dp)){FilterChip(selected=!details,onClick={details=false},label={Text("Comparar preços")});FilterChip(selected=details,onClick={details=true},label={Text("Detalhes")})}
-            }
-            if(loading)item{LinearProgressIndicator(Modifier.fillMaxWidth())}
-            if(error!=null)item{ErrorCard(error!!,onRefresh)}
-            if(details) {
-                item{EmptyCard("A mesma embalagem, sempre","${product.name}\nMarca: ${product.brand}\nConteúdo: ${product.pack}\nApresentação: ${product.presentation}\nGTIN: ${product.gtin?:"Não informado"}\n${if(product.isDemo)"Produto sintético de demonstração." else "Correspondência conservadora por GTIN ou nome, marca e embalagem."}")}
-                item{Text("Referências de origem",fontSize=18.sp,fontWeight=FontWeight.Bold)}
-                items(offers.filter{it.sourceUrl!=null},key={it.branchId}) {o->TextButton(onClick={try{uri.openUri(o.sourceUrl!!)}catch(_:Exception){scope.launch{snack.showSnackbar("Não foi possível abrir a fonte")}}}){Text("${o.supermarketName} ›")}}
-                if(offers.none{it.sourceUrl!=null})item{Text(if(product.isDemo)"Dados fictícios. Não há site de oferta real." else "Sem URLs de produtos informadas pelas fontes.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
-            } else {
-                item {Text(if(product.historicalBranchCount>0 && product.branchCount==0)"Registros históricos · não são ofertas atuais" else "${offers.count{isCurrent(it)}} filiais com preço recente",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant);Text(if(product.historicalBranchCount>0 && product.branchCount==0)"Observe a data de cada registro e confirme os valores com a loja." else "Menor preço conhecido. Cobertura incompleta.",fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=4.dp))}
-                items(offers,key={it.branchId}) {o->
-                    val recent=isCurrent(o);val lowest=recent && o.effectivePriceCents==best && best!=null
-                    Surface(shape=RoundedCornerShape(17.dp),color=if(lowest)MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,modifier=Modifier.fillMaxWidth().border(1.dp,if(lowest)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,RoundedCornerShape(17.dp))) {
-                        Column(Modifier.padding(18.dp)) {
-                            if(lowest)Text(if(o.isDemo)"MENOR PREÇO · DEMO" else "MENOR PREÇO CONHECIDO",fontSize=9.sp,letterSpacing=1.sp,fontWeight=FontWeight.Bold,color=MaterialTheme.colorScheme.primary,modifier=Modifier.padding(bottom=10.dp))
-                            Text(o.supermarketName,fontWeight=FontWeight.Bold,fontSize=17.sp)
-                            Text(o.branchName,fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=4.dp))
-                            Text(o.address,fontSize=11.sp,lineHeight=16.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=4.dp))
-                            val value=if(recent)o.effectivePriceCents else if(o.status=="stale" || o.status=="recent")o.priceCents else null
-                            Text(money(value),fontSize=if(value!=null)29.sp else 15.sp,fontWeight=FontWeight.Bold,modifier=Modifier.padding(top=14.dp),color=if(recent)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text(when {o.status=="unavailable"->"Indisponibilidade informada pela fonte";o.status=="stale" || (o.status=="recent" && !recent)->"Preço desatualizado · ${age(o.collectedAt)}";recent->age(o.collectedAt);else->"Sem informação atual"},fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=5.dp))
-                            if(!o.conditions.isNullOrBlank())Text(o.conditions,fontSize=12.sp,lineHeight=18.sp,modifier=Modifier.padding(top=10.dp))
-                            if(o.promotionalPriceCents!=null && !o.conditions.isNullOrBlank())Text("Preço condicionado: ${money(o.promotionalPriceCents)}",fontSize=12.sp,fontWeight=FontWeight.SemiBold,modifier=Modifier.padding(top=5.dp))
-                            if(o.sourceUrl!=null)TextButton(onClick={try{uri.openUri(o.sourceUrl)}catch(_:Exception){scope.launch{snack.showSnackbar("Não foi possível abrir a fonte")}}},contentPadding=PaddingValues(0.dp)){Text("Ver na fonte original ↗",fontSize=12.sp)}
-                        }
-                    }
-                }
-                if(loaded!=null && offers.isEmpty())item{EmptyCard("Preço não disponível","Este produto ainda não possui ofertas vinculadas às filiais.")}
-            }
+@Composable private fun Suggestions(demo: Boolean, catalog: CatalogStatus, search: (String) -> Unit) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        (if (!demo && catalog.historicalProducts > 0) listOf("Chocolate", "Lacta", "Bacalhau") else listOf("Arroz 5kg", "Café", "Leite")).forEach { label ->
+            SuggestionChip(onClick = { search(label) }, label = { Text(label, fontSize = 12.sp) }, shape = RoundedCornerShape(20.dp))
         }
-        SnackbarHost(snack,Modifier.align(Alignment.BottomCenter))
     }
 }
 
-@Composable private fun ConnectionDialog(current:String,onDismiss:()->Unit,onSave:(String)->Unit) {
-    var value by remember {mutableStateOf(current)}
-    val valid=value.trim().let{(it.startsWith("https://") || it.startsWith("http://127.0.0.1:") || it.startsWith("http://localhost:") || it.startsWith("http://10.0.2.2:")) && it.length in 10..300 && !it.contains('@') && !it.contains(' ')}
-    AlertDialog(onDismissRequest=onDismiss,title={Text("Conectar ao SorriPreços")},text={Column(verticalArrangement=Arrangement.spacedBy(12.dp)){Text("Use o endereço da API. No teste por USB, a conexão local é preparada com ADB.",fontSize=13.sp);OutlinedTextField(value=value,onValueChange={value=it},label={Text("Endereço da API")},singleLine=true);Text("Somente o SorriPreços recebe suas buscas. Favoritos ficam neste aparelho.",fontSize=11.sp)}},confirmButton={TextButton(onClick={onSave(value.trim().trimEnd('/'))},enabled=valid){Text("Salvar conexão")}},dismissButton={TextButton(onClick=onDismiss){Text("Cancelar")}})
+@Composable private fun SearchField(query: String, onChange: (String) -> Unit, onSearch: () -> Unit) {
+    val requester = remember { FocusRequester() }
+    LaunchedEffect(Unit) { if (query.isEmpty()) requester.requestFocus() }
+    OutlinedTextField(value = query, onValueChange = onChange, modifier = Modifier.fillMaxWidth().focusRequester(requester), singleLine = true,
+        placeholder = { Text("Produto, marca ou embalagem", fontSize = 13.sp) }, leadingIcon = { AppIcon(Glyph.Search, Modifier.size(20.dp)) },
+        trailingIcon = { if (query.isNotEmpty()) IconButton(onClick = { onChange("") }, modifier = Modifier.semantics { contentDescription = "Limpar busca" }) { AppIcon(Glyph.Close, Modifier.size(18.dp)) } },
+        shape = RoundedCornerShape(16.dp), keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search), keyboardActions = KeyboardActions(onSearch = { onSearch() }),
+        colors = OutlinedTextFieldDefaults.colors(unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant, focusedContainerColor = MaterialTheme.colorScheme.surface, unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant))
+}
+
+@Composable private fun ConnectionDialog(current: String, onDismiss: () -> Unit, onSave: (String) -> Unit) {
+    var value by remember { mutableStateOf(current) }
+    val valid = value.trim().let { (it.startsWith("https://") || it.startsWith("http://127.0.0.1:") || it.startsWith("http://localhost:") || it.startsWith("http://10.0.2.2:")) && it.length in 10..300 && !it.contains('@') && !it.contains(' ') }
+    AlertDialog(onDismissRequest = onDismiss, title = { Text("Conectar ao SorriPreços") }, text = { Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text("No teste por USB, use a conexão local preparada com ADB.", fontSize = 13.sp)
+        OutlinedTextField(value = value, onValueChange = { value = it }, label = { Text("Endereço da API") }, singleLine = true)
+        Text("Favoritos ficam neste aparelho.", fontSize = 11.sp)
+    } }, confirmButton = { TextButton(onClick = { onSave(value.trim().trimEnd('/')) }, enabled = valid) { Text("Salvar conexão") } }, dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } })
 }

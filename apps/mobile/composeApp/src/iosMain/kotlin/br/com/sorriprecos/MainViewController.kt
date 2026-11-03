@@ -24,3 +24,5 @@ actual fun formatDate(seconds:Long):String {
     val formatter=NSDateFormatter();formatter.dateFormat="dd/MM/yyyy 'às' HH:mm"
     return formatter.stringFromDate(NSDate(timeIntervalSince1970=seconds.toDouble()))
 }
+
+@Composable actual fun PlatformAppearance(highContrast:Boolean) { /* System bars follow the host UIViewController. */ }

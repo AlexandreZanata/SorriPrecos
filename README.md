@@ -49,6 +49,10 @@ python3 scripts/android_real_smoke.py SERIAL_DO_CELULAR
 
 O teste usa somente a interface do SorriPreços e remove temporariamente o encaminhamento USB da porta 8080 para validar offline. Ele restaura o encaminhamento ao terminar; não desliga Wi-Fi/dados móveis. Evidências ficam em `artifacts/android-smoke/`. Relato e limitações: [TESTING.md](docs/TESTING.md).
 
+## Interface e acessibilidade
+
+O aplicativo usa o visual claro da referência, com carrinho, grade de mercados, busca em cartões e comparação compacta. Ajustes oferece texto maior e alto contraste, com preferências persistentes. Fotos indisponíveis usam ilustrações identificadas; não há gráfico com dados inventados. Detalhes e validação em [UI.md](docs/UI.md).
+
 ## Preparar o iOS
 
 Targets arm64 para aparelho e simulador Apple Silicon, cliente Darwin e persistência NSUserDefaults estão preparados. O shell Swift e a configuração XcodeGen estão em [apps/mobile/iosApp](apps/mobile/iosApp/README.md). Gere o projeto em um Mac com Xcode e configure a assinatura. **Build iOS não foi validado em Linux.**

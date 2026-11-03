@@ -14,6 +14,7 @@ interface LocalStore { fun get(key:String):String?; fun put(key:String,value:Str
 expect fun platformClient():HttpClient
 expect fun platformNow():Long
 expect fun formatDate(seconds:Long):String
+@Composable expect fun PlatformAppearance(highContrast:Boolean)
 @Composable expect fun NavigationBackHandler(enabled:Boolean,onBack:()->Unit)
 
 val codec=Json { ignoreUnknownKeys=true }

@@ -38,3 +38,7 @@ python3 scripts/android_real_smoke.py SERIAL
 Use o modo real, chip Lacta, para os registros históricos. O endereço no app é `http://127.0.0.1:8080`; mantenha backend e USB ativos. APK local em `artifacts/sorriprecos-0.1.0-debug.apk`.
 
 Para oferecer comparação de preços atuais, falta uma origem local verificável com filial, validade e condições de acesso, ou arquivo/feed autorizado da loja. Também permanecem domínio/VPS/HTTPS, carga sustentada, alinhamento lint/AGP e assinatura release para lançamento público. Não foi implantada VPS.
+
+## Revisão de interface
+
+A interface foi aproximada da referência fornecida pelo usuário, com tema claro, marca com carrinho, grade de mercados, cartões com ilustrações, quatro abas e comparação compacta. Texto maior e alto contraste persistem entre reinícios. Nenhum preço, foto ou gráfico fictício foi apresentado como dado real. APK atualizado no celular físico: nove checks de UI, nove de regressão DEMO e cinco testes Kotlin passaram. Evidências e limitações em [UI.md](UI.md) e [TESTING.md](TESTING.md).

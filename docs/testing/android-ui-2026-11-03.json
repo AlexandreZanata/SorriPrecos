@@ -1,0 +1,44 @@
+{
+  "tested_at": "2026-11-03T14:44:32.862113+00:00",
+  "device_model": "2311DRK48G",
+  "android": "16",
+  "tests": [
+    {
+      "name": "Início com marca, grade de mercados, quatro abas e aviso histórico",
+      "status": "passed"
+    },
+    {
+      "name": "Cartão de mercado abre cobertura e procedência reais",
+      "status": "passed"
+    },
+    {
+      "name": "Busca separada com miniaturas identificadas como ilustrações e preço histórico",
+      "status": "passed"
+    },
+    {
+      "name": "Comparação compacta mostra duas filiais sem promover registro antigo como oferta",
+      "status": "passed"
+    },
+    {
+      "name": "Linha da filial expande endereço, data, condições e origem",
+      "status": "passed"
+    },
+    {
+      "name": "A+ aumenta o texto e reorganiza o conteúdo sem ocultar controles",
+      "status": "passed"
+    },
+    {
+      "name": "Controle de alto contraste muda a aparência e informa o estado",
+      "status": "passed"
+    },
+    {
+      "name": "Preferências de acessibilidade persistem ao reiniciar o aplicativo",
+      "status": "passed"
+    },
+    {
+      "name": "Conexão local preservada e aplicativo devolvido ao início claro",
+      "status": "passed"
+    }
+  ],
+  "status": "passed"
+}

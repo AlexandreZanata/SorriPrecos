@@ -1,0 +1,43 @@
+{
+  "device_model": "2311DRK48G",
+  "android": "16",
+  "tests": [
+    {
+      "name": "Inicialização e identificação explícita de DEMO",
+      "status": "passed"
+    },
+    {
+      "name": "Busca API por arroz 5kg sem misturar embalagem de 1kg",
+      "status": "passed"
+    },
+    {
+      "name": "Comparação ordenada com filial e data",
+      "status": "passed"
+    },
+    {
+      "name": "Favorito salvo localmente",
+      "status": "passed"
+    },
+    {
+      "name": "Favorito persiste após reiniciar o processo",
+      "status": "passed"
+    },
+    {
+      "name": "Detalhes e natureza sintética do produto",
+      "status": "passed"
+    },
+    {
+      "name": "Comparação em cache identificada offline sem alterar Wi-Fi/dados do aparelho",
+      "status": "passed"
+    },
+    {
+      "name": "Reconexão ao backend após restaurar USB",
+      "status": "passed"
+    },
+    {
+      "name": "Botão Voltar do Android",
+      "status": "passed"
+    }
+  ],
+  "status": "passed"
+}

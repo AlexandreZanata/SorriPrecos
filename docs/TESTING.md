@@ -30,7 +30,7 @@ Os **9 checks de interface passaram**:
 8. Reconexão e atualização após restaurar USB.
 9. Botão Voltar do Android retorna à tela anterior do aplicativo.
 
-O teste offline removeu temporariamente apenas a rota reversa `tcp:8080`; não alterou Wi-Fi, dados móveis ou configurações do aparelho. O encaminhamento foi restaurado e o app foi deixado conectado à API. A rodada posterior utiliza o modo real histórico. Tema escuro foi inspecionado visualmente; o tema claro está implementado conforme o sistema, mas não teve renderização separadamente validada no aparelho.
+O teste offline removeu temporariamente apenas a rota reversa `tcp:8080`; não alterou Wi-Fi, dados móveis ou configurações do aparelho. O encaminhamento foi restaurado e o app foi deixado conectado à API. A rodada posterior utiliza o modo real histórico. A revisão visual posterior usa tema claro por padrão e alto contraste selecionável; sua validação no aparelho está descrita em UI.md e no relatório específico abaixo.
 
 Relatório de checks preservado em `docs/testing/android-2026-11-03.json`. Capturas locais em `artifacts/android-smoke/`: `home.png`, `search.png`, `comparison.png`, `favorites.png`, `details.png`, `offline.png` e `reconnected.png`. Execute `scripts/android_smoke.py SERIAL` para repetir.
 
@@ -49,3 +49,9 @@ Backup online e restauração para um novo arquivo foram executados usando `scri
 Seis cenários de benchmark combinaram 10 mil/50 mil/100 mil produtos com uma/três ofertas. Foram medidas importação, banco, RSS, CPU, RPS e p50/p95/p99 em leitura e com escritor iniciado em paralelo. Resultados e limitações em PERFORMANCE.md; nenhum teste gerou requisição a supermercado real.
 
 Não validados: build iOS/macOS/Xcode; feed varejista atual; rede móvel contra VPS/HTTPS; assinatura release/lojas de aplicativos; carga sustentada e restauração de base de produção. Nenhuma VPS foi implantada.
+
+## Revisão visual baseada na referência
+
+APK recompilado e instalado no mesmo celular físico. A interface usa tema claro por padrão, marca com carrinho, quatro abas, grade de mercados, busca em cartões e comparação compacta com expansão de procedência. A+ aumenta o texto respeitando a escala do sistema; contraste e tamanho persistem ao reiniciar. Ilustrações genéricas são identificadas; não há série diária simulada.
+
+Checks de UI em `scripts/android_ui_smoke.py`; evidência em `docs/testing/android-ui-2026-11-03.json` e capturas locais `artifacts/android-ui/`. A regressão DEMO foi repetida nesta revisão, com relatório em `docs/testing/android-ui-demo-2026-11-03.json`. Passaram nove checks de interface e os nove checks da regressão DEMO, além dos cinco testes Kotlin. As capturas de início, busca, comparação, texto maior, contraste e ajustes foram inspecionadas visualmente. Detalhes de implementação e limites em [UI.md](UI.md).

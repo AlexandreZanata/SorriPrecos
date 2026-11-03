@@ -1,6 +1,10 @@
 package br.com.sorriprecos
 
+import android.app.Activity
 import android.os.Bundle
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,3 +37,13 @@ actual fun platformClient()=HttpClient(CIO) {install(HttpTimeout){requestTimeout
 actual fun platformNow()=System.currentTimeMillis()/1000
 @Composable actual fun NavigationBackHandler(enabled:Boolean,onBack:()->Unit) {BackHandler(enabled,onBack)}
 actual fun formatDate(seconds:Long)=SimpleDateFormat("dd/MM/yyyy 'às' HH:mm",Locale.forLanguageTag("pt-BR")).format(Date(seconds*1000))
+
+@Composable actual fun PlatformAppearance(highContrast:Boolean) {
+    val view=LocalView.current
+    val window=(view.context as? Activity)?.window
+    SideEffect { window?.let {
+        val controller=WindowCompat.getInsetsController(it,view)
+        controller.isAppearanceLightStatusBars=!highContrast
+        controller.isAppearanceLightNavigationBars=!highContrast
+    } }
+}
