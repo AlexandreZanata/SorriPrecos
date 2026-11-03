@@ -320,3 +320,25 @@ curl -fsS -H 'Content-Type: application/json' \
        retirada: [.logisticsInfo[] | {itemIndex, pontos: [.slas[] |
          select(.deliveryChannel=="pickup-in-point") | .pickupPointId]}]}'
 ```
+
+#### Localizador público Drogasil por município
+
+O GET de `/nossas-lojas?search=Sorriso` retornou HTTP 200. A página lista três farmácias e fornece o mesmo conjunto no estado Next.js `props.pageProps.storesData.items`, com `cityName=SORRISO` e `regionId=MT`. O localizador da Drogaria Raia retornou uma lista vazia para a mesma consulta. Os números abaixo são IDs do localizador, separados dos números de CNPJ.
+
+```sh
+curl -fsS 'https://www.drogasil.com.br/nossas-lojas?search=Sorriso' |
+  python3 -c 'import json, re, sys
+html = sys.stdin.read()
+m = re.search(r"<script\b[^>]*\bid=\"__NEXT_DATA__\"[^>]*>(.*?)</script>", html, re.S)
+rows = json.loads(m[1])["props"]["pageProps"]["storesData"]["items"]
+for row in rows:
+    a = row["address"]
+    if (a["cityName"], a["regionId"]) == ("SORRISO", "MT"):
+        print(row["id"], row["fantasyName"], a["street"], a["number"], a["postcode"])'
+```
+
+- **Sorriso 1 · ID 3034.** Avenida Blumenau, 2995, CEP 78890-168. Endereço coincide com o CNPJ ativo **61.585.865/2284-11** no OpenCNPJ.
+- **Sorriso 2 · ID 3852.** Avenida Natalino João Brescansin, 488. Logradouro e número coincidem com **61.585.865/2873-45**. O localizador informa CEP 78896-071, também exibido no LogMed, e o snapshot cadastral informa 78896-072. [LogMed](https://www.logmed.org.br/arquivos/atuais/pontos-de-descarte-29-04-2025.pdf)
+- **Sorriso 3 · ID 5635.** Avenida Tancredo Neves, 2942, CEP 78890-143. Endereço coincide com o CNPJ ativo **61.585.865/4134-05** no OpenCNPJ.
+
+O GET do SKU **1268912** também retornou HTTP 200. O JSON-LD anunciou R$ 12,59 e `InStock`, mas sem ID de filial. No estado Next.js do mesmo HTML, `productData.price=0` e `productData.seller=null`. Nenhum desses valores comprova preço ou disponibilidade das três unidades locais. A associação entre SKU e filial no fluxo público de retirada permanece pendente. [Produto testado](https://www.drogasil.com.br/colgate-creme-dental-total-anti-tartaro-90g-1268912.html) · [Guia de retirada](https://www.drogasil.com.br/compre-retire)
