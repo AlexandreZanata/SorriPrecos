@@ -342,3 +342,14 @@ for row in rows:
 - **Sorriso 3 · ID 5635.** Avenida Tancredo Neves, 2942, CEP 78890-143. Endereço coincide com o CNPJ ativo **61.585.865/4134-05** no OpenCNPJ.
 
 O GET do SKU **1268912** também retornou HTTP 200. O JSON-LD anunciou R$ 12,59 e `InStock`, mas sem ID de filial. No estado Next.js do mesmo HTML, `productData.price=0` e `productData.seller=null`. Nenhum desses valores comprova preço ou disponibilidade das três unidades locais. A associação entre SKU e filial no fluxo público de retirada permanece pendente. [Produto testado](https://www.drogasil.com.br/colgate-creme-dental-total-anti-tartaro-90g-1268912.html) · [Guia de retirada](https://www.drogasil.com.br/compre-retire)
+
+#### Ultra Popular e identidade do vendedor online
+
+A página institucional respondeu HTTP 200 e apresenta o localizador por estado, cidade e bairro. O script vinculado ao formulário usa `https://www.farmarcas.com.br/sbi/ws/ufs` e `https://www.farmarcas.com.br/sbi/ws/lojas` com credencial estática de rede. Os GETs sem esse cabeçalho devolveram HTTP 401. O localizador é evidência do fluxo oficial, mas as respostas autenticadas e os preços por filial não foram coletados. [Site oficial](https://www.drogariasultrapopular.com.br/) · [FAQ do localizador](https://www.drogariasultrapopular.com.br/perguntas-frequentes/)
+
+- **Blumenau, 1101 · 10.341.045/0016-60.** CNPJ ativo, CEP 78894-357, Sorriso-MT no OpenCNPJ.
+- **Natalino João Brescansin, 1075 · 10.341.045/0017-40.** CNPJ ativo, CEP 78896-015, Sorriso-MT no OpenCNPJ. A ficha externa usa o mesmo número e indica sala 02. [Ficha externa](https://www.solutudo.com.br/empresas/mt/sorriso/farmacias/drogaria-ultrapopular-23663200)
+- **Tancredo Neves, 1439 · 10.341.045/0018-21.** CNPJ ativo, CEP 78890-032, Sorriso-MT no OpenCNPJ.
+- **Natalino João Brescansin, 936**, e **Tancredo Neves, 2053** aparecem em diretório de terceiros. A triagem de CNPJs ativos não encontrou correspondência exata nesses endereços. Identidade atual e catálogo pendentes. [Diretório consultado](https://www.lojas24.com/sorriso/ultra-popular/)
+
+Uma vitrine de nome semelhante, `pharmaultrapopular.com`, declara que o CNPJ **69.148.214/0001-06** responde pelas vendas. A consulta no OpenCNPJ retornou Curitiba-PR. Os preços dessa vitrine não foram atribuídos a nenhuma filial de Sorriso. [Página do vendedor](https://pharmaultrapopular.com/)
