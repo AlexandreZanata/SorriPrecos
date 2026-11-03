@@ -32,6 +32,8 @@ pub struct ImportRow {
     pub available: Option<bool>,
     #[serde(default)]
     pub source_url: Option<String>,
+    #[serde(default)]
+    pub photo_source_url: Option<String>,
     pub collected_at: i64,
     #[serde(default)]
     pub valid_until: Option<i64>,
@@ -318,6 +320,21 @@ pub(crate) async fn import_in_transaction(
             sp.get::<i64, _>("product_id") == pid && sp.get::<String, _>("source_kind") == kind,
             "código de origem mudou de produto; revisão manual necessária"
         );
+        if kind == "retail"
+            && !demo
+            && let Some(photo) = r
+                .photo_source_url
+                .as_deref()
+                .and_then(crate::photos::trusted_url)
+        {
+            sqlx::query(
+                "UPDATE products SET photo_source_url=? WHERE id=? AND photo_source_url IS NULL",
+            )
+            .bind(photo.as_str())
+            .bind(pid)
+            .execute(&mut **tx)
+            .await?;
+        }
         let sid: i64 = sp.get("id");
         let previous=sqlx::query("SELECT id,price_cents,promotional_price_cents,collected_at FROM offers WHERE source_product_id=? AND branch_id=?").bind(sid).bind(&r.branch_id).fetch_optional(&mut **tx).await?;
         if previous
@@ -358,9 +375,10 @@ pub struct Product {
     pub branch_count: i64,
     pub reference_price_cents: Option<i64>,
     pub historical_branch_count: i64,
+    pub photo_path: Option<String>,
 }
 
-pub const PRODUCT_FIELDS: &str = "p.id,p.gtin,p.name,p.brand,p.quantity,p.unit,p.presentation,p.category,p.is_demo, MIN(CASE WHEN o.available=1 AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN CASE WHEN o.offer_type IN ('regular','promotion') AND COALESCE(o.conditions,'')='' THEN COALESCE(o.promotional_price_cents,o.price_cents) ELSE o.price_cents END END) AS min_price_cents,MAX(o.collected_at) AS last_collected_at, COUNT(DISTINCT CASE WHEN o.available=1 AND o.price_cents IS NOT NULL AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN o.branch_id END) AS branch_count, MIN(CASE WHEN o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.price_cents END) AS reference_price_cents, COUNT(DISTINCT CASE WHEN o.price_cents IS NOT NULL AND o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.branch_id END) AS historical_branch_count";
+pub const PRODUCT_FIELDS: &str = "p.id,p.gtin,p.name,p.brand,p.quantity,p.unit,p.presentation,p.category,p.is_demo, CASE WHEN p.photo_source_url IS NOT NULL THEN '/v1/products/' || p.id || '/photo' END AS photo_path, MIN(CASE WHEN o.available=1 AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN CASE WHEN o.offer_type IN ('regular','promotion') AND COALESCE(o.conditions,'')='' THEN COALESCE(o.promotional_price_cents,o.price_cents) ELSE o.price_cents END END) AS min_price_cents,MAX(o.collected_at) AS last_collected_at, COUNT(DISTINCT CASE WHEN o.available=1 AND o.price_cents IS NOT NULL AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN o.branch_id END) AS branch_count, MIN(CASE WHEN o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.price_cents END) AS reference_price_cents, COUNT(DISTINCT CASE WHEN o.price_cents IS NOT NULL AND o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.branch_id END) AS historical_branch_count";
 
 pub async fn search(
     pool: &SqlitePool,
@@ -383,6 +401,96 @@ pub async fn search_scope(
     if fts.is_empty() {
         return Ok(vec![]);
     }
+    let products =
+        search_matches(pool, &fts, q, pack.as_ref(), limit, after, demo, historical).await?;
+    if !products.is_empty() || q.chars().all(|c| c.is_ascii_digit() || c.is_whitespace()) {
+        return Ok(products);
+    }
+    if after > 0
+        && !search_matches(pool, &fts, q, pack.as_ref(), 1, 0, demo, historical)
+            .await?
+            .is_empty()
+    {
+        return Ok(products);
+    }
+    let corrected = fuzzy_query(pool, normalize::search_parts(q).0).await?;
+    if corrected == fts {
+        return Ok(products);
+    }
+    search_matches(
+        pool,
+        &corrected,
+        q,
+        pack.as_ref(),
+        limit,
+        after,
+        demo,
+        historical,
+    )
+    .await
+}
+
+async fn fuzzy_query(pool: &SqlitePool, words: &str) -> Result<String> {
+    let normalized = normalize::text(words);
+    let tokens: Vec<_> = normalized.split_whitespace().take(8).collect();
+    if !tokens
+        .iter()
+        .any(|word| word.len() >= 4 && word.chars().all(char::is_alphabetic))
+    {
+        return Ok(normalize::query_words(words));
+    }
+    let vocabulary = sqlx::query_as::<_, (String, i64)>(
+        "SELECT term, SUM(doc) FROM products_vocabulary WHERE col IN ('name','brand') GROUP BY term",
+    ).fetch_all(pool).await?;
+    let terms: Vec<_> = tokens
+        .iter()
+        .map(|word| {
+            let exact = normalize::query_words(word);
+            let size = word.chars().count();
+            if size < 4 || !word.chars().all(char::is_alphabetic) {
+                return exact;
+            }
+            let threshold = if size >= 7 { 2 } else { 1 };
+            let mut candidates: Vec<_> = vocabulary
+                .iter()
+                .filter_map(|(term, docs)| {
+                    if term == word
+                        || !term.chars().all(char::is_alphabetic)
+                        || size.abs_diff(term.chars().count()) > threshold
+                    {
+                        return None;
+                    }
+                    let distance = strsim::osa_distance(word, term);
+                    (distance <= threshold).then_some((distance, std::cmp::Reverse(*docs), term))
+                })
+                .collect();
+            candidates.sort_unstable();
+            let alternatives = candidates
+                .iter()
+                .take(4)
+                .map(|(_, _, term)| normalize::query_words(term))
+                .collect::<Vec<_>>();
+            if alternatives.is_empty() {
+                exact
+            } else {
+                format!("({exact} OR {})", alternatives.join(" OR "))
+            }
+        })
+        .collect();
+    Ok(terms.join(" AND "))
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn search_matches(
+    pool: &SqlitePool,
+    fts: &str,
+    q: &str,
+    pack: Option<&(i64, String)>,
+    limit: i64,
+    after: i64,
+    demo: bool,
+    historical: bool,
+) -> Result<Vec<Product>> {
     let kind = if historical {
         "public_report"
     } else {
@@ -396,7 +504,7 @@ pub async fn search_scope(
     } else {
         (
             "SELECT p.id FROM products_fts f JOIN products p ON p.id=f.rowid WHERE products_fts MATCH ?",
-            fts,
+            fts.to_owned(),
         )
     };
     let pack_filter = if pack.is_some() {

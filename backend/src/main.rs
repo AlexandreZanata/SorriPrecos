@@ -188,6 +188,7 @@ async fn main() -> Result<()> {
                             conditions: None,
                             available: Some(true),
                             source_url: None,
+                            photo_source_url: None,
                             collected_at: now(),
                             valid_until: None,
                             source_city: Some("Sorriso".into()),

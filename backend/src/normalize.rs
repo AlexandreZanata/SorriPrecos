@@ -89,18 +89,16 @@ pub fn pack_tokens(q: i64, u: &str) -> String {
 
 // Aliases are for discovery. Product identity and price aggregation keep their own keys.
 pub fn search_terms(query: &str) -> (String, Option<(i64, String)>) {
+    let (words, pack) = search_parts(query);
+    (query_words(words), pack)
+}
+
+pub(crate) fn search_parts(query: &str) -> (&str, Option<(i64, String)>) {
     use std::sync::LazyLock;
     static SIZE: LazyLock<regex::Regex> = LazyLock::new(|| {
         regex::Regex::new(r"(?i)\s+(\d+(?:[.,]\d+)?)\s*(kg|quilos?|g|gramas?|ml|l|litros?)\s*$")
             .unwrap()
     });
-    const ALIASES: &[&[&str]] = &[
-        &["mandioca", "aipim", "macaxeira"],
-        &["mucarela", "mussarela", "mozarela"],
-        &["acucar", "assucar"],
-        &["picanha gril", "picanha grill"],
-        &["catchup", "ketchup"],
-    ];
     let query = query.trim();
     let mut words = query;
     let mut pack = None;
@@ -133,6 +131,17 @@ pub fn search_terms(query: &str) -> (String, Option<(i64, String)>) {
             }
         }
     }
+    (words, pack)
+}
+
+pub(crate) fn query_words(words: &str) -> String {
+    const ALIASES: &[&[&str]] = &[
+        &["mandioca", "aipim", "macaxeira"],
+        &["mucarela", "mussarela", "mozarela"],
+        &["acucar", "assucar"],
+        &["picanha gril", "picanha grill"],
+        &["catchup", "ketchup"],
+    ];
     let normalized = text(words);
     let mut tokens = normalized.split_whitespace().take(8).peekable();
     let mut terms = Vec::new();
@@ -153,7 +162,7 @@ pub fn search_terms(query: &str) -> (String, Option<(i64, String)>) {
             terms.push(format!(r#""{word}"*"#));
         }
     }
-    (terms.join(" AND "), pack)
+    terms.join(" AND ")
 }
 
 fn alias_query(aliases: &[&str]) -> String {

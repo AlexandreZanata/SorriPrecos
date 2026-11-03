@@ -336,9 +336,9 @@
     },
     {
       "market": "panificadora-pimpao",
-      "status": "pending_public_catalogue",
+      "status": "enabled_via_aiqfome",
       "checked_url": "https://www.panificadorapimpao.com.br/",
-      "reason": "Página institucional com links legados para cardápio. Fonte atual de preços pendente de validação."
+      "reason": "Página institucional com cardápio legado. O catálogo atual foi confirmado na entrada pim-pao."
     },
     {
       "market": "panificadora-doce-mel",
@@ -348,6 +348,82 @@
       "city_id": 4430,
       "public_page": "https://aiqfome.com/MT/sorriso/panificadora-doce-mel",
       "interval_seconds": 600
+    },
+    {
+      "market": "pim-pao",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/pim-pao",
+      "seller_id": 73074,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "panificadora-sousa",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/panificadora-sousa",
+      "seller_id": 112700,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "panificadora-nossa-senhora-aparecida",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/panificadora-nossa-senhora-aparecida",
+      "seller_id": 70842,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "dona-diva-emporio-artesanal",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/dona-diva-emporio-artesanal",
+      "seller_id": 95816,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "ponto-do-churrassco",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/ponto-do-churrassco",
+      "seller_id": 146727,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "padaria-popular",
+      "platform": "aiqfome",
+      "status": "pending",
+      "public_page": "https://aiqfome.com/MT/sorriso/padaria-popular",
+      "reason": "HTML indexado mostra preços, mas GET direto devolveu objeto de vendedor e menu vazios"
+    },
+    {
+      "market": "sol-e-lua-paes-artesanais",
+      "status": "pending",
+      "public_page": "https://panificadorasolelua.ind.br/",
+      "reason": "Catálogo comercial de pães locais; preços públicos atuais não verificados."
+    },
+    {
+      "market": "mercado-italia",
+      "status": "pending",
+      "reason": "Ofertas sociais e pedido por WhatsApp, sem catálogo estruturado verificado"
+    },
+    {
+      "market": "mercado-triunfo",
+      "status": "pending",
+      "public_page": "https://acougue.online/anuncio/mt/sorriso/mercado-triunfo/",
+      "reason": "Anúncio de endereço e linha de carnes; sem catálogo local com preço verificado"
+    },
+    {
+      "market": "steakhouse-67",
+      "status": "pending",
+      "public_page": "https://www.steakhouse67.com/menu?menu=steaks",
+      "reason": "Cardápio local com fotos e valores, mas vigência e disponibilidade atuais não confirmadas"
+    },
+    {
+      "market": "marmitaria-kau-kau",
+      "status": "pending",
+      "public_page": "https://marmitaria-da-kau-kau-deliveri.ueniweb.com/",
+      "reason": "Página local com valores estáticos e sem confirmação de vigência ou disponibilidade"
     }
   ]
 }

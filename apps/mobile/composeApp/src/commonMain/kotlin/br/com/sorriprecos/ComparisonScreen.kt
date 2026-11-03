@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
             if (loaded?.offline == true) item { Notice("Offline · Comparação salva. Preços podem ter mudado.") }
             item {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    ProductArtwork(product); Spacer(Modifier.width(16.dp))
+                    ProductArtwork(product)
                     Column(Modifier.weight(1f)) {
                         Text(product.name, fontSize = 20.sp, lineHeight = 24.sp, fontWeight = FontWeight.Bold)
                         Text("Marca: ${product.brand}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 7.dp))

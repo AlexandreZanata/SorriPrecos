@@ -547,5 +547,75 @@
         "source_id": "aiqfome:45802:cnpj:34813798000102"
       }
     ]
+  },
+  {
+    "id": "pim-pao",
+    "name": "Pim Pão",
+    "website": "https://aiqfome.com/MT/sorriso/pim-pao",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "pim-pao-sorriso",
+        "name": "Sorriso",
+        "address": "Av. Natalino João Brescansin, 1802 · Sorriso-MT",
+        "source_id": "aiqfome:73074:cnpj:06158041000197"
+      }
+    ]
+  },
+  {
+    "id": "panificadora-sousa",
+    "name": "Panificadora Sousa",
+    "website": "https://aiqfome.com/MT/sorriso/panificadora-sousa",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "panificadora-sousa-sorriso",
+        "name": "Sorriso",
+        "address": "Avenida Blumenau Sul, 388 · Sorriso-MT",
+        "source_id": "aiqfome:112700:cnpj:23251287000128"
+      }
+    ]
+  },
+  {
+    "id": "panificadora-nossa-senhora-aparecida",
+    "name": "Panificadora Nossa Senhora Aparecida",
+    "website": "https://aiqfome.com/MT/sorriso/panificadora-nossa-senhora-aparecida",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "panificadora-nossa-senhora-aparecida-sorriso",
+        "name": "Sorriso",
+        "address": "avenida Tancredo, 2990 · Sorriso-MT",
+        "source_id": "aiqfome:70842:cnpj:02034459000131"
+      }
+    ]
+  },
+  {
+    "id": "dona-diva-emporio-artesanal",
+    "name": "Dona Diva Empório Artesanal",
+    "website": "https://aiqfome.com/MT/sorriso/dona-diva-emporio-artesanal",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "dona-diva-emporio-artesanal-sorriso",
+        "name": "Sorriso",
+        "address": "Avenida dos Imigrantes, 3255 · Sorriso-MT",
+        "source_id": "aiqfome:95816:cnpj:45321753000137"
+      }
+    ]
+  },
+  {
+    "id": "ponto-do-churrassco",
+    "name": "Ponto do Churrassco",
+    "website": "https://aiqfome.com/MT/sorriso/ponto-do-churrassco",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "ponto-do-churrassco-sorriso",
+        "name": "Sorriso",
+        "address": "Avenida Perimetral Sul do Oeste, 1087 · Sorriso-MT",
+        "source_id": "aiqfome:146727:cnpj:09460311000108"
+      }
+    ]
   }
 ]

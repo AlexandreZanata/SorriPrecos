@@ -13,3 +13,5 @@ pub fn now() -> i64 {
 }
 
 pub mod vip;
+
+mod photos;

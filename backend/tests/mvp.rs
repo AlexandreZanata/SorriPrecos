@@ -49,6 +49,7 @@ fn row(source: &str, price: i64) -> ImportRow {
         conditions: None,
         available: Some(true),
         source_url: None,
+        photo_source_url: None,
         collected_at: now(),
         valid_until: None,
         source_city: Some("Sorriso".into()),
@@ -731,4 +732,63 @@ async fn search_aliases_respect_exact_packaging_and_keep_product_identity() {
     let matches = result["items"].as_array().unwrap();
     assert_eq!(matches.len(), 1);
     assert_eq!(matches[0]["quantity"], 1500);
+}
+
+#[tokio::test]
+async fn search_corrects_transposed_letters_with_exact_size() {
+    let (_dir, pool) = fixture().await;
+    let mut large = row("demo-a", 2300);
+    let mut small = large.clone();
+    large.source_id = "arroz-5".into();
+    small.source_id = "arroz-1".into();
+    small.quantity = 1;
+    catalog::import(&pool, "demo-a", &[large, small], None)
+        .await
+        .unwrap();
+
+    let (_, result) = call(
+        app(&pool),
+        "/v1/products/search?q=arorz%20brnaco%205kg&demo=true",
+    )
+    .await;
+    let matches = result["items"].as_array().unwrap();
+    assert_eq!(matches.len(), 1);
+    assert_eq!(matches[0]["quantity"], 5000);
+    assert_eq!(matches[0]["name"], "Arroz branco");
+}
+
+#[tokio::test]
+async fn product_retains_first_public_photo_across_offers() {
+    let (_dir, pool) = fixture().await;
+    let mut initial = row("sorriso", 2300);
+    initial.branch_id = "sorriso-centro".into();
+    let first = "https://files.aiqfome.com/itens/store/first.jpg";
+    initial.photo_source_url = Some(first.into());
+    catalog::import(
+        &pool,
+        "sorriso",
+        &[initial.clone()],
+        Some("fixture authorization"),
+    )
+    .await
+    .unwrap();
+
+    let mut later = initial;
+    later.branch_id = "delmoro-rota".into();
+    later.photo_source_url = Some("https://files.aiqfome.com/itens/store/second.jpg".into());
+    catalog::import(&pool, "delmoro", &[later], Some("fixture authorization"))
+        .await
+        .unwrap();
+
+    let product = &catalog::search(&pool, "arroz", 10, 0, false).await.unwrap()[0];
+    assert_eq!(
+        product.photo_path,
+        Some(format!("/v1/products/{}/photo", product.id))
+    );
+    let source: String = sqlx::query_scalar("SELECT photo_source_url FROM products WHERE id=?")
+        .bind(product.id)
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(source, first);
 }

@@ -244,5 +244,65 @@
     "postcode": "78890000",
     "categories": [],
     "allow_portions": true
+  },
+  {
+    "supermarket_id": "pim-pao",
+    "branch_id": "pim-pao-sorriso",
+    "slug": "pim-pao",
+    "seller_id": 73074,
+    "cnpj": "06158041000197",
+    "street": "Av. Natalino João Brescansin",
+    "number": "1802",
+    "postcode": "78890000",
+    "categories": [],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "panificadora-sousa",
+    "branch_id": "panificadora-sousa-sorriso",
+    "slug": "panificadora-sousa",
+    "seller_id": 112700,
+    "cnpj": "23251287000128",
+    "street": "Avenida Blumenau Sul",
+    "number": "388",
+    "postcode": "78894357",
+    "categories": [],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "panificadora-nossa-senhora-aparecida",
+    "branch_id": "panificadora-nossa-senhora-aparecida-sorriso",
+    "slug": "panificadora-nossa-senhora-aparecida",
+    "seller_id": 70842,
+    "cnpj": "02034459000131",
+    "street": "avenida Tancredo",
+    "number": "2990",
+    "postcode": "78890000",
+    "categories": [],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "dona-diva-emporio-artesanal",
+    "branch_id": "dona-diva-emporio-artesanal-sorriso",
+    "slug": "dona-diva-emporio-artesanal",
+    "seller_id": 95816,
+    "cnpj": "45321753000137",
+    "street": "Avenida dos Imigrantes",
+    "number": "3255",
+    "postcode": "78890148",
+    "categories": [],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "ponto-do-churrassco",
+    "branch_id": "ponto-do-churrassco-sorriso",
+    "slug": "ponto-do-churrassco",
+    "seller_id": 146727,
+    "cnpj": "09460311000108",
+    "street": "Avenida Perimetral Sul do Oeste, Sorriso - MT",
+    "number": "1087",
+    "postcode": "78894067",
+    "categories": [],
+    "allow_portions": true
   }
 ]

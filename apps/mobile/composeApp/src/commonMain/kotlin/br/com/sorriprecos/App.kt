@@ -101,7 +101,10 @@ import kotlinx.coroutines.launch
         if (selected != null) selected = null else navigate("home")
     }
     val density = LocalDensity.current
-    CompositionLocalProvider(LocalDensity provides Density(density.density, density.fontScale * if (largeText) 1.2f else 1f)) {
+    CompositionLocalProvider(
+        LocalDensity provides Density(density.density, density.fontScale * if (largeText) 1.2f else 1f),
+        LocalPhotoOrigin provides baseUrl
+    ) {
         MaterialTheme(colorScheme = if (contrast) AppContrast else AppLight) {
             PlatformAppearance(contrast)
             Scaffold(

@@ -2,7 +2,7 @@
 
 MVP open source para comparar preços de supermercados de **Sorriso-MT**, com backend Rust/SQLite e aplicativo Kotlin Multiplatform/Compose.
 
-**Estado da entrega:** três catálogos públicos locais habilitados — Sorrinorte, Sorriso Supermercados e DelMoro Belo Horizonte — com sessão anônima do próprio frontend e coleta a cada dez minutos. Produtos sem embalagem segura ficam registrados para revisão. O Procon permanece exclusivamente na pesquisa histórica (27 produtos/31 observações de março de 2026). Android usa a API local pelo celular físico conectado via ADB. Cobertura e protocolo: [PUBLIC_CATALOGUES.md](docs/PUBLIC_CATALOGUES.md). Código em [AlexandreZanata/SorriPrecos](https://github.com/AlexandreZanata/SorriPrecos).
+**Estado da entrega.** 20 catálogos públicos de estabelecimentos de Sorriso-MT, com coleta a cada dez minutos. O app usa fotos publicadas nas vitrines e aceita erros de digitação na busca. O Procon permanece na pesquisa histórica. Consulte o [protocolo de descoberta e validação](docs/PUBLIC_CATALOGUES.md#descoberta-de-estabelecimentos-e-validação).
 
 ## Executar o backend
 

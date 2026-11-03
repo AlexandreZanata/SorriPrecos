@@ -513,6 +513,9 @@ pub fn normalize_product(
         conditions,
         available: p["disponivel"].as_bool(),
         source_url: Some(source.to_string()),
+        photo_source_url: p["imagem"].as_str()
+            .filter(|file| !file.is_empty() && file.bytes().all(|b| b.is_ascii_alphanumeric() || b"._-".contains(&b)))
+            .map(|file| format!("https://produto-assets-vipcommerce-com-br.br-se1.magaluobjects.com/250x250/{file}")),
         collected_at: observed,
         valid_until: None,
         source_city: Some("Sorriso".into()),

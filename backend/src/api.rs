@@ -44,6 +44,7 @@ pub fn router(state: AppState) -> Router {
         .route("/v1/products/search", get(search))
         .route("/v1/products/{id}", get(product))
         .route("/v1/products/{id}/prices", get(prices))
+        .route("/v1/products/{id}/photo", get(photo))
         .route("/v1/catalog/status", get(status))
         .route("/v1/collectors", get(collectors))
         .fallback(|| async {
@@ -226,6 +227,21 @@ async fn search(
         &headers,
         &json!({"items":items,"next_after":next_after,"is_demo":q.demo,"is_historical":q.historical}),
     ))
+}
+
+async fn photo(State(s): State<AppState>, Path(id): Path<i64>) -> Response {
+    match crate::photos::load(&s.pool, id).await {
+        Ok(Some(webp)) => (
+            [
+                ("content-type", "image/webp"),
+                ("cache-control", "public, max-age=86400"),
+            ],
+            webp,
+        )
+            .into_response(),
+        Ok(None) => StatusCode::NOT_FOUND.into_response(),
+        Err(_) => StatusCode::SERVICE_UNAVAILABLE.into_response(),
+    }
 }
 
 async fn product(

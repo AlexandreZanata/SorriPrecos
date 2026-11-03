@@ -44,7 +44,7 @@ def main():
             phone.command('shell','input','swipe',str(phone.width//2),str(int(phone.height*.8)),str(phone.width//2),str(int(phone.height*.4)),'350');root=phone.dump()
         phone.tap('Pesquisa histórica do Procon');phone.tap('Início');phone.launch();phone.wait('DADOS REAIS HISTÓRICOS');phone.tap('Lacta');root=phone.wait('R$ 69,90')
         assert 'Resultados da busca' in phone.texts(root)
-        assert any('Ilustração de categoria' in n.attrib.get('content-desc','') for n in root.iter('node'))
+        assert not any('Ilustração de categoria' in n.attrib.get('content-desc','') for n in root.iter('node'))
         phone.screenshot(output/'search.png');passed('Busca separada com miniaturas identificadas como ilustrações e preço histórico')
         title='OVO PASCOA LACTA 277G SONHO DE VALSA'
         phone.tap(title);root=phone.wait('Registros históricos · não são ofertas atuais')

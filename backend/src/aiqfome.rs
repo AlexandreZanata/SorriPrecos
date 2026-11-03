@@ -272,6 +272,21 @@ fn normalize_menu(
                         conditions: None,
                         available: Some(available),
                         source_url: Some(url.into()),
+                        photo_source_url: page["item_dir"]
+                            .as_str()
+                            .zip(item["imagem"].as_str())
+                            .filter(|(dir, file)| {
+                                !dir.is_empty()
+                                    && !file.is_empty()
+                                    && dir.bytes().all(|b| b.is_ascii_alphanumeric())
+                                    && file
+                                        .bytes()
+                                        .all(|b| b.is_ascii_alphanumeric() || b"._-".contains(&b))
+                                    && item["imagem_oculta"] != true
+                            })
+                            .map(|(dir, file)| {
+                                format!("https://files.aiqfome.com/itens/{dir}/{file}")
+                            }),
                         collected_at: observed,
                         valid_until: Some(observed + 1800),
                         source_city: Some("Sorriso".into()),
@@ -385,6 +400,15 @@ fn normalize_options(
                     conditions: None,
                     available,
                     source_url: Some(url.into()),
+                    photo_source_url: item["foto"].as_str().map(|photo| {
+                        if matches!(source.provider, Provider::Egao)
+                            && photo.starts_with("/api/fotos/")
+                        {
+                            format!("{EGAO_ORIGIN}{photo}")
+                        } else {
+                            photo.to_owned()
+                        }
+                    }),
                     collected_at: observed,
                     valid_until: Some(observed + 1800),
                     source_city: Some("Sorriso".into()),
@@ -448,6 +472,7 @@ fn dmacena_options(catalog: &Value) -> Result<Value> {
             };
             items.push(serde_json::json!({
                 "id": item_id, "nome": item["nome"], "categoria": id, "disponivel": availability,
+                "foto": item["foto_principal"],
                 "opcoes": [{"preco": item["preco"], "dependent_price": !fixed_price}]
             }));
         }

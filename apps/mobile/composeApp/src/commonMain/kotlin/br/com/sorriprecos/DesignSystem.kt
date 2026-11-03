@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.layout.ContentScale
+import coil3.compose.AsyncImage
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,11 +20,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.Dp
@@ -93,39 +93,16 @@ internal enum class Glyph { Cart, Search, Home, Heart, Settings, Back, Chevron, 
     Text(buildAnnotatedString {withStyle(SpanStyle(color=navy)){append("Sorri")};withStyle(SpanStyle(color=MaterialTheme.colorScheme.primary)){append("Preços")}},fontSize=32.sp,fontWeight=FontWeight.ExtraBold,letterSpacing=(-1.2).sp)
 }
 
-/** Category illustrations, not retailer photographs or a representation of an exact package. */
-@Composable internal fun ProductArtwork(product: Product, modifier: Modifier = Modifier) {
-    val name=product.name.lowercase()
-    val egg=name.contains("ovo") && (name.contains("pascoa") || name.contains("páscoa"))
-    val chocolate=egg || name.contains("chocolate")
-    val fish=name.contains("bacalhau") || name.contains("tilápia") || name.contains("tilapia")
-    val accent=when {chocolate->Color(0xFF6E4B9A);fish->Color(0xFF3185A7);name.contains("café") || name.contains("cafe")->Color(0xFF965B36);else->Color(0xFFC7433B)}
-    Column(modifier.width(76.dp),horizontalAlignment=Alignment.CenterHorizontally) {
-        Canvas(Modifier.fillMaxWidth().height(93.dp).clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.surfaceVariant).semantics{contentDescription="Ilustração de categoria. Foto do produto não disponível."}) {
-            withTransform({scale(size.width/76f,size.height/93f,pivot=Offset.Zero)}) {
-                drawOval(Color.Black.copy(alpha=.08f),Offset(13f,81f),Size(52f,6f))
-                if(egg) {
-                    val p=Path().apply {moveTo(38f,6f);cubicTo(16f,10f,9f,57f,15f,70f);cubicTo(22f,89f,55f,89f,61f,70f);cubicTo(67f,57f,60f,10f,38f,6f);close()}
-                    drawPath(p,Brush.linearGradient(listOf(accent,accent.copy(alpha=.6f)),Offset(15f,30f),Offset(63f,70f)))
-                    drawOval(Color.White.copy(alpha=.9f),Offset(20f,39f),Size(36f,24f))
-                    drawOval(Color(0xFFBA863E),Offset(30f,42f),Size(17f,19f))
-                    drawLine(Color(0xFFF7DA97),Offset(16f,70f),Offset(59f,70f),3f)
-                    drawOval(Color.White.copy(alpha=.18f),Offset(23f,16f),Size(7f,18f))
-                } else {
-                    val p=Path().apply {moveTo(15f,8f);lineTo(61f,8f);lineTo(65f,81f);quadraticTo(38f,87f,11f,81f);close()}
-                    drawPath(p,Color.White);drawPath(p,Color(0xFFD1D6DC),style=Stroke(1f))
-                    drawRoundRect(accent,Offset(15f,8f),Size(46f,24f),androidx.compose.ui.geometry.CornerRadius(3f))
-                    drawLine(accent,Offset(12f,77f),Offset(64f,77f),6f)
-                    if(fish) {
-                        drawOval(accent,Offset(25f,43f),Size(25f,14f));drawPath(Path().apply{moveTo(49f,50f);lineTo(59f,43f);lineTo(59f,57f);close()},accent);drawCircle(Color.White,1.5f,Offset(30f,48f))
-                    } else {
-                        drawOval(Color(0xFFEDE5C9),Offset(22f,40f),Size(32f,25f))
-                        repeat(7) { i->drawOval(Color(0xFFD2B974),Offset(26f+(i%3)*8f,44f+(i/3)*6f),Size(6f,3f)) }
-                    }
-                    drawLine(Color.White.copy(alpha=.35f),Offset(18f,11f),Offset(18f,28f),2f)
-                }
-            }
-        }
-        Text("Ilustração",fontSize=8.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,textAlign=TextAlign.Center,modifier=Modifier.padding(top=3.dp))
-    }
+
+internal val LocalPhotoOrigin = staticCompositionLocalOf { "" }
+
+@Composable internal fun ProductArtwork(product: Product) {
+    val path = product.photoPath ?: return
+    if (path != "/v1/products/${product.id}/photo") return
+    AsyncImage(
+        model = LocalPhotoOrigin.current.trimEnd('/') + path,
+        contentDescription = "Foto de ${product.name}",
+        contentScale = ContentScale.Fit,
+        modifier = Modifier.padding(end = 10.dp).size(width = 76.dp, height = 93.dp).clip(RoundedCornerShape(10.dp))
+    )
 }
