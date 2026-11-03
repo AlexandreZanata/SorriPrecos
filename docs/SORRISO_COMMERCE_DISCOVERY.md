@@ -162,3 +162,31 @@ O [diretório GynFood de Sorriso](https://www.gynfood.com.br/lista/sorriso-mt) r
 
 - **Vip Açaiteria.** O diretório mostrou o copo de 300 ml a R$ 14,00, produto 533192. O OpenCNPJ tem o CNPJ ativo 23.822.491/0001-51 com o mesmo nome, sem confirmação de endereço na vitrine. [Produto](https://vipacaiteria-mkt6.gynfood.com.br/produtos/visualizar/533192)
 - **Império Lanches Delivery.** A página da cidade listou o vendedor e condições de entrega, sem preço de item confirmado. A semelhança com o nome cadastral de 59.573.636/0001-75 não resolve a identidade sem confirmação de endereço. [Vitrine](https://imperiolanches-mkt6.gynfood.com.br/)
+
+#### Revalidação da leitura pública InstaDelivery
+
+Em navegador anônimo, o cardápio do Bazzã chamou `GET https://app.instadelivery.com.br/api/stores/by-slug/restaurantedantas`. A mesma rota funcionou com GET direto, sem login, cookie ou token, nos **14 slugs** examinados acima. Todos retornaram `city=Sorriso`, `state=MT` e `city_id=2402` (identificador interno da plataforma). O ID de cada grupo e item foi conferido contra a loja e o grupo que o contêm. O resultado substitui a pendência de leitura dinâmica registrada na primeira passagem.
+
+```sh
+curl -fsS 'https://app.instadelivery.com.br/api/stores/by-slug/restaurantedantas' |
+  jq 'select(.city == "Sorriso" and .state == "MT" and .id == 166992)
+      | {id, name, city, state, groups: [.groups[] |
+          {id, name, itens: [.itens[] | {id, name, price1, price2, stock_control, stock, is_invisible}]}]}'
+```
+
+O JSON inclui configurações além do necessário para a auditoria. Preserve apenas os campos de identidade comercial e catálogo pertinentes. O contador abaixo considera grupos e itens visíveis e itens sem exclusão, antes de validar preço, complementos, modalidade de venda e horário. Dos **280 itens**, 27 têm controle de estoque declarado. `stock_control=0` indica estoque desconhecido mesmo quando `stock` é negativo. `is_open` descreve a loja, não a disponibilidade individual. Para o Bazzã, o navegador exibiu Marmita P a R$ 22,00, Marmita M a R$ 28,00 e Marmita G a R$ 35,00, iguais a `price1` nos itens 4926580, 4926660 e 4926673. A loja se apresentava fechada temporariamente na leitura. Variantes, pizzas, adicionais obrigatórios e promoções precisam de validação antes de publicar um preço final.
+
+- **Bazzã · 166992, 14 itens.** Rua Passo Fundo, 1699 e CNPJ 46.016.662/0001-50 coincidem com o OpenCNPJ.
+- **Piratas Burger · 24062, 45 itens.** Rua das Palmeiras, 285 B, coincide com o CNPJ ativo 47.499.388/0001-80.
+- **Barbieris Pizzaria · 229562, 21 itens.** Rua Guilherme Battaglini, 975, coincide com 64.781.288/0001-61. Validar sabores e tamanhos antes de usar os preços.
+- **Gold Açaiteria · 222981, 10 itens.** Travessa da Felicidade, 23, coincide com 66.398.878/0001-35.
+- **Trufados na Garrafa · 215947, 13 itens.** A rua Alves de Azevedo coincide com 68.351.432/0001-80. O catálogo omite o número 1875 presente no cadastro.
+- **Iarla Ravana · 228903, 8 itens.** O CNPJ 45.714.088/0001-41 está ativo em Sorriso, na Rua Santa Rosa, 14. O endereço de exemplo da vitrine impede confirmar o ponto de operação.
+- **Rudy Delivery · 117979, 56 itens.** Rua Foz do Iguaçu, 1111. CNPJ da operação pendente por haver mais de um candidato no endereço.
+- **Moodie Cookie · 207116, 17 itens.** Avenida Santa Maria, 1511. CNPJ pendente.
+- **GS Hamburgueria e Doceria · 205324, 26 itens.** Endereço de exemplo. CNPJ e ponto de operação pendentes.
+- **Açaí da Xefinha · 225271, 16 itens.** Rua Joinville, 97A. CNPJ pendente.
+- **Univerço Açaí · 214810, 12 itens.** Rua Cristal, 100. CNPJ pendente.
+- **Gourmet By Voltanis · 229662, 11 itens.** Rua Caminho do Sol, 1024. CNPJ pendente.
+- **Sabores de Sorriso · 192518, 24 itens.** Avenida Los Angeles, 660. CNPJ pendente.
+- **Receitas da Vovó · 227364, 7 itens.** Rua São Bernardo, 318, Serra Dourada. CNPJ pendente.
