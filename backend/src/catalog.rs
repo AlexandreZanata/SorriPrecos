@@ -379,7 +379,7 @@ pub async fn search_scope(
     demo: bool,
     historical: bool,
 ) -> Result<Vec<Product>> {
-    let fts = normalize::fts_query(q);
+    let (fts, pack) = normalize::search_terms(q);
     if fts.is_empty() {
         return Ok(vec![]);
     }
@@ -399,15 +399,24 @@ pub async fn search_scope(
             fts,
         )
     };
+    let pack_filter = if pack.is_some() {
+        " AND p.quantity=? AND p.unit=?"
+    } else {
+        ""
+    };
     let sql = format!(
-        "WITH hits AS MATERIALIZED ({candidates} AND p.is_demo=? AND p.id>? AND EXISTS(SELECT 1 FROM source_products sp WHERE sp.product_id=p.id AND sp.source_kind=?) ORDER BY p.id LIMIT ?) SELECT {PRODUCT_FIELDS},{} AS is_historical FROM hits h JOIN products p ON p.id=h.id LEFT JOIN offers o ON o.product_id=p.id AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) GROUP BY p.id ORDER BY p.id",
+        "WITH hits AS MATERIALIZED ({candidates} AND p.is_demo=? AND p.id>? AND EXISTS(SELECT 1 FROM source_products sp WHERE sp.product_id=p.id AND sp.source_kind=?){pack_filter} ORDER BY p.id LIMIT ?) SELECT {PRODUCT_FIELDS},{} AS is_historical FROM hits h JOIN products p ON p.id=h.id LEFT JOIN offers o ON o.product_id=p.id AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) GROUP BY p.id ORDER BY p.id",
         i32::from(historical)
     );
-    Ok(sqlx::query_as(&sql)
+    let mut query = sqlx::query_as(&sql)
         .bind(query)
         .bind(demo)
         .bind(after)
-        .bind(kind)
+        .bind(kind);
+    if let Some((quantity, unit)) = pack {
+        query = query.bind(quantity).bind(unit);
+    }
+    Ok(query
         .bind(limit)
         .bind(now() - 172800)
         .bind(now())

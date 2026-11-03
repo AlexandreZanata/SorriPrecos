@@ -52,6 +52,7 @@ enum Command {
         #[arg(long)]
         watch: bool,
     },
+    #[command(visible_alias = "collect-local-food")]
     CollectAiqfome {
         #[arg(long, default_value = "config/aiqfome.json")]
         config: PathBuf,

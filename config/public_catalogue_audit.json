@@ -236,16 +236,96 @@
       "reason": "Perfil local na Rua Mato Grosso 1317. Catálogo com preços não localizado."
     },
     {
-      "market": "sp-frescor",
-      "status": "excluded_prepared_food",
-      "checked_url": "https://www.aiqfome.com/MT/sorriso/sp-frescor",
-      "reason": "Cardápio de frutas preparadas, saladas e porções personalizáveis. Fora do recorte de mercearia."
+      "market": "a-casa-do-salame",
+      "status": "enabled",
+      "platform": "aiqfome",
+      "seller_id": 77527,
+      "city_id": 4430,
+      "public_page": "https://aiqfome.com/MT/sorriso/a-casa-do-salame",
+      "interval_seconds": 600
+    },
+    {
+      "market": "armazem-polpas-naturais",
+      "status": "enabled",
+      "platform": "aiqfome",
+      "seller_id": 83179,
+      "city_id": 4430,
+      "public_page": "https://aiqfome.com/MT/sorriso/armazem-polpas-naturais",
+      "interval_seconds": 600
+    },
+    {
+      "market": "buffet-sabor-de-festa",
+      "status": "enabled",
+      "platform": "aiqfome",
+      "seller_id": 114508,
+      "city_id": 4430,
+      "public_page": "https://aiqfome.com/MT/sorriso/buffet-sabor-de-festa",
+      "interval_seconds": 600
+    },
+    {
+      "market": "ronaldos-peixaria-e-restaurante",
+      "status": "enabled",
+      "platform": "aiqfome",
+      "seller_id": 136449,
+      "city_id": 4430,
+      "public_page": "https://aiqfome.com/MT/sorriso/ronaldos-peixaria-e-restaurante",
+      "interval_seconds": 600
     },
     {
       "market": "serra-gaucha",
-      "status": "excluded_prepared_food",
-      "checked_url": "https://aiqfome.com/MT/sorriso/serra-gaucha-emporio-adega-e-padaria",
-      "reason": "Vitrine de padaria e refeições preparadas. Fora do recorte de mercearia."
+      "status": "enabled",
+      "platform": "aiqfome",
+      "seller_id": 105738,
+      "city_id": 4430,
+      "public_page": "https://aiqfome.com/MT/sorriso/serra-gaucha-emporio-adega-e-padaria",
+      "interval_seconds": 600
+    },
+    {
+      "market": "sp-frescor",
+      "status": "enabled",
+      "platform": "aiqfome",
+      "seller_id": 144064,
+      "city_id": 4430,
+      "public_page": "https://aiqfome.com/MT/sorriso/sp-frescor",
+      "interval_seconds": 600
+    },
+    {
+      "market": "puro-sabor",
+      "status": "enabled",
+      "platform": "aiqfome",
+      "seller_id": 144000,
+      "city_id": 4430,
+      "public_page": "https://aiqfome.com/MT/sorriso/puro-sabor",
+      "interval_seconds": 600
+    },
+    {
+      "market": "egao-sushi",
+      "status": "enabled",
+      "platform": "Egao",
+      "public_page": "https://pedido.egaosushi.com.br/",
+      "catalog_api": "https://pedido.egaosushi.com.br/api/cardapio",
+      "identity_api": "https://pedido.egaosushi.com.br/api/config",
+      "interval_seconds": 600
+    },
+    {
+      "market": "pizzaria-dmacena",
+      "status": "enabled",
+      "platform": "Meia 7",
+      "public_page": "https://pizzariadmacena.meia7solucoes.com.br/cardapio/pedidos",
+      "seller_id": 10926,
+      "interval_seconds": 600
+    },
+    {
+      "market": "p2-distribuidor",
+      "status": "pending_public_prices",
+      "checked_url": "https://p2distribuidor.com.br/",
+      "reason": "Distribuidor local com catálogo e cotação comercial. Preços públicos não confirmados."
+    },
+    {
+      "market": "panificadora-pimpao",
+      "status": "pending_public_catalogue",
+      "checked_url": "https://www.panificadorapimpao.com.br/",
+      "reason": "Página institucional com links legados para cardápio. Fonte atual de preços pendente de validação."
     }
   ]
 }

@@ -696,3 +696,39 @@ async fn barcode_search_uses_canonical_gtin_and_preserves_mode() {
         assert!(v["items"].as_array().unwrap().is_empty());
     }
 }
+
+#[tokio::test]
+async fn search_aliases_respect_exact_packaging_and_keep_product_identity() {
+    let (_dir, pool) = fixture().await;
+    let items = [
+        ("mandioca-1000", "Mandioca congelada", 1000),
+        ("macaxeira-1000", "Macaxeira descascada", 1000),
+        ("macaxeira-1500", "Macaxeira descascada", 1500),
+        ("mandioca-2500", "Mandioca congelada 1 kg · caixa", 2500),
+    ]
+    .map(|(sku, name, quantity)| ImportRow {
+        source_id: sku.into(),
+        name: name.into(),
+        quantity,
+        unit: "g".into(),
+        ..row("demo-a", 1000)
+    });
+    catalog::import(&pool, "demo-a", &items, None)
+        .await
+        .unwrap();
+    let (status, result) = call(app(&pool), "/v1/products/search?q=aipim%201kg&demo=true").await;
+    assert_eq!(status, StatusCode::OK);
+    let matches = result["items"].as_array().unwrap();
+    assert_eq!(matches.len(), 2);
+    assert_ne!(matches[0]["id"], matches[1]["id"]);
+    assert!(matches.iter().all(|product| product["quantity"] == 1000));
+
+    let (_, result) = call(
+        app(&pool),
+        "/v1/products/search?q=aipim%201%2C5%20kg&demo=true",
+    )
+    .await;
+    let matches = result["items"].as_array().unwrap();
+    assert_eq!(matches.len(), 1);
+    assert_eq!(matches[0]["quantity"], 1500);
+}

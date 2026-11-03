@@ -105,3 +105,27 @@ O ingestor lê o JSON `restaurantenovo.menu.cardapios_categorias` embutido no HT
 Na coleta validada, o Açougue Portal apresentou 221 variantes nas categorias selecionadas, com 154 normalizadas e nenhuma disponível naquele momento. O Empório apresentou 173 variantes, com 169 normalizadas e 109 disponíveis. Quatro sucos ficaram fora por divergência entre o volume do título e o tamanho da variante. A API de acompanhamento continua em `/v1/collectors`.
 
 No Android físico 2311DRK48G com Android 16, via ADB e API local, a busca por `picanha gril 2kg` abriu a filial do Açougue Portal com “Indisponibilidade informada”. A busca por `demerara 100g` mostrou o açúcar do Empório Dom Manoel por R$ 3,50. O teste conferiu município, UF e URL de origem de ambas as ofertas pela API.
+
+## Comércios de alimentos e cardápios de Sorriso
+
+A revisão de 03/11/2026 habilitou nove novas fontes. São sete vitrines aiqfome de vendedores verificados (A Casa do Salame, Armazém Polpas Naturais, Buffet Sabor de Festa, Puro Sabor, Ronaldo’s Peixaria e Restaurante, Serra Gaúcha e S&P Frescor) e duas vitrines próprias (Egao Sushi e Pizzaria D’Macena). O ingestor normalizou 849 variantes adicionais na rodada de validação. A lista municipal da plataforma expôs 531 URLs candidatas. A descoberta lista links, e a habilitação exige verificar o vendedor e os dados de cada catálogo. [Diretório do aiqfome](https://aiqfome.com/restaurantes/sorriso-MT)
+
+```sh
+python3 scripts/discover_aiqfome.py
+./target/release/sorriprecos collect-local-food --watch
+```
+
+O comando `collect-local-food` é um alias de `collect-aiqfome`. Ele usa a mesma configuração e programa uma tentativa a cada 600 segundos por estabelecimento. A auditoria por fonte aparece em `/v1/collectors`. As três vitrines VipCommerce continuam em `collect-vip`.
+
+- **aiqfome.** O ingestor lê o catálogo estruturado no HTML e valida cidade, estado, endereço, CEP, CNPJ e ID. A Casa do Salame publicou 73 variantes com outro ID de vendedor. O coletor separou essas entradas e processou o restante do catálogo local. [A Casa do Salame](https://aiqfome.com/MT/sorriso/a-casa-do-salame)
+- **Egao Sushi.** O endereço de Blumenau 3675 vem do GET `/api/config`. O GET `/api/cardapio` fornece itens e opções com preço. O coletor conserva cada opção e a disponibilidade publicada. [Vitrine de pedidos](https://pedido.egaosushi.com.br/) · [API de cardápio](https://pedido.egaosushi.com.br/api/cardapio)
+- **D’Macena.** A página de pedidos publica o JSON `window.__INITIAL_DATA__`. O coletor valida ID, CNPJ, Sorriso-MT e Porto Alegre 1648 antes de ler os produtos. Variantes com preço dependente de complemento, resgate ou quantidade mínima ficam na auditoria. A disponibilidade reflete as condições publicadas para o item. [Vitrine de pedidos](https://pizzariadmacena.meia7solucoes.com.br/cardapio/pedidos)
+- **Outras fontes.** A P2 publica uma linha de alimentos sob cotação. A Panificadora Pimpão aponta para um cardápio legado cuja fonte atual de preços ficou pendente de validação. Nanai permanece pendente de acesso ao ingestor. [P2 Distribuidor](https://p2distribuidor.com.br/) · [Panificadora Pimpão](https://www.panificadorapimpao.com.br/) · [Nanai](https://sorrisonanaifoods.appsimpliza.com.br/)
+
+### Correspondência de nomes e preços
+
+A busca expande um vocabulário explícito de grafias e nomes regionais, por exemplo aipim, mandioca e macaxeira. Uma medida no fim da consulta vira um filtro da embalagem cadastrada, com conversão decimal para g ou ml. Assim, `aipim 1 kg` pode encontrar mandioca de 1.000 g, inclusive quando o título usa outra grafia.
+
+O agrupamento de preços conserva a identidade canônica por GTIN válido ou pela combinação exata de nome, marca, quantidade e apresentação normalizados. Os sinônimos só ampliam a busca. O catálogo local preserva o estabelecimento e o rótulo da porção, como P, G, meia ou inteira, para manter receitas e tamanhos distintos em resultados próprios. Medidas conflitantes e preços condicionados a escolhas pagas ficam fora do ranking. O teste de API confirma que sinônimos localizam produtos distintos sem agrupá-los e que uma caixa de 2.500 g fica fora de uma busca de 1 kg mesmo se o título mencionar 1 kg.
+
+A validação no celular físico, pelo ADB, encontrou a mandioca amarela congelada de 1 kg da Casa do Salame ao pesquisar `aipim amarela 1kg` e mostrou a indisponibilidade informada pela fonte. A busca por `yakimeshi salmao` abriu a opção P do Egao por R$ 82,00. A API retornou as porções P e G como itens distintos.

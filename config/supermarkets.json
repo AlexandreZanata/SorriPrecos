@@ -407,5 +407,131 @@
         "source_id": "aiqfome:35099:cnpj:30398947000163"
       }
     ]
+  },
+  {
+    "id": "a-casa-do-salame",
+    "name": "A Casa Do Salame",
+    "website": "https://aiqfome.com/MT/sorriso/a-casa-do-salame",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "a-casa-do-salame-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Lupicinio Rodrigues, 90 · Sorriso-MT",
+        "source_id": "aiqfome:77527:cnpj:43602533000156"
+      }
+    ]
+  },
+  {
+    "id": "armazem-polpas-naturais",
+    "name": "Armazém Polpas Naturais",
+    "website": "https://aiqfome.com/MT/sorriso/armazem-polpas-naturais",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "armazem-polpas-naturais-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Mato Grosso, 1346 · Sorriso-MT",
+        "source_id": "aiqfome:83179:cnpj:44174022000143"
+      }
+    ]
+  },
+  {
+    "id": "buffet-sabor-de-festa",
+    "name": "Buffet Sabor de Festa",
+    "website": "https://aiqfome.com/MT/sorriso/buffet-sabor-de-festa",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "buffet-sabor-de-festa-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Lupicineo Rodrigues, 51B · Sorriso-MT",
+        "source_id": "aiqfome:114508:cnpj:51390930000130"
+      }
+    ]
+  },
+  {
+    "id": "ronaldos-peixaria-e-restaurante",
+    "name": "Ronaldo's Peixaria e Restaurante",
+    "website": "https://aiqfome.com/MT/sorriso/ronaldos-peixaria-e-restaurante",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "ronaldos-peixaria-e-restaurante-sorriso",
+        "name": "Sorriso",
+        "address": "Avenida dos Imigrantes, 4095 · Sorriso-MT",
+        "source_id": "aiqfome:136449:cnpj:52405528000144"
+      }
+    ]
+  },
+  {
+    "id": "serra-gaucha",
+    "name": "Serra Gaúcha - Empório Adega e Padaria",
+    "website": "https://aiqfome.com/MT/sorriso/serra-gaucha-emporio-adega-e-padaria",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "serra-gaucha-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA TANCREDO NEVES, 2803 · Sorriso-MT",
+        "source_id": "aiqfome:105738:cnpj:50731578000196"
+      }
+    ]
+  },
+  {
+    "id": "sp-frescor",
+    "name": "S&P Frescor",
+    "website": "https://aiqfome.com/MT/sorriso/sp-frescor",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "sp-frescor-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Camélia, Sorriso - MT, 5221 · Sorriso-MT",
+        "source_id": "aiqfome:144064:cnpj:68508372000167"
+      }
+    ]
+  },
+  {
+    "id": "puro-sabor",
+    "name": "Puro Sabor",
+    "website": "https://aiqfome.com/MT/sorriso/puro-sabor",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "puro-sabor-sorriso",
+        "name": "Sorriso",
+        "address": "Avenida Brasil, Sorriso - MT, 1854 · Sorriso-MT",
+        "source_id": "aiqfome:144000:cnpj:55788896000107"
+      }
+    ]
+  },
+  {
+    "id": "egao-sushi",
+    "name": "Egao Sushi",
+    "website": "https://pedido.egaosushi.com.br/",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "egao-sushi-sorriso",
+        "name": "Sorriso",
+        "address": "Av. Blumenau, 3675 · Bom Jesus",
+        "source_id": "egao:blumenau:3675"
+      }
+    ]
+  },
+  {
+    "id": "pizzaria-dmacena",
+    "name": "Pizzaria D’Macena",
+    "website": "https://pizzariadmacena.meia7solucoes.com.br/cardapio/pedidos",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "pizzaria-dmacena-sorriso",
+        "name": "Sorriso",
+        "address": "Av. Porto Alegre, 1648 · Monte Líbano",
+        "source_id": "meia7:10926:cnpj:26679211000196"
+      }
+    ]
   }
 ]

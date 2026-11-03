@@ -320,36 +320,8 @@ fn number(v: &Value) -> Option<String> {
         .map(str::to_owned)
         .or_else(|| v.as_number().map(ToString::to_string))
 }
-pub(crate) fn scaled(text: &str, factor: i64) -> Result<i64> {
-    let s = text.trim().replace(',', ".");
-    let mut p = s.split('.');
-    let digits = p.next().context("número ausente")?;
-    ensure!(
-        !digits.is_empty() && digits.bytes().all(|b| b.is_ascii_digit()),
-        "decimal inválido"
-    );
-    let whole: i64 = digits.parse()?;
-    let frac = p.next().unwrap_or("");
-    ensure!(
-        p.next().is_none() && frac.len() <= 6 && frac.bytes().all(|b| b.is_ascii_digit()),
-        "decimal inválido"
-    );
-    let denominator = 10i64.pow(frac.len() as u32);
-    let numerator = whole
-        .checked_mul(denominator)
-        .and_then(|v| v.checked_add(frac.parse::<i64>().unwrap_or(0)))
-        .context("decimal excede limite")?;
-    let scaled = numerator
-        .checked_mul(factor)
-        .context("decimal excede limite")?;
-    ensure!(
-        scaled % denominator == 0 && scaled > 0,
-        "decimal não representável"
-    );
-    Ok(scaled / denominator)
-}
 pub fn cents(v: &Value) -> Result<i64> {
-    let n = scaled(&number(v).context("preço ausente")?, 100)?;
+    let n = normalize::scaled(&number(v).context("preço ausente")?, 100)?;
     ensure!(n <= 100_000_000, "preço inválido");
     Ok(n)
 }
@@ -368,7 +340,7 @@ fn package(p: &Value) -> Result<(i64, String)> {
             "1".into()
         };
         return Ok((
-            scaled(&amount, 1000)?,
+            normalize::scaled(&amount, 1000)?,
             if unit == "KG" { "g" } else { "ml" }.into(),
         ));
     }
@@ -390,7 +362,7 @@ fn package(p: &Value) -> Result<(i64, String)> {
         } else {
             (1, "un")
         };
-        sizes.insert((scaled(&m[1], factor)?, unit.to_string()));
+        sizes.insert((normalize::scaled(&m[1], factor)?, unit.to_string()));
     }
     ensure!(sizes.len() == 1, "embalagem ausente ou ambígua");
     Ok(sizes.into_iter().next().unwrap())
@@ -434,13 +406,13 @@ pub fn normalize_product(
             && offer["categoria"] == "G"
             && number(&offer["quantidade_minima"])
                 .as_deref()
-                .is_some_and(|s| scaled(s, 1).ok() == Some(1))
+                .is_some_and(|s| normalize::scaled(s, 1).ok() == Some(1))
             && number(&offer["quantidade_pagar"])
                 .as_deref()
-                .is_some_and(|s| scaled(s, 1).ok() == Some(1))
+                .is_some_and(|s| normalize::scaled(s, 1).ok() == Some(1))
             && number(&offer["quantidade_oferta"])
                 .as_deref()
-                .is_some_and(|s| scaled(s, 1).ok() == Some(1));
+                .is_some_and(|s| normalize::scaled(s, 1).ok() == Some(1));
         promo = candidate;
         if single && !club {
             kind = "promotion";
