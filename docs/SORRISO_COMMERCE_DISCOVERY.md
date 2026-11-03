@@ -132,3 +132,33 @@ O indicador omnichannel descreve a unidade, sem SKU, preço ou quantidade. A red
 - **DrogaVET · 40.816.299/0001-71.** O OpenCNPJ registra Avenida Santa Maria, 845, Sorriso. A versão indexada do localizador lista a cidade e a leitura direta carregou a aplicação do localizador sem a ficha da unidade no HTML inicial. A confirmação no retorno dinâmico segue pendente. É uma fonte veterinária. [Localizador oficial](https://spotshop.unidades.drogavet.com.br/)
 - **Farmacam.** A página regional de entrega em Sorriso respondeu HTTP 200 e aponta para a mesma vitrine `loja=1063102` em suas buscas de produtos. O rodapé do catálogo lista 02.648.081/0001-66 e 24.111.813/0001-17, ambos de São Gonçalo-RJ no OpenCNPJ. A fonte comprova entrega anunciada em Sorriso, com vendedor fora do município. [Página regional](https://entrega.farmacam.com.br/farmacia_de_manipulacao_mato_grosso_sorriso.html) · [Busca vinculada](https://www.farmacam.com.br/loja/busca.php?loja=1063102&palavra_busca=Coenzima+Q10)
 - **Pague Menos e Drogasil.** O guia Pague Menos respondeu HTTP 200 e situa a escolha da loja após selecionar os itens e informar o CEP. O guia Drogasil documenta escolha na cesta, mas a leitura direta respondeu HTTP 403. A validação de preço e disponibilidade nas duas filiais Pague Menos e nas três Drogasil permanece pendente. [Clique e Retire Pague Menos](https://www.paguemenos.com.br/clique-e-retire) · [Compre e Retire Drogasil](https://www.drogasil.com.br/compre-retire)
+
+### Cardápios InstaDelivery, DataCaixa e GynFood
+
+O [diretório InstaDelivery de Sorriso](https://portal.instadelivery.com.br/sorriso) retornou HTTP 200. Seu HTML e o estado público `window.__NUXT__` identificam a cidade pelo código IBGE 5107925. Foram examinados os 13 links abaixo. Todos responderam HTTP 200, mas o HTML inicial só carregou a aplicação, sem preço de item. Os valores de pedido mínimo e frete do diretório não são preços de produto. O acesso reproduzível aos itens após a renderização segue pendente.
+
+- [Rudy Delivery e Açaí Prime](https://instadelivery.com.br/rudydeliveryacaiprime), loja 117979. Foz do Iguaçu, 1111. Há mais de um CNPJ ativo nesse endereço e a vitrine consultada não esclarece o vendedor fiscal.
+- [Restaurante Bazzã](https://instadelivery.com.br/restaurantedantas), loja 166992. Rua Passo Fundo, 1699. Nome fantasia e endereço coincidem com 46.016.662/0001-50 no OpenCNPJ, apesar do slug legado.
+- [Iarla Ravana Confeitaria](https://instadelivery.com.br/iarlaravanaconfeitaria), loja 228903. Endereço de exemplo no diretório.
+- [Moodie Cookie](https://instadelivery.com.br/moodiecookie), loja 207116. Avenida Santa Maria, 1511, Jardim Santa Bárbara. CNPJ pendente.
+- [Trufados na Garrafa](https://instadelivery.com.br/trufadosnagarrafa), loja 215947. Município indicado, sem logradouro.
+- [GS Hamburgueria e Doceria](https://instadelivery.com.br/gshamburgueriaedoceria), loja 205324. Endereço de exemplo no diretório.
+- [Açaí da Xefinha](https://instadelivery.com.br/acaidaxefinha). Rua Joinville, 97A, Bela Vista. CNPJ pendente.
+- [Gold Açaíteria](https://instadelivery.com.br/goldacaiteriamt), loja 222981. Município indicado, sem logradouro.
+- [Univerço Açaí](https://instadelivery.com.br/universoacaiMT). Rua Cristal, 100, Rota do Sol. CNPJ pendente.
+- [Barbieris Pizzaria](https://instadelivery.com.br/barbierispizzaria), loja 229562. Município indicado, sem logradouro.
+- [Gourmet By Voltanis](https://instadelivery.com.br/gourmetbyvoltanis). Município indicado, sem logradouro.
+- [Sabores de Sorriso](https://instadelivery.com.br/saboresdesorriso), loja 192518. Avenida Los Angeles, 660, Jardim Califórnia. CNPJ pendente.
+- [Receitas da Vovó](https://instadelivery.com.br/receitasdavovo1), loja 227364. Município indicado, sem logradouro.
+
+A página indexada de [Piratas Burger e Açaiteria](https://instadelivery.com.br/piratasburgereacaiteria), fora dos 13 links acima, apresenta o Copo de Açaí Puro 300 ml a R$ 13,00. O GET inicial também entregou só a aplicação. O preço de R$ 0,01 no item personalizável depende da escolha de complementos e não representa o preço final. Identidade fiscal e leitura pública dinâmica pendentes.
+
+- **O Açaizeiro, DataCaixa.** A página indexada traz Rua Nogueiras, 310, e CNPJ 31.180.602/0001-00. O OpenCNPJ registra situação 08 (baixada) e endereço Perimetral Sudoeste, 2345. A página indexada mostra R$ 22,00 para o açaí de 300 ml e valores zero em partes do HTML. Atribuição fiscal atual e preço final pendentes. [Cardápio](https://www.cardapio.datacaixa.com.br/oacaizeiro)
+- **Estaçãoo Burger, DataCaixa.** O CNPJ 32.085.256/0001-35 está ativo em Sorriso. O cardápio indexado traz Rua Lupicines Rodrigues, 1039, enquanto o OpenCNPJ indica Rua Emílio Garrastazu Médici, 1164. A vitrine publica descrições de produtos, mas o endereço atual de operação precisa de confirmação. [Cardápio](https://cardapio.datacaixa.com.br/loja%3D12917)
+
+Os dois GETs DataCaixa retornaram a aplicação sem itens no HTML inicial. O bundle carrega estabelecimentos, grupos e produtos por chamadas que exigem credenciais. A auditoria limitou-se à leitura pública inicial e às páginas indexadas.
+
+O [diretório GynFood de Sorriso](https://www.gynfood.com.br/lista/sorriso-mt) retornou HTML com os nomes dos vendedores e, em alguns cartões, preço e ID de produto. As duas vitrines consultadas retornaram uma página genérica sem cardápio, mesmo com HTTP 200. Assim, o preço da listagem fica documentado como evidência do diretório, com confirmação na vitrine pendente.
+
+- **Vip Açaiteria.** O diretório mostrou o copo de 300 ml a R$ 14,00, produto 533192. O OpenCNPJ tem o CNPJ ativo 23.822.491/0001-51 com o mesmo nome, sem confirmação de endereço na vitrine. [Produto](https://vipacaiteria-mkt6.gynfood.com.br/produtos/visualizar/533192)
+- **Império Lanches Delivery.** A página da cidade listou o vendedor e condições de entrega, sem preço de item confirmado. A semelhança com o nome cadastral de 59.573.636/0001-75 não resolve a identidade sem confirmação de endereço. [Vitrine](https://imperiolanches-mkt6.gynfood.com.br/)
