@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
     val synced by repo.updates.collectAsState()
     DisposableEffect(repo) { onDispose { repo.client.close() } }
     var screen by remember { mutableStateOf("home") }
+    var pharmacy by remember { mutableStateOf(false) }
     var category by remember { mutableStateOf<QuickCategory?>(null) }
     var query by remember { mutableStateOf("") }
     var selected by remember { mutableStateOf<Product?>(null) }
@@ -90,14 +91,14 @@ import kotlinx.coroutines.launch
         catch (e: Exception) { error = e.message }
         finally { sourceLoading = false }
     }
-    LaunchedEffect(query, demo, historical, repo, refresh) {
+    LaunchedEffect(query, demo, historical, pharmacy, repo, refresh) {
         paginationJob?.cancelAndJoin()
         results = emptyList(); nextAfter = null; searchOffline = false
         if (query.trim().length < 2) { searching = false; return@LaunchedEffect }
         searching = true; error = null
         try {
             delay(350)
-            val loaded = repo.search(query.trim(), demo, historical = historical)
+            val loaded = repo.search(query.trim(), demo, historical = historical && !pharmacy, pharmacy = pharmacy)
             results = loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline
         } catch (e: CancellationException) { throw e }
         catch (e: Exception) { error = e.message }
@@ -122,9 +123,9 @@ import kotlinx.coroutines.launch
         repo.saveCart(demo, cart)
     }
     fun navigate(destination: String) { selected = null; screen = destination; focus.clearFocus() }
-    fun search(value: String) { category = null; query = value; navigate("search") }
+    fun search(value: String) { pharmacy = false; category = null; query = value; navigate("search") }
     fun explore() { search("") }
-    fun openCategory(value: QuickCategory) { category = value; query = ""; navigate("search") }
+    fun openCategory(value: QuickCategory) { pharmacy = value == pharmacyCategory; category = value; query = ""; navigate("search") }
     fun toggleDemo() { historical = false; store.put("historical", "false"); demo = !demo; store.put("demo", demo.toString()); query = ""; selected = null }
     fun toggleHistory() { historical = !historical; demo = false; store.put("demo", "false"); store.put("historical", historical.toString()); query = ""; selected = null }
     fun setLarge(value: Boolean) { largeText = value; store.put("ui-large-text", value.toString()) }
@@ -155,7 +156,7 @@ import kotlinx.coroutines.launch
                 bottomBar = { if (selected == null) BottomNavigation(screen, ::navigate) }
             ) { padding ->
                 Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
-                    if (screen != "home" || selected != null) Box(Modifier.padding(horizontal = 18.dp, vertical = 5.dp)) { DataDisclosure(demo, catalog, selected?.isHistorical ?: (historical && screen != "cart")) }
+                    if (screen != "home" || selected != null) Box(Modifier.padding(horizontal = 18.dp, vertical = 5.dp)) { DataDisclosure(demo, catalog, selected?.isHistorical ?: (historical && screen != "cart" && !pharmacy)) }
                     if (selected != null) {
                         ComparisonScreen(repo, selected!!, favorites.any { it.id == selected!!.id },
                             onFavorite = { favorite(selected!!) }, refresh = refresh, onRefresh = { refresh++ },
@@ -168,6 +169,12 @@ import kotlinx.coroutines.launch
                         when (screen) {
                             "home" -> HomeScreen(demo, ::search, ::explore, ::openCategory)
                             "search" -> LazyColumn(contentPadding = PaddingValues(18.dp, 10.dp, 18.dp, 20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                item {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        FilterChip(selected = !pharmacy, onClick = { pharmacy = false; category = null }, label = { Text("Mercado") })
+                                        FilterChip(selected = pharmacy, onClick = { pharmacy = true; category = pharmacyCategory }, label = { Text("Farmácia") })
+                                    }
+                                }
                                 item { SearchField(query, autofocus = category == null, onChange = { query = it.take(100) }, onSearch = { focus.clearFocus(); refresh++ }) }
                                 if (query.trim().length < 2) {
                                     item { Text(category?.label ?: "Encontre o produto que você procura", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp)) }
@@ -175,7 +182,7 @@ import kotlinx.coroutines.launch
                                     items(terms.chunked(2)) { row ->
                                         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                             row.forEach { term ->
-                                                SuggestionChip(onClick = { search(term) }, label = { Text(term) })
+                                                SuggestionChip(onClick = { query = term; focus.clearFocus() }, label = { Text(term) })
                                             }
                                         }
                                     }
@@ -191,7 +198,7 @@ import kotlinx.coroutines.launch
                                     if (nextAfter != null) item { OutlinedButton(onClick = {
                                         paginationJob = scope.launch {
                                             searching = true
-                                            try { val loaded = repo.search(query.trim(), demo, nextAfter!!, historical); results += loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline }
+                                            try { val loaded = repo.search(query.trim(), demo, nextAfter!!, historical && !pharmacy, pharmacy); results += loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline }
                                             catch (e: CancellationException) { throw e } catch (e: Exception) { error = e.message } finally { searching = false }
                                         }
                                     }, enabled = !searching, modifier = Modifier.fillMaxWidth()) { Text("Carregar mais") } }

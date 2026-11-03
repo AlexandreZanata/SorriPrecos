@@ -846,3 +846,38 @@ async fn product_sync_sends_freshness_until_the_price_changes() {
     let changed = sync(&pool, id, initial["version"].clone()).await;
     assert_eq!(changed["data"]["product"]["min_price_cents"], 2499);
 }
+
+#[tokio::test]
+async fn pharmacy_and_market_searches_have_independent_prices() {
+    let (_dir, pool) = fixture().await;
+    let gtin = "7896025800106";
+    let mut market = row("demo-a", 2399);
+    market.branch_id = "sorriso-centro".into();
+    market.gtin = Some(gtin.into());
+    let mut pharmacy = market.clone();
+    pharmacy.branch_id = "therapeutica-farmacia-sorriso".into();
+    pharmacy.category = "Farmácia".into();
+    pharmacy.price_cents = Some(3199);
+    catalog::import(&pool, "sorriso", &[market], Some("fixture market"))
+        .await
+        .unwrap();
+    catalog::import(
+        &pool,
+        "therapeutica-farmacia",
+        &[pharmacy],
+        Some("fixture pharmacy"),
+    )
+    .await
+    .unwrap();
+    let (_, market) = call(app(&pool), &format!("/v1/products/search?q={gtin}")).await;
+    let (_, pharmacy) = call(
+        app(&pool),
+        &format!("/v1/products/search?q={gtin}&sector=pharmacy"),
+    )
+    .await;
+    assert_eq!(market["items"].as_array().unwrap().len(), 1);
+    assert_eq!(pharmacy["items"].as_array().unwrap().len(), 1);
+    assert_eq!(market["items"][0]["min_price_cents"], 2399);
+    assert_eq!(pharmacy["items"][0]["min_price_cents"], 3199);
+    assert_ne!(market["items"][0]["id"], pharmacy["items"][0]["id"]);
+}

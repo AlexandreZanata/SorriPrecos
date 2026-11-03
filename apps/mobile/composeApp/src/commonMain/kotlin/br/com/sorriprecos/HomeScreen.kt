@@ -35,6 +35,8 @@ internal val quickProducts = listOf(
 
 internal data class QuickCategory(val label: String, val icon: Glyph, val terms: List<String>)
 
+internal val pharmacyCategory = QuickCategory("Farmácia", Glyph.Pharmacy, listOf("Protetor solar", "Hidratante", "Sabonete"))
+
 internal val quickCategories = listOf(
     QuickCategory("Bebidas", Glyph.Bottle, listOf("Refrigerante", "Suco", "Água mineral")),
     QuickCategory("Padaria", Glyph.Bread, listOf("Pão", "Bolo", "Biscoito")),
@@ -60,6 +62,20 @@ internal val quickCategories = listOf(
                         Wordmark()
                         Text("Compare preços em Sorriso-MT", style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+            }
+            item {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilledTonalButton(onClick = onExplore, modifier = Modifier.weight(1f)) {
+                        AppIcon(Glyph.Store, Modifier.size(18.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text("Mercado")
+                    }
+                    FilledTonalButton(onClick = { onCategory(pharmacyCategory) }, modifier = Modifier.weight(1f)) {
+                        AppIcon(Glyph.Pharmacy, Modifier.size(18.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text("Farmácia")
                     }
                 }
             }

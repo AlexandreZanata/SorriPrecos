@@ -59,6 +59,12 @@ enum Command {
         #[arg(long)]
         watch: bool,
     },
+    CollectPharmacy {
+        #[arg(long, default_value_t = 24)]
+        limit: usize,
+        #[arg(long)]
+        watch: bool,
+    },
     Maintain,
     BenchSeed {
         #[arg(long)]
@@ -146,6 +152,9 @@ async fn main() -> Result<()> {
         Command::Collect { config } => adapters::collect_config(&pool, &config).await?,
         Command::CollectVip { config, watch } => vip::run(&pool, &config, watch).await?,
         Command::CollectAiqfome { config, watch } => aiqfome::run(&pool, &config, watch).await?,
+        Command::CollectPharmacy { limit, watch } => {
+            sorriprecos::pharmacy::run(&pool, limit, watch).await?
+        }
         Command::Maintain => {
             sqlx::query("DELETE FROM price_history WHERE collected_at<?")
                 .bind(now() - 90 * 86400)

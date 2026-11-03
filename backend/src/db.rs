@@ -25,15 +25,23 @@ pub async fn open(url: &str) -> Result<SqlitePool> {
 pub async fn seed_sources(pool: &SqlitePool) -> Result<()> {
     let data: serde_json::Value =
         serde_json::from_str(include_str!("../../config/supermarkets.json"))?;
+    let pharmacy: serde_json::Value =
+        serde_json::from_str(include_str!("../../config/pharmacies.json"))?;
     let mut tx = pool.begin().await?;
-    for m in data.as_array().unwrap() {
+    for m in data
+        .as_array()
+        .unwrap()
+        .iter()
+        .chain(pharmacy.as_array().unwrap())
+    {
         sqlx::query(
-            "INSERT INTO supermarkets(id,name,website,audit_class) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,website=excluded.website,audit_class=excluded.audit_class",
+            "INSERT INTO supermarkets(id,name,website,audit_class,sector) VALUES(?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,website=excluded.website,audit_class=excluded.audit_class,sector=excluded.sector",
         )
         .bind(m["id"].as_str())
         .bind(m["name"].as_str())
         .bind(m["website"].as_str())
         .bind(m["audit_class"].as_str())
+        .bind(m["sector"].as_str().unwrap_or("market"))
         .execute(&mut *tx)
         .await?;
         for b in m["branches"].as_array().unwrap() {

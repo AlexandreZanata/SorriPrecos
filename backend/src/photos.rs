@@ -21,6 +21,7 @@ pub(crate) fn trusted_url(value: &str) -> Option<Url> {
     }
     let url = Url::parse(value).ok()?;
     let prefix = match url.host_str()? {
+        "www.therapeuticafarmacia.com.br" => "/storage/empresas/01780384000175/produtos/",
         "files.aiqfome.com" => "/itens/",
         "produto-assets-vipcommerce-com-br.br-se1.magaluobjects.com" => "/250x250/",
         "pedido.egaosushi.com.br" => "/api/fotos/",

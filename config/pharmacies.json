@@ -1,0 +1,17 @@
+[
+  {
+    "id": "therapeutica-farmacia",
+    "name": "Therapeutica Farmácia",
+    "website": "https://www.therapeuticafarmacia.com.br/",
+    "audit_class": "B",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "therapeutica-farmacia-sorriso",
+        "name": "Loja virtual · Sorriso",
+        "address": "Avenida Curitiba, 2734 · Sorriso-MT",
+        "source_id": "cnpj:01780384000175"
+      }
+    ]
+  }
+]

@@ -188,6 +188,7 @@ async fn branches(
 #[derive(Deserialize)]
 struct Search {
     q: String,
+    sector: Option<String>,
     #[serde(default = "default_limit")]
     limit: i64,
     #[serde(default)]
@@ -215,8 +216,23 @@ async fn search(
             "busca: 2 a 100 caracteres; limit: 1 a 50; after: positivo",
         ));
     }
-    let mut items =
-        catalog::search_scope(&s.pool, &q.q, q.limit + 1, q.after, q.demo, q.historical).await?;
+    let sector = q.sector.as_deref().unwrap_or("market");
+    if !matches!(sector, "market" | "pharmacy") {
+        return Ok(error(
+            StatusCode::BAD_REQUEST,
+            "setor deve ser market ou pharmacy",
+        ));
+    }
+    let mut items = catalog::search_sector(
+        &s.pool,
+        &q.q,
+        q.limit + 1,
+        q.after,
+        q.demo,
+        q.historical,
+        sector,
+    )
+    .await?;
     let has_more = items.len() > q.limit as usize;
     items.truncate(q.limit as usize);
     let next_after = if has_more {

@@ -48,7 +48,7 @@ internal val AppContrast = darkColorScheme(
 )
 
 internal enum class Glyph {
-    Cart, Search, Home, Heart, Settings, Back, Chevron, Close, Refresh, Contrast, Pin, Clock, Info, Check, Calendar, Document, Link, External, Copy, Star, Bottle, Bread, Spray, Pump, Paw, Grid, Add, Remove, Store, Package, Collapse
+    Cart, Search, Home, Heart, Settings, Back, Chevron, Close, Refresh, Contrast, Pin, Clock, Info, Check, Calendar, Document, Link, External, Copy, Star, Bottle, Bread, Spray, Pump, Paw, Grid, Add, Remove, Store, Package, Collapse, Pharmacy
 }
 
 @Composable internal fun AppIcon(
@@ -86,6 +86,7 @@ internal enum class Glyph {
         Glyph.Remove -> Icons.Outlined.Remove
         Glyph.Store -> Icons.Outlined.Storefront
         Glyph.Package -> Icons.Outlined.Inventory2
+        Glyph.Pharmacy -> Icons.Outlined.LocalPharmacy
         Glyph.Collapse -> Icons.Outlined.ExpandLess
     }
     Icon(icon, contentDescription = null, modifier = modifier, tint = tint)

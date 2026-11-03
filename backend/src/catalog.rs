@@ -74,6 +74,10 @@ pub async fn read_file(path: &Path) -> Result<Vec<ImportRow>> {
 }
 
 pub fn validate(row: &ImportRow) -> Result<()> {
+    validate_for_sector(row, "market")
+}
+
+pub(crate) fn validate_for_sector(row: &ImportRow, sector: &str) -> Result<()> {
     if row.source_city.is_some() || row.source_state.is_some() {
         ensure!(
             row.source_city
@@ -103,20 +107,22 @@ pub fn validate(row: &ImportRow) -> Result<()> {
         row.conditions.as_ref().is_none_or(|s| s.len() <= 500),
         "condição muito longa"
     );
-    let category = normalize::text(&row.category);
-    let name = normalize::text(&row.name);
-    ensure!(
-        !["medicamento", "farmacia", "farmaceutico", "medicamentos"]
-            .iter()
-            .any(|s| category.contains(s)),
-        "categoria fora do MVP"
-    );
-    ensure!(
-        !["dipirona", "paracetamol", "ibuprofeno", "amoxicilina"]
-            .iter()
-            .any(|s| name.contains(s)),
-        "medicamento fora do MVP"
-    );
+    if sector == "market" {
+        let category = normalize::text(&row.category);
+        let name = normalize::text(&row.name);
+        ensure!(
+            !["medicamento", "farmacia", "farmaceutico", "medicamentos"]
+                .iter()
+                .any(|s| category.contains(s)),
+            "categoria fora do MVP"
+        );
+        ensure!(
+            !["dipirona", "paracetamol", "ibuprofeno", "amoxicilina"]
+                .iter()
+                .any(|s| name.contains(s)),
+            "medicamento fora do MVP"
+        );
+    }
     normalize::package(row.quantity, &row.unit)?;
     if let Some(g) = row.gtin.as_deref().filter(|s| !s.is_empty()) {
         ensure!(normalize::valid_gtin(g), "GTIN inválido: {g}");
@@ -230,9 +236,13 @@ pub(crate) async fn import_in_transaction(
         !rows.is_empty() && rows.len() <= MAX_ROWS,
         "lote deve conter 1 a 10000 registros"
     );
+    let sector: String = sqlx::query_scalar("SELECT sector FROM supermarkets WHERE id=?")
+        .bind(source)
+        .fetch_one(&mut **tx)
+        .await?;
     let mut seen = HashSet::new();
     for r in rows {
-        validate(r)?;
+        validate_for_sector(r, &sector)?;
         if kind == "public_report" {
             ensure!(
                 !demo && r.collected_at < now() - 172800,
@@ -278,8 +288,13 @@ pub(crate) async fn import_in_transaction(
             gtin.as_deref(),
             demo,
         );
-        sqlx::query("INSERT OR IGNORE INTO products(identity_key,gtin,name,normalized_name,brand,quantity,unit,presentation,category,is_demo) VALUES(?,?,?,?,?,?,?,?,?,?)")
-            .bind(&key).bind(&gtin).bind(&r.name).bind(normalize::text(&r.name)).bind(&r.brand).bind(q).bind(&unit).bind(&r.presentation).bind(&r.category).bind(demo).execute(&mut **tx).await?;
+        let key = if sector == "pharmacy" {
+            format!("pharmacy:{key}")
+        } else {
+            key
+        };
+        sqlx::query("INSERT OR IGNORE INTO products(identity_key,gtin,name,normalized_name,brand,quantity,unit,presentation,category,is_demo,sector) VALUES(?,?,?,?,?,?,?,?,?,?,?)")
+            .bind(&key).bind(&gtin).bind(&r.name).bind(normalize::text(&r.name)).bind(&r.brand).bind(q).bind(&unit).bind(&r.presentation).bind(&r.category).bind(demo).bind(&sector).execute(&mut **tx).await?;
         let product =
             sqlx::query("SELECT id,quantity,unit,presentation FROM products WHERE identity_key=?")
                 .bind(&key)
@@ -397,17 +412,39 @@ pub async fn search_scope(
     demo: bool,
     historical: bool,
 ) -> Result<Vec<Product>> {
+    search_sector(pool, q, limit, after, demo, historical, "market").await
+}
+
+pub async fn search_sector(
+    pool: &SqlitePool,
+    q: &str,
+    limit: i64,
+    after: i64,
+    demo: bool,
+    historical: bool,
+    sector: &str,
+) -> Result<Vec<Product>> {
     let (fts, pack) = normalize::search_terms(q);
     if fts.is_empty() {
         return Ok(vec![]);
     }
-    let products =
-        search_matches(pool, &fts, q, pack.as_ref(), limit, after, demo, historical).await?;
+    let products = search_matches(
+        pool,
+        &fts,
+        q,
+        pack.as_ref(),
+        limit,
+        after,
+        demo,
+        historical,
+        sector,
+    )
+    .await?;
     if !products.is_empty() || q.chars().all(|c| c.is_ascii_digit() || c.is_whitespace()) {
         return Ok(products);
     }
     if after > 0
-        && !search_matches(pool, &fts, q, pack.as_ref(), 1, 0, demo, historical)
+        && !search_matches(pool, &fts, q, pack.as_ref(), 1, 0, demo, historical, sector)
             .await?
             .is_empty()
     {
@@ -426,6 +463,7 @@ pub async fn search_scope(
         after,
         demo,
         historical,
+        sector,
     )
     .await
 }
@@ -490,6 +528,7 @@ async fn search_matches(
     after: i64,
     demo: bool,
     historical: bool,
+    sector: &str,
 ) -> Result<Vec<Product>> {
     let kind = if historical {
         "public_report"
@@ -520,12 +559,13 @@ async fn search_matches(
           AND (o.valid_until IS NULL OR o.valid_until>=CAST(strftime('%s','now') AS INTEGER))"
     };
     let sql = format!(
-        "WITH hits AS MATERIALIZED ({candidates} AND p.is_demo=? AND p.id>? AND EXISTS(SELECT 1 FROM source_products sp JOIN offers o ON o.source_product_id=sp.id JOIN branches b ON b.id=o.branch_id AND b.active=1 WHERE sp.product_id=p.id AND sp.source_kind=?{offer_filter}){pack_filter} ORDER BY p.id LIMIT ?) SELECT {PRODUCT_FIELDS},{} AS is_historical FROM hits h JOIN products p ON p.id=h.id LEFT JOIN offers o ON o.product_id=p.id AND o.branch_id IN(SELECT id FROM branches WHERE active=1) AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) GROUP BY p.id ORDER BY p.id",
+        "WITH hits AS MATERIALIZED ({candidates} AND p.is_demo=? AND p.sector=? AND p.id>? AND EXISTS(SELECT 1 FROM source_products sp JOIN offers o ON o.source_product_id=sp.id JOIN branches b ON b.id=o.branch_id AND b.active=1 WHERE sp.product_id=p.id AND sp.source_kind=?{offer_filter}){pack_filter} ORDER BY p.id LIMIT ?) SELECT {PRODUCT_FIELDS},{} AS is_historical FROM hits h JOIN products p ON p.id=h.id LEFT JOIN offers o ON o.product_id=p.id AND o.branch_id IN(SELECT id FROM branches WHERE active=1) AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) GROUP BY p.id ORDER BY p.id",
         i32::from(historical)
     );
     let mut query = sqlx::query_as(&sql)
         .bind(query)
         .bind(demo)
+        .bind(sector)
         .bind(after)
         .bind(kind);
     if let Some((quantity, unit)) = pack {
