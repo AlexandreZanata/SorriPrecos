@@ -300,3 +300,23 @@ curl -fsS -H 'Content-Type: application/json' \
 - **Pague Menos Tancredo · 06.626.253/1406-70.** As mesmas simulações listaram também o ponto da loja **1406**, Avenida Tancredo Neves, 2198, Sorriso-MT, com `warehouseId=1406`, retirada grátis e estimativa de 60 minutos. O CEP devolvido no ponto (78890-000) diverge do cadastral (78890-143). A retirada do SKU foi observada, enquanto o preço retornado continua associado à loja 980 na cadeia de vendedores. O preço próprio da filial 1406 segue pendente. [Produto Pague Menos](https://www.paguemenos.com.br/creme-dental-colgate-natural-exracts-defesa-reforcada-90g/p)
 
 Em cada coleta, valide SKU, disponibilidade e vendedor antes de atribuir o valor. Cruze a opção de retirada em `logisticsInfo[].slas[]` com o endereço em `pickupPoints[]` pelo identificador exato. O `price` da opção de retirada é a tarifa logística e `items[].sellingPrice` é o preço do produto, ambos em centavos. Essas amostras comprovam a oferta online no momento da consulta. O catálogo completo, a quantidade física em estoque e os preços de balcão ficam fora da evidência desta rodada.
+
+#### Revalidação VTEX com SKU isolado e cesta
+
+A revalidação usou a rota de simulação acima, com `seller="1"`. Os testes mostram que tanto a composição da cesta quanto os dados geográficos podem mudar a cadeia de vendedores. Para atribuir preço a uma filial, valide a resposta do SKU isolado e preserve o contexto da consulta.
+
+- **Drogaria São Paulo.** Simulados separadamente para 78890-179, os SKUs 49697 e 895083 retornaram `drogariaspsorriso`, retirada no ponto 2436 e preços de R$ 5,59 e R$ 12,59. Na simulação com os dois SKUs juntos, os mesmos valores vieram com `sellerChain=["1","drogariaspcuiaba"]` para ambos os itens, embora as duas opções de retirada ainda apontassem para Sorriso. Essa cesta não comprova preço do vendedor local. [SKU 49697](https://www.drogariasaopaulo.com.br/creme-dental-colgate-90g-protecao-anticarie-/p) · [SKU 895083](https://www.drogariasaopaulo.com.br/creme-dental-colgate-natural-extracts-bicarbonato-e-hortela-90g/p)
+- **Pague Menos, loja 1406.** A simulação isolada do SKU 52572 com CEP 78896-016 e `geoCoordinates=[-55.7237907,-12.5439003]` (endereço público do ponto 980) devolveu `sellerChain=["1","paguemenos01406"]`, `availability=available` e **R$ 12,99**. O ponto 1406 voltou como opção de retirada, com o endereço Tancredo Neves, 2198, previamente cruzado com 06.626.253/1406-70. Assim, há evidência de preço e disponibilidade do vendedor 1406 para este SKU e contexto.
+- **Pague Menos, loja 980.** Com CEP 78890-000 e `geoCoordinates=[-55.73259969999999,-12.5428884]` (endereço público do ponto 1406), o mesmo SKU devolveu o vendedor 980 e R$ 12,99. As coordenadas vieram de `pickupPoints[].address.geoCoordinates`, na ordem longitude e latitude. O ponto mais próximo da entrada não determina sozinho o vendedor.
+- **Exemplo de exclusão.** Nas duas cestas Pague Menos, o SKU 48190 retornou R$ 5,49, mas `availability=cannotBeDelivered` e nenhuma opção de retirada para seu `itemIndex`. Valor positivo no JSON não torna o item disponível. [SKU 52572](https://www.paguemenos.com.br/creme-dental-colgate-natural-exracts-defesa-reforcada-90g/p) · [SKU 48190](https://www.paguemenos.com.br/sabonete-dove-go-fresh-revigorante-90g/p)
+
+Para reproduzir a amostra da Pague Menos Tancredo:
+
+```sh
+curl -fsS -H 'Content-Type: application/json' \
+  --data '{"items":[{"id":"52572","quantity":1,"seller":"1"}],"country":"BRA","postalCode":"78896-016","geoCoordinates":[-55.7237907,-12.5439003]}' \
+  'https://www.paguemenos.com.br/api/checkout/pub/orderForms/simulation' |
+  jq '{items: [.items[] | {id, sellingPrice, availability, sellerChain}],
+       retirada: [.logisticsInfo[] | {itemIndex, pontos: [.slas[] |
+         select(.deliveryChannel=="pickup-in-point") | .pickupPointId]}]}'
+```
