@@ -280,3 +280,23 @@ Os seis GETs públicos abaixo retornaram HTTP 200. A leitura usou `const restaur
 - **Veterinaria Sorriso São Francisco · 35391 · 35.848.278/0001-06.** Rua São Francisco de Assis, 433, coincide com o OpenCNPJ. Foram encontradas 289 variantes com preço. Exemplo: ração Thor para cão adulto 3 kg, variante 8571288, R$ 76,00. [Cardápio](https://aiqfome.com/MT/sorriso/veterinaria-sorriso)
 - **Veterinaria Sorriso Tancredo Neves · 101747 · 35.848.278/0002-89.** Avenida Tancredo Neves, 320, coincide com o OpenCNPJ. O cardápio traz 31 variantes com preço e IDs próprios. Outras 134 variantes indicam o vendedor 35391 da unidade São Francisco e foram excluídas da atribuição à loja Tancredo. As duas filiais devem manter IDs e preços separados. [Cardápio](https://aiqfome.com/MT/sorriso/veterinaria-sorriso-tancredo-neves)
 - **Sorrigas · 72785 · 05.526.729/0001-10.** Rua Carazinho, 415, coincide com o OpenCNPJ, a ficha Supergasbras e a ANP. O cardápio retorna oito variantes com preço, incluindo recarga P13 a R$ 170,00 (21574497) e vasilhame completo P13 a R$ 460,00 (21574502), ambos indisponíveis na consulta. [Cardápio](https://aiqfome.com/MT/sorriso/sorrigas)
+
+#### Preço e retirada por SKU na simulação pública VTEX
+
+A rota documentada pela VTEX respondeu HTTP 200 sem token, cookies ou dados pessoais. O POST é uma simulação de leitura. Os resultados abaixo são amostras de uma unidade de produto, sem pedido. [Documentação VTEX](https://developers.vtex.com/docs/guides/setting-up-white-label-seller-as-pickup-point)
+
+```sh
+curl -fsS -H 'Content-Type: application/json' \
+  --data '{"items":[{"id":"49697","quantity":1,"seller":"1"}],"country":"BRA","postalCode":"78890-179"}' \
+  'https://www.drogariasaopaulo.com.br/api/checkout/pub/orderForms/simulation' |
+  jq '{items: [.items[] | {id, sellingPrice, availability, sellerChain}],
+       retirada: [.logisticsInfo[].slas[] | select(.deliveryChannel=="pickup-in-point") |
+         {pickupPointId, price, shippingEstimate}],
+       pickupPoints: [.pickupPoints[] | {id, address}]}'
+```
+
+- **Drogaria São Paulo Brescansin · 61.412.110/1204-87.** O CEP 78890-179 foi confirmado pelo GET `/api/checkout/pub/postal-code/BRA/78890-179` como Sorriso-MT. O SKU **49697** apareceu como disponível a **R$ 5,59** e `sellerChain=["1","drogariaspsorriso"]`. O único ponto de retirada foi `drogariaspsorriso_2436`, com endereço Avenida Natalino João Brescansin, 1722, Sorriso-MT, tarifa zero e estimativa de 30 minutos. O controle com CEP 01310-100 devolveu vendedor e pontos de retirada de São Paulo, embora o preço do item fosse igual. Use o vendedor e o ponto da resposta para validar a filial. A igualdade de preço entre CEPs não comprova identidade. [Produto](https://www.drogariasaopaulo.com.br/creme-dental-colgate-90g-protecao-anticarie-/p)
+- **Pague Menos Brescansin · 06.626.253/0980-20.** O mesmo caminho de simulação em `www.paguemenos.com.br`, com SKU **52572** e CEPs 78890-134 e 78890-143, devolveu **R$ 12,99**, `availability=available` e `sellerChain=["1","paguemenos00980"]` em ambas as consultas. O ponto de retirada da loja **980** informa Avenida Natalino João Brescansin, 1314, Sorriso-MT, e `warehouseId=980`. O CEP devolvido no ponto (78896-016) diverge do cadastral (78890-134).
+- **Pague Menos Tancredo · 06.626.253/1406-70.** As mesmas simulações listaram também o ponto da loja **1406**, Avenida Tancredo Neves, 2198, Sorriso-MT, com `warehouseId=1406`, retirada grátis e estimativa de 60 minutos. O CEP devolvido no ponto (78890-000) diverge do cadastral (78890-143). A retirada do SKU foi observada, enquanto o preço retornado continua associado à loja 980 na cadeia de vendedores. O preço próprio da filial 1406 segue pendente. [Produto Pague Menos](https://www.paguemenos.com.br/creme-dental-colgate-natural-exracts-defesa-reforcada-90g/p)
+
+Em cada coleta, valide SKU, disponibilidade e vendedor antes de atribuir o valor. Cruze a opção de retirada em `logisticsInfo[].slas[]` com o endereço em `pickupPoints[]` pelo identificador exato. O `price` da opção de retirada é a tarifa logística e `items[].sellingPrice` é o preço do produto, ambos em centavos. Essas amostras comprovam a oferta online no momento da consulta. O catálogo completo, a quantidade física em estoque e os preços de balcão ficam fora da evidência desta rodada.
