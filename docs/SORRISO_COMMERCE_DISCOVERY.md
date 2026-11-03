@@ -14,7 +14,7 @@ python3 scripts/discover_opencnpj_sorriso.py /caminho/snapshot.ocnpj \
 
 ## Farmácias verificadas
 
-- [Therapeutica](https://www.therapeuticafarmacia.com.br/) tem uma loja virtual vinculada ao CNPJ ativo 01.780.384/0001-75, Avenida Curitiba, 2734, Sorriso-MT. O cadastro fiscal e a vitrine usam nomes diferentes para o bairro, com coincidência de CNPJ, logradouro, número e CEP. As páginas públicas têm preço e estoque em JSON-LD. Itens [sob encomenda](https://www.therapeuticafarmacia.com.br/actrisave) podem expor R$ 0,01 no HTML e são descartados.
+- [Therapeutica](https://www.therapeuticafarmacia.com.br/) tem uma loja virtual vinculada ao CNPJ ativo 01.780.384/0001-75, Avenida Curitiba, 2734, Sorriso-MT. O cadastro fiscal e a vitrine usam nomes diferentes para o bairro, com coincidência de CNPJ, logradouro, número e CEP. As páginas públicas têm preço e estoque em JSON-LD. Itens [sob encomenda](https://www.therapeuticafarmacia.com.br/actrisave) podem expor valores simbólicos de R$ 0,01 ou R$ 1,00 no HTML. O coletor descarta essa faixa de preços desta fonte.
 - [Farma & Farma no aiqfome](https://aiqfome.com/MT/sorriso/farma-farma) identifica a unidade de Sorriso (26.661.675/0001-75), mas a vitrine consultada devolveu zero categorias.
 - [FarMelhor Centro](https://unidades.franquiafarmelhor.com.br/farmelhor-centro-sorriso-mt-73568) tem páginas locais de produtos sem preço público verificável.
 - [Drogaria Nebrasca](https://drogarianebrasca24horas.com.br/contato/), [Farmácia Aurora](https://www.farmaciaaurora.com.br/sorriso-mt/) e [Fórmula Certa](https://www.formulacertasorriso.com.br/) têm presença local. As páginas consultadas direcionam para atendimento ou orçamento.

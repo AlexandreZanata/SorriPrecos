@@ -104,7 +104,7 @@ fn parse(html: &str, url: &Url, observed: i64) -> Result<Vec<ImportRow>> {
     };
     let price = vip::cents(&offer["price"])?;
     ensure!(
-        price > 1 && !html.to_lowercase().contains("preço sob encomenda"),
+        price > 100 && !html.to_lowercase().contains("preço sob encomenda"),
         "preço simbólico ou sob orçamento"
     );
     let row = ImportRow {
