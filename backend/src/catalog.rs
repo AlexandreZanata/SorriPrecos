@@ -211,6 +211,23 @@ async fn import_transaction(
     demo: bool,
     kind: &str,
 ) -> Result<usize> {
+    let mut tx = pool.begin_with("BEGIN IMMEDIATE").await?;
+    let applied = import_in_transaction(&mut tx, source, rows, demo, kind).await?;
+    tx.commit().await?;
+    Ok(applied)
+}
+
+pub(crate) async fn import_in_transaction(
+    tx: &mut sqlx::Transaction<'_, sqlx::Sqlite>,
+    source: &str,
+    rows: &[ImportRow],
+    demo: bool,
+    kind: &str,
+) -> Result<usize> {
+    ensure!(
+        !rows.is_empty() && rows.len() <= MAX_ROWS,
+        "lote deve conter 1 a 10000 registros"
+    );
     let mut seen = HashSet::new();
     for r in rows {
         validate(r)?;
@@ -230,11 +247,10 @@ async fn import_transaction(
             "código/filial duplicado no lote"
         );
     }
-    let mut tx = pool.begin().await?;
     let branches: HashSet<String> =
         sqlx::query_scalar("SELECT id FROM branches WHERE supermarket_id=? AND active=1")
             .bind(source)
-            .fetch_all(&mut *tx)
+            .fetch_all(&mut **tx)
             .await?
             .into_iter()
             .collect();
@@ -261,11 +277,11 @@ async fn import_transaction(
             demo,
         );
         sqlx::query("INSERT OR IGNORE INTO products(identity_key,gtin,name,normalized_name,brand,quantity,unit,presentation,category,is_demo) VALUES(?,?,?,?,?,?,?,?,?,?)")
-            .bind(&key).bind(&gtin).bind(&r.name).bind(normalize::text(&r.name)).bind(&r.brand).bind(q).bind(&unit).bind(&r.presentation).bind(&r.category).bind(demo).execute(&mut *tx).await?;
+            .bind(&key).bind(&gtin).bind(&r.name).bind(normalize::text(&r.name)).bind(&r.brand).bind(q).bind(&unit).bind(&r.presentation).bind(&r.category).bind(demo).execute(&mut **tx).await?;
         let product =
             sqlx::query("SELECT id,quantity,unit,presentation FROM products WHERE identity_key=?")
                 .bind(&key)
-                .fetch_one(&mut *tx)
+                .fetch_one(&mut **tx)
                 .await?;
         let pid: i64 = product.get("id");
         ensure!(
@@ -278,7 +294,7 @@ async fn import_transaction(
         let indexed: bool =
             sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM products_fts WHERE rowid=?)")
                 .bind(pid)
-                .fetch_one(&mut *tx)
+                .fetch_one(&mut **tx)
                 .await?;
         if !indexed {
             sqlx::query("INSERT INTO products_fts(rowid,name,brand,pack) VALUES(?,?,?,?)")
@@ -286,24 +302,24 @@ async fn import_transaction(
                 .bind(&r.name)
                 .bind(&r.brand)
                 .bind(normalize::pack_tokens(q, &unit))
-                .execute(&mut *tx)
+                .execute(&mut **tx)
                 .await?;
         }
         // A source SKU must not silently change its canonical product.
-        sqlx::query("INSERT OR IGNORE INTO source_products(supermarket_id,source_id,product_id,original_name,source_url,source_kind) VALUES(?,?,?,?,?,?)").bind(source).bind(&r.source_id).bind(pid).bind(&r.name).bind(&r.source_url).bind(kind).execute(&mut *tx).await?;
+        sqlx::query("INSERT OR IGNORE INTO source_products(supermarket_id,source_id,product_id,original_name,source_url,source_kind) VALUES(?,?,?,?,?,?)").bind(source).bind(&r.source_id).bind(pid).bind(&r.name).bind(&r.source_url).bind(kind).execute(&mut **tx).await?;
         let sp = sqlx::query(
             "SELECT id,product_id,source_kind FROM source_products WHERE supermarket_id=? AND source_id=?",
         )
         .bind(source)
         .bind(&r.source_id)
-        .fetch_one(&mut *tx)
+        .fetch_one(&mut **tx)
         .await?;
         ensure!(
             sp.get::<i64, _>("product_id") == pid && sp.get::<String, _>("source_kind") == kind,
             "código de origem mudou de produto; revisão manual necessária"
         );
         let sid: i64 = sp.get("id");
-        let previous=sqlx::query("SELECT id,price_cents,promotional_price_cents,collected_at FROM offers WHERE source_product_id=? AND branch_id=?").bind(sid).bind(&r.branch_id).fetch_optional(&mut *tx).await?;
+        let previous=sqlx::query("SELECT id,price_cents,promotional_price_cents,collected_at FROM offers WHERE source_product_id=? AND branch_id=?").bind(sid).bind(&r.branch_id).fetch_optional(&mut **tx).await?;
         if previous
             .as_ref()
             .is_some_and(|p| p.get::<i64, _>("collected_at") > r.collected_at)
@@ -315,14 +331,13 @@ async fn import_transaction(
                 || p.get::<Option<i64>, _>("promotional_price_cents") != r.promotional_price_cents
         });
         let oid:i64=sqlx::query_scalar("INSERT INTO offers(source_product_id,product_id,supermarket_id,branch_id,price_cents,promotional_price_cents,offer_type,conditions,available,source_url,collected_at,valid_until) VALUES(?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(source_product_id,branch_id) DO UPDATE SET price_cents=excluded.price_cents,promotional_price_cents=excluded.promotional_price_cents,offer_type=excluded.offer_type,conditions=excluded.conditions,available=excluded.available,source_url=excluded.source_url,collected_at=excluded.collected_at,valid_until=excluded.valid_until RETURNING id")
-            .bind(sid).bind(pid).bind(source).bind(&r.branch_id).bind(r.price_cents).bind(r.promotional_price_cents).bind(&r.offer_type).bind(&r.conditions).bind(r.available).bind(&r.source_url).bind(r.collected_at).bind(r.valid_until).fetch_one(&mut *tx).await?;
+            .bind(sid).bind(pid).bind(source).bind(&r.branch_id).bind(r.price_cents).bind(r.promotional_price_cents).bind(&r.offer_type).bind(&r.conditions).bind(r.available).bind(&r.source_url).bind(r.collected_at).bind(r.valid_until).fetch_one(&mut **tx).await?;
         if changed {
-            sqlx::query("INSERT INTO price_history(offer_id,price_cents,promotional_price_cents,collected_at) VALUES(?,?,?,?)").bind(oid).bind(r.price_cents).bind(r.promotional_price_cents).bind(r.collected_at).execute(&mut *tx).await?;
+            sqlx::query("INSERT INTO price_history(offer_id,price_cents,promotional_price_cents,collected_at) VALUES(?,?,?,?)").bind(oid).bind(r.price_cents).bind(r.promotional_price_cents).bind(r.collected_at).execute(&mut **tx).await?;
         }
         applied += 1;
     }
     // An authorized import does not imply a working automatic network adapter.
-    tx.commit().await?;
     Ok(applied)
 }
 

@@ -320,7 +320,7 @@ fn number(v: &Value) -> Option<String> {
         .map(str::to_owned)
         .or_else(|| v.as_number().map(ToString::to_string))
 }
-fn scaled(text: &str, factor: i64) -> Result<i64> {
+pub(crate) fn scaled(text: &str, factor: i64) -> Result<i64> {
     let s = text.trim().replace(',', ".");
     let mut p = s.split('.');
     let digits = p.next().context("número ausente")?;

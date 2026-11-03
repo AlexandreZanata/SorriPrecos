@@ -379,5 +379,33 @@
     "website": null,
     "audit_class": "D",
     "branches": []
+  },
+  {
+    "id": "acougue-portal",
+    "name": "Açougue Portal",
+    "website": "https://aiqfome.com/MT/sorriso/acougue-portal",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "acougue-portal-sorriso",
+        "name": "Sorriso",
+        "address": "Av Perimetral Sudoeste, 1087 · Sorriso-MT",
+        "source_id": "aiqfome:128045:cnpj:10199413000109"
+      }
+    ]
+  },
+  {
+    "id": "emporio-dom-manoel",
+    "name": "Empório Dom Manoel",
+    "website": "https://aiqfome.com/MT/sorriso/emporio-dom-manoel",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "emporio-dom-manoel-sorriso",
+        "name": "Sorriso",
+        "address": "Av. Blumenau, 2694 · Sorriso-MT",
+        "source_id": "aiqfome:35099:cnpj:30398947000163"
+      }
+    ]
   }
 ]

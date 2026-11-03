@@ -1,0 +1,45 @@
+[
+  {
+    "supermarket_id": "acougue-portal",
+    "branch_id": "acougue-portal-sorriso",
+    "slug": "acougue-portal",
+    "seller_id": 128045,
+    "cnpj": "10199413000109",
+    "street": "Av Perimetral Sudoeste",
+    "number": "1087",
+    "postcode": "78894067",
+    "categories": [
+      "carne bovina",
+      "carne suina",
+      "aves",
+      "carne de carneiro",
+      "linguicas caseira",
+      "paes",
+      "sal tempero maionese e molhos",
+      "frios e derivados",
+      "bebidas",
+      "gelo"
+    ]
+  },
+  {
+    "supermarket_id": "emporio-dom-manoel",
+    "branch_id": "emporio-dom-manoel-sorriso",
+    "slug": "emporio-dom-manoel",
+    "seller_id": 35099,
+    "cnpj": "30398947000163",
+    "street": "Av. Blumenau",
+    "number": "2694",
+    "postcode": "78890000",
+    "categories": [
+      "acucares",
+      "castanhas",
+      "farinhas",
+      "frutas secas",
+      "sementes e graos",
+      "temperos e especiarias",
+      "bebidas",
+      "aveia",
+      "secao terere"
+    ]
+  }
+]

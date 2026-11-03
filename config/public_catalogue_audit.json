@@ -45,7 +45,8 @@
       "filial_id": 1,
       "distribution_id": 1,
       "observed_city": "Sinop",
-      "reason": "No Sorriso distribution centre in the public storefront pickup list"
+      "reason": "Página institucional confirma Sorriso. O catálogo VipCommerce identificado continua vinculado a Sinop.",
+      "checked_url": "https://casaaurora.com.br/sorriso/"
     },
     {
       "market": "machado",
@@ -58,17 +59,20 @@
       "search_with_visitor_session_http": 200,
       "observed_city": "Sinop",
       "observed_filial": 3,
-      "reason": "No verified public storefront selector for the Sorriso branch; no product ingestion"
+      "reason": "Prefeitura confirma a unidade de Sorriso. A vitrine Agile B2B conhecida retornou o contexto de Sinop.",
+      "checked_url": "https://turismo.sorriso.mt.gov.br/produtos-servicos/mercado"
     },
     {
       "market": "delnorte",
       "status": "pending_public_catalogue",
-      "reason": "Current offers/flyer UI empty; no product API identified in observed public script"
+      "reason": "Site institucional confirma Sorriso e Nova Mutum. Link de ofertas da rede sem lista de preços locais verificável.",
+      "checked_url": "https://delnorteatacarejo.com.br/"
     },
     {
       "market": "atacadao",
       "status": "pending_sorriso_context",
-      "reason": "Store-specific catalogue not verified; TLS certificate failure was not bypassed"
+      "reason": "Página institucional da unidade existe. A vitrine indexada exibe CEP 02170-901. A consulta direta do ingestor falhou na validação TLS.",
+      "checked_url": "https://www.atacadao.com.br/loja/sorriso"
     },
     {
       "market": "amazonas",
@@ -83,80 +87,87 @@
     {
       "market": "babi",
       "website": null,
-      "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "status": "pending_site_unreachable",
+      "reason": "Prefeitura confirma a filial Tancredo Neves 2773. O domínio próprio indicado, www.babysupermercado.com.br, não resolveu na consulta.",
+      "checked_url": "https://turismo.sorriso.mt.gov.br/produtos-servicos/mercado/babi-supermercados"
     },
     {
       "market": "novos-campos",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Cadastro estadual identifica a unidade. Vitrine de compras da filial não localizada.",
+      "checked_url": "https://www.setasc.mt.gov.br/documents/364148/0/ESTABELECIMENTOS%2BCREDENCIADOS%2B-%2B08%2BJULHO/194aafab-a05c-d30f-d065-fe56c965e4dd"
     },
     {
       "market": "real",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Perfil local em diretório. Catálogo próprio com preços não localizado.",
+      "checked_url": "https://novainfortel.com.br/perfil-loja/real-supermercado-13866"
     },
     {
       "market": "londrina",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Busca por nome, município e catálogo/ofertas retornou referências cadastrais, perfis ou homônimos. Vitrine local com preços não confirmada."
     },
     {
       "market": "vipi",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "O domínio homônimo corresponde à fabricante de produtos odontológicos. Vitrine local do mercado não localizada.",
+      "checked_url": "https://vipi.com.br/"
     },
     {
       "market": "sol",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "A vitrine encontrada exibe Jandira-SP. Preços da filial de Sorriso não localizados.",
+      "checked_url": "https://solsupermercados.com.br/"
     },
     {
       "market": "realeza",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Busca por nome, município e catálogo/ofertas retornou referências cadastrais, perfis ou homônimos. Vitrine local com preços não confirmada."
     },
     {
       "market": "docelar",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Busca por nome, município e catálogo/ofertas retornou referências cadastrais, perfis ou homônimos. Vitrine local com preços não confirmada."
     },
     {
       "market": "uniao",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "O site homônimo lista Sol Nascente, Jaraguá, Vila Rezende e Rio das Pedras em SP. A unidade Falabrette de Sorriso ficou sem catálogo identificado.",
+      "checked_url": "https://www.uniaosuper.com.br/"
     },
     {
       "market": "ferreirao",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Busca por nome, município e catálogo/ofertas retornou referências cadastrais, perfis ou homônimos. Vitrine local com preços não confirmada."
     },
     {
       "market": "amorim",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Busca por nome, município e catálogo/ofertas retornou referências cadastrais, perfis ou homônimos. Vitrine local com preços não confirmada."
     },
     {
       "market": "filezao",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Busca por nome, município e catálogo/ofertas retornou referências cadastrais, perfis ou homônimos. Vitrine local com preços não confirmada."
     },
     {
       "market": "nortao",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Anúncio em diretório local. Catálogo estruturado com preço não localizado.",
+      "checked_url": "https://acougue.online/anuncio/mt/sorriso/mercado-nortao/"
     },
     {
       "market": "berte",
@@ -168,25 +179,73 @@
       "market": "lider",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Busca por nome, município e catálogo/ofertas retornou referências cadastrais, perfis ou homônimos. Vitrine local com preços não confirmada."
     },
     {
       "market": "chico",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Busca por nome, município e catálogo/ofertas retornou referências cadastrais, perfis ou homônimos. Vitrine local com preços não confirmada."
     },
     {
       "market": "sao-lourenco",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Busca por nome, município e catálogo/ofertas retornou referências cadastrais, perfis ou homônimos. Vitrine local com preços não confirmada."
     },
     {
       "market": "extra",
       "website": null,
       "status": "pending_public_catalogue",
-      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+      "reason": "Busca por nome, município e catálogo/ofertas retornou referências cadastrais, perfis ou homônimos. Vitrine local com preços não confirmada."
+    },
+    {
+      "market": "acougue-portal",
+      "status": "enabled",
+      "platform": "aiqfome",
+      "seller_id": 128045,
+      "city_id": 4430,
+      "public_page": "https://aiqfome.com/MT/sorriso/acougue-portal",
+      "interval_seconds": 600
+    },
+    {
+      "market": "emporio-dom-manoel",
+      "status": "enabled",
+      "platform": "aiqfome",
+      "seller_id": 35099,
+      "city_id": 4430,
+      "public_page": "https://aiqfome.com/MT/sorriso/emporio-dom-manoel",
+      "interval_seconds": 600
+    },
+    {
+      "market": "nanai-foods",
+      "status": "pending_access",
+      "checked_url": "https://sorrisonanaifoods.appsimpliza.com.br/",
+      "reason": "O navegador exibiu produtos de mercearia com preços e retirada na Tancredo Neves 2862. O GET direto retornou HTTP 403."
+    },
+    {
+      "market": "sao-jose",
+      "status": "pending_public_catalogue",
+      "checked_url": "https://www.cdlsorriso.com.br/Beneficios/Convenios/Alimentacao/Sao-jose-supermercado--58/",
+      "reason": "A CDL confirma a unidade Perimetral Sudoeste 2823 e lista perfis sociais. Vitrine com preços não localizada."
+    },
+    {
+      "market": "italia",
+      "status": "pending_public_catalogue",
+      "checked_url": "https://www.findglocal.com/BR/Sorriso/1749964731882717/Mercado-It%C3%A0lia",
+      "reason": "Perfil local na Rua Mato Grosso 1317. Catálogo com preços não localizado."
+    },
+    {
+      "market": "sp-frescor",
+      "status": "excluded_prepared_food",
+      "checked_url": "https://www.aiqfome.com/MT/sorriso/sp-frescor",
+      "reason": "Cardápio de frutas preparadas, saladas e porções personalizáveis. Fora do recorte de mercearia."
+    },
+    {
+      "market": "serra-gaucha",
+      "status": "excluded_prepared_food",
+      "checked_url": "https://aiqfome.com/MT/sorriso/serra-gaucha-emporio-adega-e-padaria",
+      "reason": "Vitrine de padaria e refeições preparadas. Fora do recorte de mercearia."
     }
   ]
 }

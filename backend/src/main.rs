@@ -1,6 +1,6 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use sorriprecos::{adapters, api, catalog, db, now, vip};
+use sorriprecos::{adapters, aiqfome, api, catalog, db, now, vip};
 use std::{net::SocketAddr, path::PathBuf};
 
 #[derive(Parser)]
@@ -48,6 +48,12 @@ enum Command {
     },
     CollectVip {
         #[arg(long, default_value = "config/vipcommerce.json")]
+        config: PathBuf,
+        #[arg(long)]
+        watch: bool,
+    },
+    CollectAiqfome {
+        #[arg(long, default_value = "config/aiqfome.json")]
         config: PathBuf,
         #[arg(long)]
         watch: bool,
@@ -138,6 +144,7 @@ async fn main() -> Result<()> {
         }
         Command::Collect { config } => adapters::collect_config(&pool, &config).await?,
         Command::CollectVip { config, watch } => vip::run(&pool, &config, watch).await?,
+        Command::CollectAiqfome { config, watch } => aiqfome::run(&pool, &config, watch).await?,
         Command::Maintain => {
             sqlx::query("DELETE FROM price_history WHERE collected_at<?")
                 .bind(now() - 90 * 86400)

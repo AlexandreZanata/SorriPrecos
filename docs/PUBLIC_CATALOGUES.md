@@ -75,3 +75,33 @@ As outras referências do levantamento não entregaram API pública de produtos/
 As origens agora têm `source_kind=retail|public_report`. A busca padrão e a comparação retornam somente o catálogo varejista; `historical=true` seleciona exclusivamente o relatório, sem misturar mínimos ou filiais com preços de outra origem. Os 27 produtos/31 observações do Procon conservam março de 2026 e estoque desconhecido. No app, use **Pesquisa histórica do Procon**; **Voltar aos preços atuais** restaura o catálogo varejista. Cache e chamadas do cliente incluem esse modo.
 
 O acesso público da vitrine e a autorização do usuário para testar esse mecanismo não constituem licença comercial de redistribuição concedida pelos supermercados. A classificação de pesquisa continua B, não A; o estado técnico legado `authorized` indica coletor habilitado, sem afirmar contrato. A licença MIT cobre o código. Condições para lançamento e atribuição continuam em `LEGAL_CONSIDERATIONS.md`.
+
+## Ampliação da cobertura em Sorriso em 03/11/2026
+
+A nova revisão cruzou o diretório municipal, cadastros locais e as vitrines acessíveis por nome e município. O registro em `config/public_catalogue_audit.json` inclui os resultados por comércio e distingue as fontes aptas, os sites institucionais, os homônimos de outras cidades e as vitrines com acesso pendente.
+
+- Babi tem endereço local no diretório da prefeitura. O domínio indicado pela ficha municipal não resolveu na consulta direta. [Ficha municipal](https://turismo.sorriso.mt.gov.br/produtos-servicos/mercado/babi-supermercados)
+- Casa Aurora tem página institucional da filial local. O catálogo identificado continua apontando para Sinop. [Casa Aurora Sorriso](https://casaaurora.com.br/sorriso/)
+- Machado consta no diretório de Sorriso. A sessão da vitrine Agile B2B conhecida continua associada à filial de Sinop. [Diretório municipal](https://turismo.sorriso.mt.gov.br/produtos-servicos/mercado)
+- DelNorte publica as duas unidades no site. A seção de ofertas consultada não entregou preços atribuíveis à unidade de Sorriso. [DelNorte](https://delnorteatacarejo.com.br/)
+- Atacadão tem página institucional da unidade. A vitrine indexada estava no CEP 02170-901 e a consulta direta falhou na validação TLS. [Atacadão Sorriso](https://www.atacadao.com.br/loja/sorriso)
+- Nanai Foods mostrou preços no navegador e retirada na Avenida Tancredo Neves, 2862. O GET direto do ingestor recebeu HTTP 403 e a fonte ficou pendente. [Nanai Foods](https://sorrisonanaifoods.appsimpliza.com.br/)
+- Mercado Amazonas tem uma página local com zero categorias de produtos. [Mercado Amazonas](https://aiqfome.com/MT/sorriso/mercado-amazonas)
+- O site União Supermercados pertence à rede com lojas em São Paulo. A rede Falabrette de Sorriso ficou sem vitrine confirmada. [União Supermercados](https://www.uniaosuper.com.br/)
+
+### Coleta aiqfome
+
+O comando abaixo consulta o HTML público do Açougue Portal e do Empório Dom Manoel a cada 600 segundos por vendedor. Use sem `--watch` para executar uma tentativa. O comando `collect-vip --watch` atende às fontes VipCommerce em processo separado.
+
+```sh
+./target/release/sorriprecos collect-aiqfome --watch
+```
+
+- Açougue Portal, vendedor 128045, CNPJ 10.199.413/0001-09, Perimetral Sudoeste 1087. [Catálogo](https://aiqfome.com/MT/sorriso/acougue-portal)
+- Empório Dom Manoel, vendedor 35099, CNPJ 30.398.947/0001-63, Blumenau 2694. [Catálogo](https://aiqfome.com/MT/sorriso/emporio-dom-manoel)
+
+O ingestor lê o JSON `restaurantenovo.menu.cardapios_categorias` embutido no HTML, que alimenta a própria vitrine. Valida vendedor, CNPJ, endereço, CEP e os identificadores de Sorriso-MT antes de importar. A origem é a página pública, acessada por GET sem sessão ou credenciais. Uma configuração por vendedor define as categorias de mercearia. Combos, complementos pagos obrigatórios e embalagens ambíguas ficam fora da comparação. A coleta usa o preço base da variante, sem frete, cupom ou campanha, e a disponibilidade informada pela vitrine. Os preços saem do ranking após 30 minutos sem atualização. A gravação de preços e da auditoria ocorre na mesma transação SQLite.
+
+Na coleta validada, o Açougue Portal apresentou 221 variantes nas categorias selecionadas, com 154 normalizadas e nenhuma disponível naquele momento. O Empório apresentou 173 variantes, com 169 normalizadas e 109 disponíveis. Quatro sucos ficaram fora por divergência entre o volume do título e o tamanho da variante. A API de acompanhamento continua em `/v1/collectors`.
+
+No Android físico 2311DRK48G com Android 16, via ADB e API local, a busca por `picanha gril 2kg` abriu a filial do Açougue Portal com “Indisponibilidade informada”. A busca por `demerara 100g` mostrou o açúcar do Empório Dom Manoel por R$ 3,50. O teste conferiu município, UF e URL de origem de ambas as ofertas pela API.

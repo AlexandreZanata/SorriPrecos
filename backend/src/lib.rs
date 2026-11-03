@@ -1,4 +1,5 @@
 pub mod adapters;
+pub mod aiqfome;
 pub mod api;
 pub mod catalog;
 pub mod db;
