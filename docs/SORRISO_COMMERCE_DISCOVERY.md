@@ -407,3 +407,18 @@ curl -fsS --compressed -H 'Content-Type: application/json' \
   'https://www.todimo.com.br/api/checkout/pub/orderForms/simulation' |
   jq '{items:[.items[]|{id,sellingPrice,availability,sellerChain}], pontos:[.pickupPoints[]|{id,address}]}'
 ```
+
+### Vitrine Therapeutica e sessão de encartes Farma & Farma
+
+- **Therapeutica Curitiba · 01.780.384/0001-75.** Revalidação da loja virtual já integrada. O GET direto do protetor Bi-Gel FPS 30 retornou HTTP 200. O script público `#product-schema` informou SKU 53835, embalagem de 50 g na descrição, imagem no diretório do CNPJ da matriz, uma oferta em BRL por R$ 93,00 e `InStock`. O rodapé vincula a venda online à Avenida Curitiba, 2734. O estoque publicado é da vitrine. [Produto](https://www.therapeuticafarmacia.com.br/protetor-solar-bi-gel-fps-30) · [Matriz](https://www.therapeuticafarmacia.com.br/lojas/8)
+- **Therapeutica Blumenau · 65.057.774/0001-02.** A ficha oficial mantém Avenida Blumenau, 2265. O CNES histórico usa o CNPJ 01.780.384/0003-37 no mesmo endereço, atualmente baixado (08) no OpenCNPJ. O cadastro ativo de mesma marca e endereço usa 65.057.774/0001-02. Preserve o registro antigo como evidência histórica e evite contar duas filiais. A amostra de preço da matriz não comprova oferta na Blumenau. [Filial](https://www.therapeuticafarmacia.com.br/lojas/7) · [CNES](https://cnes2.datasus.gov.br/Mod_Conjunto.asp?VCo_Unidade=5107925424399)
+- **Farma & Farma Centro · 26.661.675/0001-75.** A busca de visitante por cidade no POST `/v6/ajaxBuscaFarmacias.php` com formulário `cidade=Sorriso` retornou HTTP 200 e um resultado, loja **835**. A ficha confirma Avenida Natalino João Brescansin, 451, coincidente com o OpenCNPJ. O GET da ficha guarda a seleção num cookie anônimo. Com o mesmo cookie, `/v6/ofertas.php` mostra o cabeçalho da filial Sorriso Centro e informa que não há encarte. Sem o cookie, o HTML exibe seleção genérica e encaminha para escolher a farmácia. Catálogo atual pendente também no canal oficial. [Ficha da loja](https://www.farmaefarma.com.br/v6/minhafarmacia.php?farmacia=835) · [Ofertas](https://www.farmaefarma.com.br/v6/ofertas.php)
+
+```sh
+base=https://www.farmaefarma.com.br/v6
+curl -fsS --data-urlencode 'cidade=Sorriso' "$base/ajaxBuscaFarmacias.php"
+cookies=$(mktemp)
+curl -fsS -c "$cookies" "$base/minhafarmacia.php?farmacia=835" -o /dev/null
+curl -fsS -b "$cookies" "$base/ofertas.php"
+rm -f "$cookies"
+```
