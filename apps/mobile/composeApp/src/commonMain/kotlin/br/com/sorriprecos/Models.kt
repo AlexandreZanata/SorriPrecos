@@ -3,7 +3,7 @@ package br.com.sorriprecos
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
-@Serializable data class Items<T>(val items:List<T>,@SerialName("next_after") val nextAfter:Long?=null)
+@Serializable data class Items<T>(val items:List<T>,@SerialName("next_after") val nextAfter:Long?=null,val versions:Map<String,String> = emptyMap())
 @Serializable data class Product(
     val id:Long,val name:String,val brand:String,val quantity:Long,val unit:String,val presentation:String,val category:String,
     val gtin:String?=null,@SerialName("is_demo") val isDemo:Boolean=false,@SerialName("is_historical") val isHistorical:Boolean=false,

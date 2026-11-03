@@ -792,3 +792,51 @@ async fn product_retains_first_public_photo_across_offers() {
         .unwrap();
     assert_eq!(source, first);
 }
+
+#[tokio::test]
+async fn product_sync_sends_freshness_until_the_price_changes() {
+    let (_dir, pool) = fixture().await;
+    let first = row("demo-a", 2399);
+    catalog::import(&pool, "demo-a", std::slice::from_ref(&first), None)
+        .await
+        .unwrap();
+    let id = catalog::search(&pool, "arroz", 1, 0, true).await.unwrap()[0].id;
+    async fn sync(pool: &SqlitePool, id: i64, version: Value) -> Value {
+        let response = app(pool)
+            .oneshot(
+                Request::post("/v1/products/sync")
+                    .header("content-type", "application/json")
+                    .body(Body::from(
+                        json!({"products":[{"id":id,"comparison":true,"version":version}]})
+                            .to_string(),
+                    ))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        let body: Value =
+            serde_json::from_slice(&response.into_body().collect().await.unwrap().to_bytes())
+                .unwrap();
+        body["products"][0].clone()
+    }
+    let initial = sync(&pool, id, Value::Null).await;
+    assert_eq!(initial["data"]["product"]["min_price_cents"], 2399);
+    let mut next = first;
+    next.collected_at += 1;
+    catalog::import(&pool, "demo-a", std::slice::from_ref(&next), None)
+        .await
+        .unwrap();
+    let unchanged = sync(&pool, id, initial["version"].clone()).await;
+    assert!(unchanged.get("data").is_none());
+    assert_eq!(
+        unchanged["freshness"]["offers"][0]["collected_at"],
+        next.collected_at
+    );
+    next.price_cents = Some(2499);
+    catalog::import(&pool, "demo-a", &[next], None)
+        .await
+        .unwrap();
+    let changed = sync(&pool, id, initial["version"].clone()).await;
+    assert_eq!(changed["data"]["product"]["min_price_cents"], 2499);
+}

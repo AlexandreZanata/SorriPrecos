@@ -6,7 +6,7 @@ use axum::{
     http::{HeaderMap, StatusCode, header},
     middleware::{self, Next},
     response::{IntoResponse, Response},
-    routing::get,
+    routing::{get, post},
 };
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
@@ -42,6 +42,7 @@ pub fn router(state: AppState) -> Router {
         .route("/v1/supermarkets", get(supermarkets))
         .route("/v1/branches", get(branches))
         .route("/v1/products/search", get(search))
+        .route("/v1/products/sync", post(sync_products))
         .route("/v1/products/{id}", get(product))
         .route("/v1/products/{id}/prices", get(prices))
         .route("/v1/products/{id}/photo", get(photo))
@@ -223,9 +224,16 @@ async fn search(
     } else {
         None
     };
+    let versions: HashMap<String, String> = items
+        .iter()
+        .map(|product| {
+            let (version, _) = product_version(&json!({"product":product}));
+            (product.id.to_string(), version)
+        })
+        .collect();
     Ok(cached(
         &headers,
-        &json!({"items":items,"next_after":next_after,"is_demo":q.demo,"is_historical":q.historical}),
+        &json!({"items":items,"next_after":next_after,"is_demo":q.demo,"is_historical":q.historical,"versions":versions}),
     ))
 }
 
@@ -265,13 +273,23 @@ async fn prices(
     let Some(p) = catalog::product_scope(&s.pool, id, mode.historical).await? else {
         return Ok(error(StatusCode::NOT_FOUND, "produto não encontrado"));
     };
-    let rows=sqlx::query("SELECT b.id branch_id,b.name branch_name,b.address,s.id supermarket_id,s.name supermarket_name,o.price_cents,o.promotional_price_cents,o.offer_type,o.conditions,o.available,o.source_url,o.collected_at,o.valid_until FROM branches b JOIN supermarkets s ON s.id=b.supermarket_id LEFT JOIN offers o ON o.branch_id=b.id AND o.product_id=? AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) WHERE b.active=1 AND s.is_demo=? ORDER BY s.name,b.id").bind(id).bind(if mode.historical {"public_report"} else {"retail"}).bind(p.is_demo).fetch_all(&s.pool).await?;
+    let data = comparison_data(&s.pool, p, mode.historical, now()).await?;
+    Ok(cached(&headers, &data))
+}
+
+async fn comparison_data(
+    pool: &SqlitePool,
+    p: catalog::Product,
+    historical: bool,
+    at: i64,
+) -> anyhow::Result<Value> {
+    let rows=sqlx::query("SELECT b.id branch_id,b.name branch_name,b.address,s.id supermarket_id,s.name supermarket_name,o.price_cents,o.promotional_price_cents,o.offer_type,o.conditions,o.available,o.source_url,o.collected_at,o.valid_until FROM branches b JOIN supermarkets s ON s.id=b.supermarket_id LEFT JOIN offers o ON o.branch_id=b.id AND o.product_id=? AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) WHERE b.active=1 AND s.is_demo=? ORDER BY s.name,b.id").bind(p.id).bind(if historical {"public_report"} else {"retail"}).bind(p.is_demo).fetch_all(pool).await?;
     let mut items:Vec<Value>=rows.iter().map(|r| {
         let collected=r.get::<Option<i64>,_>("collected_at");let available=r.get::<Option<bool>,_>("available");
         let price=r.get::<Option<i64>,_>("price_cents");let promo=r.get::<Option<i64>,_>("promotional_price_cents");
         let kind=r.get::<Option<String>,_>("offer_type");let conditions=r.get::<Option<String>,_>("conditions");
         let until=r.get::<Option<i64>,_>("valid_until");
-        let state=if collected.is_none() {"unknown"} else if available==Some(false) {"unavailable"} else if price.is_none() || until.is_some_and(|t|t<now()) {"unknown"} else if collected.is_some_and(|t|t<now()-172800) {"stale"} else if available.is_none() {"unknown"} else {"recent"};
+        let state=if collected.is_none() {"unknown"} else if available==Some(false) {"unavailable"} else if price.is_none() || until.is_some_and(|t|t<at) {"unknown"} else if collected.is_some_and(|t|t<at-172800) {"stale"} else if available.is_none() {"unknown"} else {"recent"};
         let effective=if state=="recent" {if matches!(kind.as_deref(),Some("regular"|"promotion")) && conditions.as_deref().unwrap_or("").is_empty() {promo.or(price)} else {price}} else {None};
         json!({"branch_id":r.get::<String,_>("branch_id"),"branch_name":r.get::<String,_>("branch_name"),"address":r.get::<String,_>("address"),"supermarket_id":r.get::<String,_>("supermarket_id"),"supermarket_name":r.get::<String,_>("supermarket_name"),"price_cents":price,"promotional_price_cents":promo,"effective_price_cents":effective,"offer_type":kind,"conditions":conditions,"available":available,"source_url":r.get::<Option<String>,_>("source_url"),"collected_at":collected,"valid_until":until,"status":state,"is_demo":p.is_demo,"city":"Sorriso","state":"MT"})
     }).collect();
@@ -285,10 +303,83 @@ async fn prices(
     });
     let mut seen = std::collections::HashSet::new();
     items.retain(|v| seen.insert(v["branch_id"].as_str().unwrap().to_owned()));
-    Ok(cached(
-        &headers,
-        &json!({"product":p,"items":items,"coverage_note":"Menor preço conhecido entre as filiais com dados recentes. Cobertura incompleta."}),
-    ))
+    Ok(
+        json!({"product":p,"items":items,"coverage_note":"Menor preço conhecido entre as filiais com dados recentes. Cobertura incompleta."}),
+    )
+}
+
+#[derive(Deserialize)]
+struct SyncProduct {
+    id: i64,
+    #[serde(default)]
+    historical: bool,
+    #[serde(default)]
+    comparison: bool,
+    version: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct SyncRequest {
+    products: Vec<SyncProduct>,
+}
+
+async fn sync_products(State(s): State<AppState>, Json(request): Json<SyncRequest>) -> ApiResult {
+    if request.products.len() > 40 || request.products.iter().any(|entry| entry.id <= 0) {
+        return Ok(error(
+            StatusCode::BAD_REQUEST,
+            "lote de até 40 produtos com IDs positivos",
+        ));
+    }
+    let at = now();
+    let mut updates = Vec::with_capacity(request.products.len());
+    for entry in request.products {
+        let Some(product) = catalog::product_scope(&s.pool, entry.id, entry.historical).await?
+        else {
+            updates.push(json!({"id":entry.id,"historical":entry.historical,"removed":true}));
+            continue;
+        };
+        let payload = if entry.comparison {
+            comparison_data(&s.pool, product, entry.historical, at).await?
+        } else {
+            json!({"product":product})
+        };
+        let (version, freshness) = product_version(&payload);
+        let mut response = json!({"id":entry.id,"historical":entry.historical,"version":version});
+        if entry.version.as_deref() == Some(version.as_str()) {
+            response["freshness"] = freshness;
+        } else {
+            response["data"] = payload;
+        }
+        updates.push(response);
+    }
+    Ok(Json(json!({"products":updates})).into_response())
+}
+
+fn product_version(payload: &Value) -> (String, Value) {
+    let mut content = payload.clone();
+    let last = content["product"]
+        .as_object_mut()
+        .and_then(|p| p.remove("last_collected_at"));
+    let mut observed = Vec::new();
+    if let Some(offers) = content.get_mut("items").and_then(Value::as_array_mut) {
+        for offer in offers.iter_mut() {
+            if let Some(object) = offer.as_object_mut() {
+                let collected = object.remove("collected_at");
+                let valid = object.remove("valid_until");
+                if collected.as_ref().is_some_and(Value::is_number) {
+                    observed.push(json!({"branch_id":object["branch_id"],"collected_at":collected,"valid_until":valid}));
+                }
+            }
+        }
+        // Re-observing a tied offer may reorder it without changing its content.
+        offers.sort_by(|left, right| left["branch_id"].as_str().cmp(&right["branch_id"].as_str()));
+    }
+    let mut hasher = DefaultHasher::new();
+    content.hash(&mut hasher);
+    (
+        format!("{:016x}", hasher.finish()),
+        json!({"last_collected_at":last,"offers":observed}),
+    )
 }
 
 async fn status(State(s): State<AppState>, headers: HeaderMap) -> ApiResult {

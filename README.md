@@ -122,3 +122,9 @@ python3 scripts/android_real_smoke.py SERIAL_DO_CELULAR
 ```
 
 São aceitas apenas linhas com município Sorriso, UF MT no endereço, loja e logradouro/número correspondentes ao mapeamento de filiais. Lojas de outras cidades, varejistas fora do escopo, embalagens incompletas e marcas não confirmadas são excluídos. Detalhes em [SORRISO_INTEGRATIONS.md](docs/SORRISO_INTEGRATIONS.md).
+
+### Cache e sincronização no Android
+
+O app salva as páginas de busca, os produtos e as comparações consultadas no SQLite local. Reabrir uma consulta salva ou abrir o carrinho com comparações já baixadas lê o cache primeiro. Uma busca inédita ou uma comparação ainda ausente precisa da API para obter os dados pela primeira vez.
+
+Com o app aberto, produtos acompanhados ficam elegíveis para sincronização após 10 minutos. `POST /v1/products/sync` recebe até 40 IDs com suas versões. O backend retorna a ficha de produtos novos para o aparelho ou com conteúdo alterado. Quando o conteúdo permanece igual, retorna apenas a confirmação e os horários da observação. A atualização manual dos preços permite revalidar antes do intervalo.

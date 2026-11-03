@@ -5,6 +5,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.encodedPath
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.test.runTest
 
@@ -13,6 +14,7 @@ class MemoryStore:LocalStore {
     override fun get(key:String)=values[key]
     override fun put(key:String,value:String){values[key]=value}
     override fun remove(key:String){values.remove(key)}
+    override fun keys(prefix:String)=values.keys.filter { it.startsWith(prefix) }
 }
 class RepositoryTest {
     @Test fun amountsAndPackaging() {
@@ -35,14 +37,16 @@ class RepositoryTest {
     }
     @Test fun historicalCacheNeverLeaksIntoCurrentSearch()=runTest {
         val store=MemoryStore()
+        val historic = Product(1,"Arroz","Marca",5000,"g","pacote","Mercearia",isHistorical=true)
         val good=Repository(store,"https://example.test",HttpClient(MockEngine{request ->
             assertEquals("true",request.url.parameters["historical"])
-            respond("{\"items\":[]}")
+            respond(codec.encodeToString(Items(listOf(historic))))
         }))
         good.search("arroz",false,historical=true);good.client.close()
         val offline=Repository(store,"https://example.test",HttpClient(MockEngine{error("offline")}))
         assertFailsWith<CatalogUnavailable>{offline.search("arroz",false)}
-        assertTrue(offline.search("arroz",false,historical=true).offline);offline.client.close()
+        assertEquals(historic,offline.search("arroz",false,historical=true).data.items.single())
+        offline.client.close()
     }
     @Test fun cancellationNeverFallsBackToOldResults()=runTest {
         val store=MemoryStore();store.put("cache:v2:https://example.test:/v1/supermarkets?demo=false&historical=false","{\"items\":[]}")
@@ -53,5 +57,41 @@ class RepositoryTest {
         val store=MemoryStore();store.put("cache:v2:https://one.test:/v1/supermarkets?demo=false&historical=false","{\"items\":[]}")
         val repo=Repository(store,"https://two.test",HttpClient(MockEngine{respond("{}",HttpStatusCode.ServiceUnavailable)}))
         assertFailsWith<CatalogUnavailable>{repo.markets(false)};repo.client.close()
+    }
+
+    @Test fun productsSurviveRepositoryRestartAndReconcileThroughOneBatch()=runTest {
+        val disk=MemoryStore()
+        val product=Product(1,"Arroz","Marca",5000,"g","pacote","Mercearia",minPriceCents=2399)
+        val first=Repository(disk,"https://example.test",HttpClient(MockEngine { request ->
+            assertEquals("/v1/products/search",request.url.encodedPath)
+            respond(codec.encodeToString(Items(listOf(product))))
+        }))
+        assertEquals(product,first.search("arroz",false).data.items.single())
+        first.client.close()
+
+        var calls=0
+        val second=Repository(disk,"https://example.test",HttpClient(MockEngine { request ->
+            calls++
+            assertEquals("/v1/products/sync",request.url.encodedPath)
+            respond(codec.encodeToString(SyncResponse(listOf(SyncUpdate(
+                id=1,historical=false,version="next",data=SyncData(product.copy(minPriceCents=if (calls == 1) 2399 else 2199),emptyList())
+            )))))
+        }))
+        assertEquals(product,second.search("arroz",false).data.items.single())
+        second.syncKnownProducts()
+        assertEquals(0,calls)
+        assertEquals(2399L,second.prices(1).data.product.minPriceCents)
+        assertEquals(2399L,second.prices(1).data.product.minPriceCents)
+        assertEquals(1,calls)
+
+        val key = disk.keys("products:v1:").single()
+        val cached = codec.decodeFromString<ProductRecord>(disk.get(key)!!)
+        disk.put(key, codec.encodeToString(cached.copy(checkedAt = platformNow() - PRODUCT_SYNC_INTERVAL)))
+        second.syncKnownProducts()
+        assertEquals(2199L,second.search("arroz",false).data.items.single().minPriceCents)
+        assertEquals(2199L,second.prices(1).data.product.minPriceCents)
+        second.syncKnownProducts()
+        assertEquals(2,calls)
+        second.client.close()
     }
 }

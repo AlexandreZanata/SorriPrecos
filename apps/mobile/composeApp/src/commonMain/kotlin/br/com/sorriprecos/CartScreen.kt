@@ -15,10 +15,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -60,22 +56,11 @@ internal fun quoteCart(lines: List<CartLine>, offers: Map<Long, List<Offer>>, at
     var results by remember(repo, ids) { mutableStateOf<Map<Long, Loaded<Comparison>?>>(emptyMap()) }
     var attempt by remember { mutableIntStateOf(0) }
     var loading by remember(repo, ids) { mutableStateOf(ids.isNotEmpty()) }
-    LaunchedEffect(repo, ids, attempt) {
+    val synced by repo.updates.collectAsState()
+    LaunchedEffect(repo, ids, attempt, synced) {
         loading = ids.isNotEmpty()
         try {
-            results = buildMap {
-                for (batch in ids.chunked(4)) {
-                    putAll(coroutineScope {
-                        batch.map { id ->
-                            async {
-                                id to try { repo.prices(id) }
-                                catch (e: CancellationException) { throw e }
-                                catch (_: Exception) { null }
-                            }
-                        }.awaitAll()
-                    })
-                }
-            }
+            results = repo.pricesFor(ids)
         } finally { loading = false }
     }
     val currentLines = lines.map { line ->
@@ -131,7 +116,12 @@ internal fun quoteCart(lines: List<CartLine>, offers: Map<Long, List<Offer>>, at
                             Text("Totais por filial", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                             Text("Listas completas primeiro", style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
                         }
-                        IconButton(onClick = { attempt++ }, enabled = !loading,
+                        IconButton(onClick = {
+                        scope.launch {
+                            loading = true
+                            try { repo.syncKnownProducts(force = true) } finally { attempt++ }
+                        }
+                    }, enabled = !loading,
                             modifier = Modifier.semantics { contentDescription = "Atualizar totais" }) {
                             AppIcon(Glyph.Refresh, tint = if (loading) colors.onSurfaceVariant else colors.primary)
                         }

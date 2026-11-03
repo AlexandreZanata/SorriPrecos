@@ -30,8 +30,15 @@ import kotlinx.coroutines.launch
     val uri = LocalUriHandler.current
     val snack = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val refreshOffer: () -> Unit = {
+        scope.launch {
+            repo.syncKnownProducts(force = true, onlyId = selected.id)
+            onRefresh()
+        }
+    }
     fun openSource(url: String) { try { uri.openUri(url) } catch (_: Exception) { scope.launch { snack.showSnackbar("Não foi possível abrir a fonte") } } }
-    LaunchedEffect(selected.id, repo, refresh) {
+    val synced by repo.updates.collectAsState()
+    LaunchedEffect(selected.id, repo, refresh, synced) {
         loading = true; error = null
         try { loaded = repo.prices(selected.id, selected.isHistorical) } catch (e: CancellationException) { throw e }
         catch (e: Exception) { error = e.message } finally { loading = false }
@@ -54,7 +61,7 @@ import kotlinx.coroutines.launch
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     TextButton(onClick = onFavorite, contentPadding = PaddingValues(horizontal = 0.dp)) { AppIcon(Glyph.Heart, Modifier.size(16.dp), MaterialTheme.colorScheme.primary, filled = favorite); Spacer(Modifier.width(5.dp)); Text(if (favorite) "Salvo nos favoritos" else "Salvar nos favoritos", fontSize = 12.sp) }
-                    TextButton(onClick = onRefresh) { AppIcon(Glyph.Refresh, Modifier.size(15.dp), MaterialTheme.colorScheme.primary); Spacer(Modifier.width(5.dp)); Text("Atualizar", fontSize = 12.sp) }
+                    TextButton(onClick = refreshOffer) { AppIcon(Glyph.Refresh, Modifier.size(15.dp), MaterialTheme.colorScheme.primary); Spacer(Modifier.width(5.dp)); Text("Atualizar", fontSize = 12.sp) }
                 }
                 if (onAdd != null) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -72,7 +79,7 @@ import kotlinx.coroutines.launch
                 }
             }
             if (loading) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
-            if (error != null) item { ErrorCard(error!!, onRefresh) }
+            if (error != null) item { ErrorCard(error!!, refreshOffer) }
             if (details) {
                 item { EmptyCard("A mesma embalagem, sempre", "${product.name}\nMarca: ${product.brand}\nConteúdo: ${product.pack}\nApresentação: ${product.presentation}\nGTIN: ${product.gtin ?: "Não informado"}\n${if(product.isDemo)"Produto sintético de demonstração." else "Correspondência conservadora por GTIN ou nome, marca e embalagem."}") }
                 item { Text("Referências de origem", fontSize = 18.sp, fontWeight = FontWeight.Bold) }

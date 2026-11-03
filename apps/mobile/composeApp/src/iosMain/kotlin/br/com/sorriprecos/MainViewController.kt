@@ -13,6 +13,7 @@ import platform.Foundation.timeIntervalSince1970
 fun MainViewController()=ComposeUIViewController {App(IosStore())}
 class IosStore:LocalStore {
     private val defaults=NSUserDefaults.standardUserDefaults
+    override fun keys(prefix: String): List<String> = defaults.dictionaryRepresentation().keys.filterIsInstance<String>().filter { it.startsWith(prefix) }
     override fun get(key:String)=defaults.stringForKey(key)
     override fun put(key:String,value:String){defaults.setObject(value,forKey=key)}
     override fun remove(key:String){defaults.removeObjectForKey(key)}

@@ -28,6 +28,7 @@ class MainActivity:ComponentActivity() {
     }
 }
 class AndroidStore(context:Context):LocalStore {
+    override val catalogue: LocalStore = AndroidCatalogueCache(context)
     private val prefs=context.getSharedPreferences("sorriprecos",Context.MODE_PRIVATE)
     override fun get(key:String)=prefs.getString(key,null)
     override fun put(key:String,value:String){prefs.edit{putString(key,value)}}

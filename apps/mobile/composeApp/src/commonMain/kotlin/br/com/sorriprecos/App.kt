@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
     var contrast by remember { mutableStateOf(store.get("ui-contrast") == "true") }
     var largeText by remember { mutableStateOf(store.get("ui-large-text") == "true") }
     val repo = remember(baseUrl) { Repository(store, baseUrl) }
+    val synced by repo.updates.collectAsState()
     DisposableEffect(repo) { onDispose { repo.client.close() } }
     var screen by remember { mutableStateOf("home") }
     var category by remember { mutableStateOf<QuickCategory?>(null) }
@@ -60,7 +61,26 @@ import kotlinx.coroutines.launch
     val uri = LocalUriHandler.current
     val snack = remember { SnackbarHostState() }
 
-    LaunchedEffect(repo, demo, historical, refresh) {
+    LaunchedEffect(repo) {
+        while (true) {
+            repo.syncKnownProducts()
+            delay(60_000)
+        }
+    }
+    LaunchedEffect(repo, refresh) {
+        if (refresh > 0 && screen == "search") repo.syncKnownProducts()
+    }
+    LaunchedEffect(repo, synced) {
+        if (synced > 0) {
+            val current = results
+            val updated = repo.latestProducts(current)
+            if (results === current) {
+                results = updated.data
+                searchOffline = updated.offline
+            }
+        }
+    }
+    LaunchedEffect(repo, demo, historical, if (screen == "sources") refresh else 0) {
         sourceLoading = true; error = null
         try {
             val status = repo.status(); catalog = status.data
