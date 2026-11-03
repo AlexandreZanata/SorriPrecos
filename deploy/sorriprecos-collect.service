@@ -1,0 +1,19 @@
+[Unit]
+Description=SorriPrecos authorized feeds
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=sorriprecos
+Group=sorriprecos
+WorkingDirectory=/opt/sorriprecos
+Environment=DATABASE_URL=sqlite:///var/lib/sorriprecos/catalog.db
+ExecStart=/usr/bin/flock -n /var/lib/sorriprecos/collector.lock /opt/sorriprecos/sorriprecos collect --config /etc/sorriprecos/sources.json
+ExecStartPost=/opt/sorriprecos/sorriprecos maintain
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/sorriprecos
+MemoryMax=256M
+TimeoutStartSec=3600

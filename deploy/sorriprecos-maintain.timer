@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily SorriPrecos retention
+
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec=1800
+Persistent=true
+
+[Install]
+WantedBy=timers.target

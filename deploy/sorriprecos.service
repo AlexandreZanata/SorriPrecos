@@ -1,0 +1,26 @@
+[Unit]
+Description=SorriPrecos API
+After=network.target
+
+[Service]
+User=sorriprecos
+Group=sorriprecos
+WorkingDirectory=/opt/sorriprecos
+Environment=DATABASE_URL=sqlite:///var/lib/sorriprecos/catalog.db
+Environment=BIND=127.0.0.1:8080
+Environment=RUST_LOG=sorriprecos=info,tower_http=warn
+ExecStart=/opt/sorriprecos/sorriprecos serve
+Restart=on-failure
+RestartSec=3
+StateDirectory=sorriprecos
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/sorriprecos
+MemoryMax=384M
+TasksMax=128
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,211 @@
+{
+  "environment": {
+    "platform": "Linux-7.2.6-76070206-generic-x86_64-with-glibc2.39",
+    "cpu_count": 16,
+    "python": "3.12.3",
+    "binary": "/home/iiii/PESSOAL-PROJETOS-ALEXANDRE/SorriPrecos/target/release/sorriprecos",
+    "profile": "release",
+    "date_utc": "2026-11-03T13:52:21Z",
+    "cpu_model": "13th Gen Intel(R) Core(TM) i7-13620H"
+  },
+  "scenarios": [
+    {
+      "products": 10000,
+      "offers": 10000,
+      "offers_per_product": 1,
+      "db_bytes": 7143424,
+      "import_result": {
+        "seconds": 1.306,
+        "peak_rss_bytes": 11231232
+      },
+      "read": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.127,
+        "rps": 3144.81,
+        "p50_ms": 2.421,
+        "p95_ms": 3.789,
+        "p99_ms": 4.727,
+        "errors": 0,
+        "cpu_percent_one_core": 274.78,
+        "rss_bytes": 14831616
+      },
+      "concurrent_write": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.17,
+        "rps": 2356.2,
+        "p50_ms": 3.095,
+        "p95_ms": 5.602,
+        "p99_ms": 7.508,
+        "errors": 0,
+        "writer_still_running_after_read_phase": false
+      }
+    },
+    {
+      "products": 10000,
+      "offers": 30000,
+      "offers_per_product": 3,
+      "db_bytes": 12476416,
+      "import_result": {
+        "seconds": 3.673,
+        "peak_rss_bytes": 12464128
+      },
+      "read": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.446,
+        "rps": 897.39,
+        "p50_ms": 8.429,
+        "p95_ms": 16.001,
+        "p99_ms": 20.925,
+        "errors": 0,
+        "cpu_percent_one_core": 94.18,
+        "rss_bytes": 15380480
+      },
+      "concurrent_write": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.503,
+        "rps": 794.94,
+        "p50_ms": 9.014,
+        "p95_ms": 22.511,
+        "p99_ms": 30.711,
+        "errors": 0,
+        "writer_still_running_after_read_phase": false
+      }
+    },
+    {
+      "products": 50000,
+      "offers": 50000,
+      "offers_per_product": 1,
+      "db_bytes": 36077568,
+      "import_result": {
+        "seconds": 8.33,
+        "peak_rss_bytes": 15728640
+      },
+      "read": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.229,
+        "rps": 1748.03,
+        "p50_ms": 4.483,
+        "p95_ms": 6.816,
+        "p99_ms": 8.659,
+        "errors": 0,
+        "cpu_percent_one_core": 401.78,
+        "rss_bytes": 19783680
+      },
+      "concurrent_write": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.249,
+        "rps": 1603.77,
+        "p50_ms": 4.864,
+        "p95_ms": 7.616,
+        "p99_ms": 10.357,
+        "errors": 0,
+        "writer_still_running_after_read_phase": false
+      }
+    },
+    {
+      "products": 50000,
+      "offers": 150000,
+      "offers_per_product": 3,
+      "db_bytes": 63954944,
+      "import_result": {
+        "seconds": 23.194,
+        "peak_rss_bytes": 16314368
+      },
+      "read": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.197,
+        "rps": 2027.03,
+        "p50_ms": 3.89,
+        "p95_ms": 5.933,
+        "p99_ms": 6.852,
+        "errors": 0,
+        "cpu_percent_one_core": 425.31,
+        "rss_bytes": 19480576
+      },
+      "concurrent_write": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.223,
+        "rps": 1794.42,
+        "p50_ms": 4.332,
+        "p95_ms": 6.624,
+        "p99_ms": 7.543,
+        "errors": 0,
+        "writer_still_running_after_read_phase": true
+      }
+    },
+    {
+      "products": 100000,
+      "offers": 100000,
+      "offers_per_product": 1,
+      "db_bytes": 71942144,
+      "import_result": {
+        "seconds": 10.849,
+        "peak_rss_bytes": 15155200
+      },
+      "read": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.373,
+        "rps": 1072.6,
+        "p50_ms": 7.575,
+        "p95_ms": 10.956,
+        "p99_ms": 11.972,
+        "errors": 0,
+        "cpu_percent_one_core": 410.07,
+        "rss_bytes": 24014848
+      },
+      "concurrent_write": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.354,
+        "rps": 1130.46,
+        "p50_ms": 7.173,
+        "p95_ms": 10.225,
+        "p99_ms": 11.056,
+        "errors": 0,
+        "writer_still_running_after_read_phase": false
+      }
+    },
+    {
+      "products": 100000,
+      "offers": 300000,
+      "offers_per_product": 3,
+      "db_bytes": 128638976,
+      "import_result": {
+        "seconds": 45.316,
+        "peak_rss_bytes": 15208448
+      },
+      "read": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.624,
+        "rps": 640.83,
+        "p50_ms": 12.919,
+        "p95_ms": 17.812,
+        "p99_ms": 20.54,
+        "errors": 0,
+        "cpu_percent_one_core": 376.29,
+        "rss_bytes": 24969216
+      },
+      "concurrent_write": {
+        "requests": 400,
+        "workers": 8,
+        "seconds": 0.639,
+        "rps": 625.84,
+        "p50_ms": 12.903,
+        "p95_ms": 18.597,
+        "p99_ms": 22.024,
+        "errors": 0,
+        "writer_still_running_after_read_phase": false
+      }
+    }
+  ]
+}

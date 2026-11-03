@@ -1,0 +1,17 @@
+/target/
+/data/
+/artifacts/
+/.build/
+**/.gradle/
+**/.kotlin/
+**/build/
+**/local.properties
+*.db
+*.db-shm
+*.db-wal
+.env
+*.jks
+*.keystore
+__pycache__/
+*.xcodeproj/
+DerivedData/

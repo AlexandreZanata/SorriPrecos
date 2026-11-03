@@ -1,0 +1,376 @@
+[
+  {
+    "id": "delmoro",
+    "name": "DelMoro Supermercados",
+    "website": "https://delmoro.com.br/",
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "delmoro-bh",
+        "name": "Loja Belo Horizonte",
+        "address": "Av. Belo Horizonte, 94 · Centro Sul",
+        "source_id": null
+      },
+      {
+        "id": "delmoro-brescansin",
+        "name": "Loja Brescansin",
+        "address": "Av. Natalino João Brescansin, 414 · Centro Sul",
+        "source_id": null
+      },
+      {
+        "id": "delmoro-rota",
+        "name": "Loja Rota do Sol",
+        "address": "Av. Blumenau Sul, 754 · Rota do Sol",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "sorriso",
+    "name": "Sorriso Supermercados",
+    "website": "https://www.sorrisosupermercados.com.br/",
+    "audit_class": "D",
+    "branches": [
+      {
+        "id": "sorriso-centro",
+        "name": "Centro",
+        "address": "Av. Natalino João Brescansin, 220 · Centro Sul",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "sorrinorte",
+    "name": "Sorrinorte Supermercados",
+    "website": "https://www.sorrinorte.com.br/",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "sorrinorte-industrial",
+        "name": "Industrial · endereço a reconfirmar",
+        "address": "Rua Palmares, 489 · Industrial 2ª Etapa",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "machado",
+    "name": "Machado Supermercados",
+    "website": "https://www.redemachado.com.br/",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "machado-universitario",
+        "name": "Parque Universitário",
+        "address": "Av. Noêmia Tonello Dalmolin, 2501 · Parque Universitário",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "casa-aurora",
+    "name": "Casa Aurora",
+    "website": "https://casaaurora.com.br/",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "casa-aurora-centro",
+        "name": "Centro Sul",
+        "address": "Av. Otávio de Souza Cruz, 441 · Centro Sul",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "delnorte",
+    "name": "DelNorte Atacarejo",
+    "website": "https://delnorteatacarejo.com.br/",
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "delnorte-br163",
+        "name": "Sorriso",
+        "address": "Faixa de domínio da BR-163, 8157",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "babi",
+    "name": "Babi Supermercados",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "babi-bela-vista",
+        "name": "Bela Vista",
+        "address": "Av. Tancredo Neves, 2773 · Bela Vista",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "novos-campos",
+    "name": "Supermercado Novos Campos",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "novos-campos-949",
+        "name": "Novos Campos",
+        "address": "Rua Alencar Bortolanza, 949 · Novos Campos",
+        "source_id": null
+      },
+      {
+        "id": "novos-campos-1185",
+        "name": "Morada do Sol",
+        "address": "Av. Blumenau Sul, 1185 · Morada do Sol",
+        "source_id": null
+      },
+      {
+        "id": "novos-campos-1675",
+        "name": "São Francisco · a reconfirmar",
+        "address": "Rua São Francisco de Assis, 1675 · Novos Campos",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "real",
+    "name": "Real Supermercado",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "real-centro",
+        "name": "Centro Sul",
+        "address": "Av. Tancredo Neves, 104 · Centro Sul",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "amazonas",
+    "name": "Mercado Amazonas",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "amazonas-blumenau",
+        "name": "Jardim Amazônia",
+        "address": "Av. Blumenau, 1011 · Jardim Amazônia",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "atacadao",
+    "name": "Atacadão",
+    "website": "https://www.atacadao.com.br/loja/sorriso",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "atacadao-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Idemar Riedi, 8150 · Loteamento Valo",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "londrina",
+    "name": "Mercado Londrina",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "londrina-carolina",
+        "name": "Jardim Carolina",
+        "address": "Av. Londrina, 477 · Jardim Carolina",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "vipi",
+    "name": "Vipi Supermercados",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "vipi-nobre",
+        "name": "Nobre",
+        "address": "Rua Rui Barbosa, 351 · Nobre",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "sol",
+    "name": "Sol Supermercado",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "sol-industrial",
+        "name": "Industrial",
+        "address": "Rua São Francisco de Assis, 2073 · Distrito Industrial",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "realeza",
+    "name": "Mercado Realeza",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "realeza-bela-vista",
+        "name": "Bela Vista · logradouro a reconfirmar",
+        "address": "Av. Perimetral Nordeste/Noroeste, 2258 · Bela Vista",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "docelar",
+    "name": "Mercado Docelar",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "docelar-boa-esperanca",
+        "name": "Boa Esperança",
+        "address": "Rua Iraí, 957 · Boa Esperança",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "uniao",
+    "name": "Supermercado União",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "uniao-universitario",
+        "name": "Parque Universitário",
+        "address": "Av. Noêmia Tonello Dalmolin, 2285 · Parque Universitário",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "ferreirao",
+    "name": "Supermercado Ferreirão",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "ferreirao-sao-mateus",
+        "name": "São Mateus",
+        "address": "Rua Passo Fundo, 1894 · São Mateus",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "amorim",
+    "name": "Supermercado Amorim",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "amorim-colinas",
+        "name": "Residencial Colinas",
+        "address": "Perimetral Sudoeste, 3195 · Residencial Colinas",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "filezao",
+    "name": "Supermercado O Filezão",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "filezao-vila-bela",
+        "name": "Vila Bela",
+        "address": "Rua São Francisco de Assis, 576 · Vila Bela",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "nortao",
+    "name": "Mercado Nortão",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "nortao-rota",
+        "name": "Rota do Sol",
+        "address": "Rua Caminho do Sol, 518 · Rota do Sol",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "berte",
+    "name": "Supermercado Berté",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "berte-centro-norte",
+        "name": "Centro Norte · número não confirmado",
+        "address": "Centro Norte · endereço completo pendente",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "lider",
+    "name": "Supermercado e Atacado Líder",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "lider-novos",
+        "name": "Novos Campos · número a reconfirmar",
+        "address": "Rua Lions Club, 729 · Novos Campos",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "chico",
+    "name": "Supermercado Chico",
+    "website": null,
+    "audit_class": "C",
+    "branches": [
+      {
+        "id": "chico-industrial",
+        "name": "Industrial",
+        "address": "Rua Panambi, 350 · Industrial I Etapa",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "sao-lourenco",
+    "name": "Supermercado São Lourenço",
+    "website": null,
+    "audit_class": "D",
+    "branches": []
+  },
+  {
+    "id": "extra",
+    "name": "Mercado Extra Sorriso",
+    "website": null,
+    "audit_class": "D",
+    "branches": []
+  }
+]

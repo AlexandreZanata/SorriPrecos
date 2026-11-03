@@ -1,0 +1,236 @@
+[
+  {
+    "supermarket_id": "delmoro",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "sorriso",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "sorrinorte",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "machado",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "casa-aurora",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "delnorte",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "babi",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "novos-campos",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "real",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "amazonas",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "atacadao",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "londrina",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "vipi",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "sol",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "realeza",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "docelar",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "uniao",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "ferreirao",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "amorim",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "filezao",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "nortao",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "berte",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "lider",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "chico",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "sao-lourenco",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  },
+  {
+    "supermarket_id": "extra",
+    "enabled": false,
+    "authorization_reference": null,
+    "url": null,
+    "format": "json",
+    "interval_seconds": 86400,
+    "max_pages": 100
+  }
+]

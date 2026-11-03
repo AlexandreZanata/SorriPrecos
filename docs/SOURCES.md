@@ -1,0 +1,25 @@
+# Fontes e rastreabilidade
+
+Data da pesquisa: 03/11/2026. A matriz, as limitações e os endereços estão em SUPERMARKETS_AUDIT.md. O registro executável correspondente está em `config/supermarkets.json`; não contém contatos pessoais ou credenciais.
+
+Fontes primárias utilizadas:
+
+- [Diretório municipal de mercados](https://turismo.sorriso.mt.gov.br/produtos-servicos/mercado): confirmação inicial de Babi, DelMoro e Sorriso Supermercados.
+- [DelMoro](https://delmoro.com.br/): unidades locais.
+- [Casa Aurora](https://casaaurora.com.br/lojas/): unidade e vínculo do endereço de compra online.
+- [DelNorte](https://delnorteatacarejo.com.br/nossas-lojas): unidade local.
+- [Atacadão Sorriso](https://www.atacadao.com.br/loja/sorriso): unidade; contexto de CEP impede atribuir automaticamente o preço nacional à cidade.
+- [Sorrinorte no Google Play](https://play.google.com/store/apps/details?id=br.com.sorrinorte.omnichannel): declaração do desenvolvedor VipCommerce sobre loja online em Sorriso.
+- [Cadastros de credenciados SETASC](https://www.setasc.mt.gov.br/documents/364148/0/ESTABELECIMENTOS%2BCREDENCIADOS%2B-%2B08%2BJULHO/194aafab-a05c-d30f-d065-fe56c965e4dd): estabelecimentos adicionais. Registro em credenciamento não comprova operação atual.
+- [Pesquisa Procon-MT Páscoa 2026](https://www.procon.mt.gov.br/documents/d/procon/tabela-produtos-analisados-pascoa-final): evidências de filiais, sem importação de valores históricos como atuais.
+
+Diretórios secundários (Solutudo, GuiaPJ, Casa dos Dados, Inteligue, Nova Infortel, Página Amarela e WorldOrgs) servem como pistas documentadas, não como autorização de uso ou prova definitiva de catálogo. Links por estabelecimento constam da matriz.
+
+Referências técnicas oficiais consultadas para a seleção de versões:
+
+- [Compatibilidade Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform/multiplatform-compatibility-guide.html).
+- [Compatibilidade Compose](https://kotlinlang.org/docs/multiplatform/compose-compatibility-and-versioning.html).
+- [Compose 1.11.1](https://kotlinlang.org/docs/multiplatform/whats-new-compose-111.html).
+- [Engines Ktor](https://ktor.io/docs/client-engines.html).
+
+Não foram incorporadas imagens de folhetos, marcas gráficas ou bases proprietárias dos supermercados. A licença MIT cobre o código do projeto; não concede direitos sobre dados de terceiros.

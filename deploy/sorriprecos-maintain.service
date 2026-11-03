@@ -1,0 +1,14 @@
+[Unit]
+Description=SorriPrecos SQLite retention and checkpoint
+
+[Service]
+Type=oneshot
+User=sorriprecos
+Group=sorriprecos
+WorkingDirectory=/opt/sorriprecos
+Environment=DATABASE_URL=sqlite:///var/lib/sorriprecos/catalog.db
+ExecStart=/opt/sorriprecos/sorriprecos maintain
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/sorriprecos

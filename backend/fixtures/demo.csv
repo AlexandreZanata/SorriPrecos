@@ -1,0 +1,13 @@
+source_id,branch_id,name,brand,quantity,unit,presentation,category,gtin,price_cents,promotional_price_cents,offer_type,conditions,available,source_url,collected_at,valid_until
+demo-1,demo-a-1,Arroz branco DEMO,Ipê,5,kg,pacote,Mercearia,,2390,,regular,,true,,1793577600,
+demo-2,demo-a-1,Arroz branco DEMO,Ipê,1,kg,pacote,Mercearia,,599,,regular,,true,,1793577600,
+demo-3,demo-a-1,Feijão carioca DEMO,Cerrado,1,kg,pacote,Mercearia,,849,,regular,,true,,1793577600,
+demo-4,demo-a-1,Óleo de soja DEMO,Sol,900,ml,garrafa,Mercearia,,729,,regular,,true,,1793577600,
+demo-5,demo-a-1,Café torrado DEMO,Cerrado,500,g,pacote,Mercearia,,1890,,regular,,true,,1793577600,
+demo-6,demo-a-1,Leite integral DEMO,Ipê,1,l,caixa,Laticínios,,479,,regular,,true,,1793577600,
+demo-7,demo-a-1,Açúcar cristal DEMO,Sol,5,kg,pacote,Mercearia,,1590,,regular,,true,,1793577600,
+demo-8,demo-a-1,Macarrão espaguete DEMO,Ipê,500,g,pacote,Mercearia,,429,,regular,,true,,1793577600,
+demo-9,demo-a-1,Sabão em pó DEMO,Sol,800,g,caixa,Limpeza,,1090,,regular,,true,,1793577600,
+demo-10,demo-a-1,Refrigerante cola DEMO,Cerrado,2,l,garrafa,Bebidas,,899,,regular,,true,,1793577600,
+demo-11,demo-a-1,Refrigerante cola DEMO,Cerrado,350,ml,lata,Bebidas,,349,,regular,,true,,1793577600,
+demo-12,demo-a-1,Banana prata DEMO,Horta,1,kg,a granel,Hortifruti,,699,,regular,,true,,1793577600,
