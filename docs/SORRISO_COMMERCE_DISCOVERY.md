@@ -87,3 +87,30 @@ As evidências anteriores de Machado, Atacadão, aiqfome, Ola, Egao e D'Macena c
 - **Zebu Pet Center Sorriso · 01.034.894/0002-84.** A Avenida Tancredo Neves, 3718, coincide entre o localizador da rede e o cadastro ativo. O GET da página pública do produto K Otrine retornou HTTP 200 e mostrou R$ 15,00 e estoque. O rodapé da loja virtual, porém, indica o CNPJ 01.034.894/0001-01, matriz em Sinop. O preço e o estoque da filial de Sorriso seguem pendentes de um seletor de unidade confirmado. [Produto e localizador](https://www.zebupetcenter.com.br/review/product/list/id/1149/)
 - **Inovar Cosméticos Sorriso · 17.226.232/0051-24.** A página oficial da unidade retornou HTTP 200. O OpenCNPJ identifica a mesma marca, Avenida Natalino João Brescansin, 2473, e CEP 78890-135. A página descreve retirada de pedidos do televendas ou WhatsApp. Preço e estoque públicos por filial seguem pendentes. [Página da unidade](https://inovarcosmeticos.com.br/lojas/sorriso)
 - **Jr_Personalizados no Elo7.** A página indexada atribui ao vendedor a cidade de Sorriso-MT e anuncia um arquivo digital com preço por forma de pagamento. O mesmo URL retornou HTTP 404 na leitura direta. Vendedor fiscal e disponibilidade atual seguem pendentes. [Página examinada](https://www.elo7.com.br/arquivo-de-topo-corinthians/dp/21612F0)
+
+### Redes de móveis, eletrodomésticos e perfumaria
+
+**Martinello.** O JavaScript `fbits.lojas.js` do [localizador](https://www.martinello.com.br/lojas/busca) usa um POST público de leitura. Ambas as chamadas abaixo devolveram JSON sem sessão. O servidor retornou lojas de outras cidades mesmo com `cidade=Sorriso`, então a resposta precisa ser filtrada por cidade e UF antes de usar os IDs.
+
+```sh
+for retirada in false true; do
+  curl -fsS -H 'X-Requested-With: XMLHttpRequest' \
+    -H 'Referer: https://www.martinello.com.br/lojas/busca' \
+    --data "somenteRetiradaNaLoja=$retirada&cidade=Sorriso&estado=MT" \
+    'https://www.martinello.com.br/Lojas/GetLojas' |
+    jq '.Lojas[] | select(.Estado.Sigla == "MT" and (.Cidade == "Sorriso" or .Cidade == "Boa Esperança (Sorriso)")) | {LojaId, Nome, Cidade, Logradouro, Numero, Cep, RetirarNaLoja}'
+done
+```
+
+- **F18, LojaId 5.** Avenida Brescansin, 975, CEP 78890-000. Logradouro, número e CEP coincidem com 32.951.535/0019-63 no OpenCNPJ.
+- **F50, LojaId 54.** Avenida Natalino João Brescansin, 84. Logradouro e número coincidem com 32.951.535/0051-01. O CEP 78896-072 da loja diverge do 78890-000 cadastral.
+- **F64, LojaId 66.** Rua Panambi, 350. Logradouro e número coincidem com 32.951.535/0065-07. O CEP 78890-000 da loja diverge do 78898-095 cadastral.
+- **F15, LojaId 22.** Avenida dos Flamboyants, 1303, CEP 78899-200. O localizador classifica a unidade como Boa Esperança (Sorriso). A correspondência fiscal permanece pendente.
+- Os CNPJs **32.951.535/0112-50** (Avenida Blumenau Sul, 695) e **32.951.535/0113-30** (Avenida Tancredo Neves, 1999) estão ativos no snapshot, mas não apareceram entre as unidades locais nas respostas testadas. Seus IDs de vitrine continuam pendentes.
+
+Os quatro IDs públicos retornaram `RetirarNaLoja: true`. O campo indica uma modalidade da unidade e não contém SKU, preço ou disponibilidade do produto. A [busca pública de geladeiras](https://www.martinello.com.br/Busca?busca=Geladeiras&pagina=1) devolveu HTML com preços de e-commerce, sem identidade de loja no resultado. O rodapé identifica 32.951.535/0001-34, de Lucas do Rio Verde. A atribuição das ofertas às unidades de Sorriso segue pendente.
+
+- **Magalu Centro · 47.960.950/1208-87.** Avenida Natalino João Brescansin, 30. A ficha oficial `GET /filiais/1137/sorriso` respondeu HTTP 200 e confirma o endereço. O procedimento oficial de retirada consulta o CEP na página do produto. A documentação da rede descreve também envio posterior à loja escolhida, então a opção de retirada isolada não confirma estoque físico ou preço da filial 1137. [Unidade oficial](https://lojas.magazineluiza.com.br/filiais/1137/sorriso) · [Retira Loja](https://conteudo.magazineluiza.com.br/regulamentos/regulamento-retira-loja.html)
+- **Havan Sorriso · 79.379.491/0150-24.** Rua Idemar Riedi, 7536, CEP 78895-350, no OpenCNPJ. A rede confirma a presença em Sorriso e a página `/retira-facil` retornou HTTP 200. A rede informa que o Retira Fácil depende do estoque da filial escolhida. Falta observar essa unidade no retorno da consulta de um SKU e confirmar a origem do preço. [Presença em Sorriso](https://ri.havan.com.br/noticia/pequena-helena-aproveita-artigos-natalinos-da-havan-para-decorar-sua-casa-em-itanhanga-mt/) · [Retira Fácil](https://www.havan.com.br/retira-facil)
+- **Gazin.** A página inicial retornou HTTP 200 e encaminha ao diretório institucional de filiais. O OpenCNPJ lista 77.941.490/0061-96 (Brescansin, 145), 77.941.490/0258-16 (São Francisco de Assis, 793), 77.941.490/0268-98 (Aripuanã, sem número), 77.941.490/0302-24 (Brescansin, 1499) e 77.941.490/0410-05 (Avenida Brasil, 3013). Cada CNPJ ainda precisa de correspondência com o localizador e com um retorno de preço ou estoque por unidade. [Vitrine](https://www.gazin.com.br/) · [Diretório institucional](https://www.grupogazin.com.br/empresa#filiais)
+- **O Boticário.** O OpenCNPJ lista 33.667.510/0010-67 (Brescansin, 2473), 33.667.510/0011-48 (Belo Horizonte, 94), 33.667.510/0012-29 (Roberto Carlos Braga, 51) e 33.667.510/0019-03 (Noêmia Tonello Dalmolin, 2501). A ajuda oficial documenta consultar o CEP na opção de retirada para ver quais lojas têm o produto. A tentativa direta na página de entrada do fluxo retornou HTTP 403. A correspondência das quatro lojas no retorno da consulta de um SKU segue pendente. [Ajuda oficial](https://www.boticario.com.br/atendimento-online/retirar-na-loja)
