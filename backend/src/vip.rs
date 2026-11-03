@@ -27,7 +27,8 @@ const BASIS: &str = "PUBLIC_STOREFRONT: consulta do catálogo público por sess�
 #[derive(Clone, Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Branch {
-    pub distribution_id: i64,
+    pub distribution_id: Option<i64>,
+    pub coverage_cep: Option<String>,
     pub branch_id: String,
     pub cnpj: String,
     pub street: String,
@@ -91,6 +92,19 @@ impl Config {
             self.organization_id > 0 && self.storefront_id > 0 && self.filial_id > 0,
             "identidade inválida"
         );
+        for branch in &self.branches {
+            ensure!(
+                branch.distribution_id.is_none_or(|id| id > 0)
+                    && branch.coverage_cep.as_deref().is_none_or(|cep| {
+                        cep.len() == 8 && cep.bytes().all(|byte| byte.is_ascii_digit())
+                    })
+                    && branch.cnpj.len() == 14
+                    && branch.cnpj.bytes().all(|byte| byte.is_ascii_digit())
+                    && !normalize::text(&branch.street).is_empty()
+                    && !branch.number.trim().is_empty(),
+                "identidade de filial inválida"
+            );
+        }
         Ok(())
     }
 }
@@ -299,7 +313,9 @@ pub fn verify_branch(data: &Value, b: &Branch) -> Result<()> {
         "filial fora de Sorriso-MT"
     );
     ensure!(
-        data["id"].as_i64() == Some(b.distribution_id)
+        data["id"]
+            .as_i64()
+            .is_some_and(|id| id > 0 && b.distribution_id.is_none_or(|expected| id == expected))
             && data["cnpj"].as_str() == Some(b.cnpj.as_str()),
         "CNPJ ou centro de distribuição divergente"
     );
@@ -315,6 +331,54 @@ pub fn verify_branch(data: &Value, b: &Branch) -> Result<()> {
     );
     Ok(())
 }
+fn resolve_branch(units: &[Value], branch: &Branch) -> Result<Option<i64>> {
+    let mut ids = units.iter().filter_map(|unit| {
+        verify_branch(unit, branch).ok()?;
+        unit["id"].as_i64()
+    });
+    let Some(id) = ids.next() else {
+        return Ok(None);
+    };
+    ensure!(
+        ids.all(|other| other == id),
+        "mais de um CD para a filial de Sorriso-MT"
+    );
+    Ok(Some(id))
+}
+
+async fn distribution_for_branch(
+    http: &mut Http,
+    root: &str,
+    units: &[Value],
+    branch: &Branch,
+) -> Result<i64> {
+    if let Some(id) = resolve_branch(units, branch)? {
+        return Ok(id);
+    }
+    let Some(cep) = &branch.coverage_cep else {
+        bail!("filial de Sorriso-MT não confirmada na vitrine");
+    };
+    let pickup = http
+        .json(&format!("{root}/retiradas?cep={cep}"), true)
+        .await?;
+    let delivery = http
+        .json(&format!("{root}/cep/{cep}/entrega"), true)
+        .await?;
+    let mut candidates = pickup["data"]
+        .as_array()
+        .context("retiradas por CEP inválidas")?
+        .clone();
+    candidates.extend(
+        delivery["data"]
+            .as_array()
+            .context("entrega por CEP inválida")?
+            .iter()
+            .cloned(),
+    );
+    resolve_branch(&candidates, branch)?
+        .context("filial de Sorriso-MT não oferecida para retirada ou entrega")
+}
+
 fn number(v: &Value) -> Option<String> {
     v.as_str()
         .map(str::to_owned)
@@ -500,13 +564,14 @@ pub async fn collect(pool: &SqlitePool, c: &Config) -> Result<()> {
         let org=format!("/api-admin/v1/org/{}",c.organization_id);
         let branch=http.json(&format!("{org}/loja/filiais/{}",c.filial_id),true).await?;
         ensure!(branch["data"]["vipcommerce_filial_id"]==c.storefront_id && branch["data"]["em_manutencao"]!=true,"filial da vitrine divergente");
-        let pickups=http.json(&format!("{org}/filial/{}/loja/centros_distribuicoes/retiradas",c.filial_id),true).await?;
+        let distribution_root = format!("{org}/filial/{}/loja/centros_distribuicoes", c.filial_id);
+        let pickups = http.json(&format!("{distribution_root}/retiradas"), true).await?;
         let units=pickups["data"].as_array().context("lista de filiais inválida")?;
         rejected_cities=units.iter().filter(|v|normalize::text(v["endereco"]["cidade"].as_str().unwrap_or(""))!="sorriso").count() as i64;
         for b in &c.branches {
-            let data=units.iter().find(|v|v["id"]==b.distribution_id).context("unidade não aparece na vitrine")?;verify_branch(data,b)?;
+            let distribution_id = distribution_for_branch(&mut http, &distribution_root, units, b).await?;
             let valid:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM branches WHERE id=? AND supermarket_id=? AND active=1 AND city='Sorriso' AND state='MT')").bind(&b.branch_id).bind(&c.supermarket_id).fetch_one(pool).await?;ensure!(valid,"filial local não pertence à rede");
-            let root=format!("{org}/filial/{}/centro_distribuicao/{}/loja",c.filial_id,b.distribution_id);
+            let root=format!("{org}/filial/{}/centro_distribuicao/{}/loja",c.filial_id,distribution_id);
             let tree=http.json(&format!("{root}/classificacoes_mercadologicas/departamentos/arvore"),true).await?;
             let departments=tree["data"].as_array().context("departamentos inválidos")?;ensure!(!departments.is_empty(),"catálogo sem departamentos");
             let mut categories=HashMap::new();category_map(departments,"",&mut categories);
@@ -584,7 +649,8 @@ mod tests {
     use super::*;
     fn branch() -> Branch {
         Branch {
-            distribution_id: 1,
+            distribution_id: Some(1),
+            coverage_cep: None,
             branch_id: "sorrinorte-industrial".into(),
             cnpj: "02756536000167".into(),
             street: "Palmares".into(),
@@ -594,6 +660,29 @@ mod tests {
     fn item() -> Value {
         json!({"produto_id":3,"descricao":"Arroz marca exemplo 5kg","codigo_barras":"7896025800106","preco":"23.90","disponivel":true,"unidade_sigla":"UN","link":"arroz-marca-exemplo-5kg"})
     }
+    #[test]
+    fn discovers_only_the_verified_local_distribution_centre() {
+        let mut configured = branch();
+        configured.distribution_id = None;
+        let valid = serde_json::json!({
+            "id": 8, "cnpj": configured.cnpj, "ativo": true,
+            "endereco": {"cidade": "Sorriso", "estado": "MT", "logradouro": configured.street, "numero": configured.number}
+        });
+        let mut elsewhere = valid.clone();
+        elsewhere["endereco"]["cidade"] = serde_json::json!("Sinop");
+        assert_eq!(
+            resolve_branch(&[elsewhere.clone()], &configured).unwrap(),
+            None
+        );
+        assert_eq!(
+            resolve_branch(&[elsewhere, valid.clone()], &configured).unwrap(),
+            Some(8)
+        );
+        let mut ambiguous = valid.clone();
+        ambiguous["id"] = serde_json::json!(9);
+        assert!(resolve_branch(&[valid, ambiguous], &configured).is_err());
+    }
+
     #[test]
     fn decimal_prices_are_exact_and_positive() {
         assert_eq!(cents(&json!("23.90")).unwrap(), 2390);

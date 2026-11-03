@@ -232,5 +232,17 @@
     "postcode": "78895105",
     "seller_id": 10926,
     "cnpj": "26679211000196"
+  },
+  {
+    "supermarket_id": "panificadora-doce-mel",
+    "branch_id": "panificadora-doce-mel-sorriso",
+    "slug": "panificadora-doce-mel",
+    "seller_id": 45802,
+    "cnpj": "34813798000102",
+    "street": "Avenida perimetral sudoeste",
+    "number": "3249",
+    "postcode": "78890000",
+    "categories": [],
+    "allow_portions": true
   }
 ]

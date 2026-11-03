@@ -533,5 +533,19 @@
         "source_id": "meia7:10926:cnpj:26679211000196"
       }
     ]
+  },
+  {
+    "id": "panificadora-doce-mel",
+    "name": "Panificadora Doce Mel",
+    "website": "https://aiqfome.com/MT/sorriso/panificadora-doce-mel",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "panificadora-doce-mel-sorriso",
+        "name": "Sorriso",
+        "address": "Avenida perimetral sudoeste, 3249 · Sorriso-MT",
+        "source_id": "aiqfome:45802:cnpj:34813798000102"
+      }
+    ]
   }
 ]

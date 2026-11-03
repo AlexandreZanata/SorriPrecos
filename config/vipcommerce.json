@@ -67,5 +67,28 @@
         "number": "94"
       }
     ]
+  },
+  {
+    "supermarket_id": "casa-aurora",
+    "enabled": false,
+    "website": "https://www.casaaurorasupermercados.com.br",
+    "domain": "casaaurorasupermercados.com.br",
+    "organization_id": 289,
+    "storefront_id": 330,
+    "filial_id": 1,
+    "configuration_path": "/chunk-IBICK36J.js",
+    "interval_seconds": 600,
+    "page_size": 100,
+    "max_pages": 500,
+    "delay_ms": 300,
+    "branches": [
+      {
+        "branch_id": "casa-aurora-centro",
+        "cnpj": "26777276000506",
+        "street": "Otávio de Souza Cruz",
+        "number": "441",
+        "coverage_cep": "78890000"
+      }
+    ]
   }
 ]
