@@ -52,7 +52,7 @@ internal val AppContrast = darkColorScheme(
     outline = Color(0xFFC6D2C6), outlineVariant = Color(0xFF7D907D)
 )
 
-internal enum class Glyph { Cart, Search, Home, Heart, Settings, Back, Chevron, Close, Refresh, Contrast, Pin, Clock, Info, Check }
+internal enum class Glyph { Cart, Search, Home, Heart, Settings, Back, Chevron, Close, Refresh, Contrast, Pin, Clock, Info, Check, Calendar, Document, Link, External, Copy, Crown }
 
 @Composable internal fun AppIcon(glyph: Glyph, modifier: Modifier = Modifier, tint: Color = MaterialTheme.colorScheme.onSurface, filled: Boolean = false) {
     Canvas(modifier.size(24.dp)) {
@@ -76,6 +76,12 @@ internal enum class Glyph { Cart, Search, Home, Heart, Settings, Back, Chevron, 
                 Glyph.Pin -> {val p=Path().apply {moveTo(12f,22f);cubicTo(9f,17f,4f,12f,4f,8f);cubicTo(4f,-2f,20f,-2f,20f,8f);cubicTo(20f,12f,15f,17f,12f,22f);close()};drawPath(p,tint,style=stroke);drawCircle(tint,2.5f,Offset(12f,8f),style=stroke)}
                 Glyph.Clock -> {drawCircle(tint,9f,Offset(12f,12f),style=stroke);path(12f to 6f,12f to 12f,16f to 14f)}
                 Glyph.Info -> {drawCircle(tint,9f,Offset(12f,12f),style=stroke);line(12f,11f,12f,17f);drawCircle(tint,1f,Offset(12f,7f))}
+                Glyph.Calendar -> { path(4f to 5f,20f to 5f,20f to 21f,4f to 21f,4f to 5f); line(4f,10f,20f,10f); line(8f,3f,8f,7f); line(16f,3f,16f,7f) }
+                Glyph.Document -> { path(5f to 3f,14f to 3f,19f to 8f,19f to 21f,5f to 21f,5f to 3f);path(14f to 3f,14f to 8f,19f to 8f);line(8f,12f,16f,12f);line(8f,16f,13f,16f) }
+                Glyph.Link -> {path(10f to 7f,14f to 3f,19f to 3f,21f to 7f,17f to 11f);path(14f to 17f,10f to 21f,5f to 21f,3f to 17f,7f to 13f);line(8f,16f,16f,8f)}
+                Glyph.External -> {path(11f to 5f,4f to 5f,4f to 20f,19f to 20f,19f to 13f);path(14f to 3f,21f to 3f,21f to 10f);line(10f,14f,21f,3f)}
+                Glyph.Copy -> {path(8f to 3f,21f to 3f,21f to 16f,8f to 16f,8f to 3f);path(4f to 7f,4f to 21f,17f to 21f)}
+                Glyph.Crown -> {path(3f to 6f,7f to 11f,12f to 5f,17f to 11f,21f to 6f,18f to 17f,6f to 17f,3f to 6f);line(7f,21f,17f,21f)}
                 Glyph.Check -> path(4f to 12f,9f to 17f,20f to 6f)
             }
         }

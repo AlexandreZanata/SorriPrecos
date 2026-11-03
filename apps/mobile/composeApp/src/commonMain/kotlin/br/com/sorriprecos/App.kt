@@ -45,6 +45,7 @@ import kotlinx.coroutines.launch
     var screen by remember { mutableStateOf("home") }
     var query by remember { mutableStateOf("") }
     var selected by remember { mutableStateOf<Product?>(null) }
+    var cart by remember(repo, demo) { mutableStateOf(repo.cart(demo)) }
     var favorites by remember(repo) { mutableStateOf(repo.favorites()) }
     var markets by remember { mutableStateOf<List<Supermarket>>(emptyList()) }
     var catalog by remember { mutableStateOf(CatalogStatus()) }
@@ -91,6 +92,20 @@ import kotlinx.coroutines.launch
         favorites = if (favorites.any { it.id == p.id }) favorites.filterNot { it.id == p.id } else favorites + p
         repo.saveFavorites(favorites)
     }
+    fun setQuantity(product: Product, quantity: Int) {
+        if (product.isHistorical || product.isDemo != demo) return
+        val previous = cart.find { it.product.id == product.id }
+        if (previous == null && cart.size >= CART_LIMIT) {
+            scope.launch { snack.showSnackbar("Limite de $CART_LIMIT produtos no carrinho") }
+            return
+        }
+        cart = when {
+            quantity <= 0 -> cart.filterNot { it.product.id == product.id }
+            previous == null -> cart + CartLine(product, quantity.coerceAtMost(CART_MAX_QUANTITY))
+            else -> cart.map { if (it.product.id == product.id) it.copy(quantity = quantity.coerceAtMost(CART_MAX_QUANTITY)) else it }
+        }
+        repo.saveCart(demo, cart)
+    }
     fun navigate(destination: String) { selected = null; screen = destination; focus.clearFocus() }
     fun search(value: String) { query = value; navigate("search") }
     fun toggleDemo() { historical = false; store.put("historical", "false"); demo = !demo; store.put("demo", demo.toString()); query = ""; selected = null }
@@ -113,7 +128,7 @@ import kotlinx.coroutines.launch
                 topBar = {
                     if (selected != null || screen != "home") AppToolbar(
                         title = if (selected != null) "Comparar preços" else when (screen) {
-                            "search" -> "Resultados da busca"; "favorites" -> "Favoritos"; "sources" -> "Fontes e filiais"; else -> "Ajustes"
+                            "search" -> "Resultados da busca"; "favorites" -> "Favoritos"; "cart" -> "Carrinho"; "sources" -> "Fontes e filiais"; else -> "Ajustes"
                         },
                         onBack = { if (selected != null) selected = null else navigate("home") },
                         accessibility = selected != null, largeText = largeText, contrast = contrast,
@@ -123,10 +138,14 @@ import kotlinx.coroutines.launch
                 bottomBar = { if (selected == null) BottomNavigation(screen, ::navigate) }
             ) { padding ->
                 Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
-                    if (screen != "home" || selected != null) Box(Modifier.padding(horizontal = 18.dp, vertical = 5.dp)) { DataDisclosure(demo, catalog, historical) }
+                    if (screen != "home" || selected != null) Box(Modifier.padding(horizontal = 18.dp, vertical = 5.dp)) { DataDisclosure(demo, catalog, selected?.isHistorical ?: (historical && screen != "cart")) }
                     if (selected != null) {
                         ComparisonScreen(repo, selected!!, favorites.any { it.id == selected!!.id },
-                            onFavorite = { favorite(selected!!) }, refresh = refresh, onRefresh = { refresh++ })
+                            onFavorite = { favorite(selected!!) }, refresh = refresh, onRefresh = { refresh++ },
+                            cartQuantity = cart.find { it.product.id == selected!!.id }?.quantity ?: 0,
+                            onAdd = selected!!.takeIf { !it.isHistorical && it.isDemo == demo }?.let { product ->
+                                { setQuantity(product, (cart.find { it.product.id == product.id }?.quantity ?: 0) + 1) }
+                            }, onCart = { navigate("cart") })
                     } else {
                         if (offline || searchOffline) Notice("Offline · Mostrando dados salvos. Atualize antes de comprar.")
                         when (screen) {
@@ -185,6 +204,7 @@ import kotlinx.coroutines.launch
                                     }, enabled = !searching, modifier = Modifier.fillMaxWidth()) { Text("Carregar mais") } }
                                 }
                             }
+                            "cart" -> CartScreen(repo, cart, demo, ::setQuantity, { navigate("search") }, { selected = it })
                             "favorites" -> LazyColumn(contentPadding = PaddingValues(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                                 item { Text("Sua lista de favoritos", fontSize = 23.sp, fontWeight = FontWeight.Bold); Text("Salvos neste aparelho, sem cadastro.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 6.dp, bottom = 8.dp)) }
                                 if (favorites.isEmpty()) item { EmptyCard("Guarde o que você compra", "Toque no coração de um produto para acompanhar os preços depois.") }
@@ -243,7 +263,7 @@ import kotlinx.coroutines.launch
 @Composable private fun BottomNavigation(screen: String, onNavigate: (String) -> Unit) {
     Surface(color = MaterialTheme.colorScheme.surface, shadowElevation = 3.dp) {
         Row(Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 12.dp, vertical = 7.dp), horizontalArrangement = Arrangement.SpaceAround) {
-            listOf(Triple("home", Glyph.Home, "Início"), Triple("search", Glyph.Search, "Buscar"), Triple("favorites", Glyph.Heart, "Favoritos"), Triple("settings", Glyph.Settings, "Ajustes")).forEach { (id, icon, label) ->
+            listOf(Triple("home", Glyph.Home, "Início"), Triple("search", Glyph.Search, "Buscar"), Triple("cart", Glyph.Cart, "Carrinho"), Triple("favorites", Glyph.Heart, "Favoritos"), Triple("settings", Glyph.Settings, "Ajustes")).forEach { (id, icon, label) ->
                 val active = screen == id || id == "settings" && screen == "sources"
                 Column(Modifier.weight(1f).clip(RoundedCornerShape(15.dp)).background(if (active) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface).selectable(selected = active, role = Role.Tab, onClick = { onNavigate(id) }).padding(vertical = 7.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     AppIcon(icon, Modifier.size(22.dp), if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, filled = active)

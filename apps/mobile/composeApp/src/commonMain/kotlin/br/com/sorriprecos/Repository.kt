@@ -49,6 +49,14 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
     suspend fun prices(id:Long,historical:Boolean=false)=request<Comparison>("/v1/products/$id/prices?historical=$historical")
     suspend fun markets(demo:Boolean,historical:Boolean=false)=request<Items<Supermarket>>("/v1/supermarkets?demo=$demo&historical=$historical")
     suspend fun status()=request<CatalogStatus>("/v1/catalog/status")
+    internal fun cart(demo:Boolean):List<CartLine> = try {
+        codec.decodeFromString<List<CartLine>>(store.get("cart:$baseUrl:$demo") ?: "[]")
+            .filter { it.product.isDemo == demo && !it.product.isHistorical && it.quantity in 1..CART_MAX_QUANTITY }
+            .distinctBy { it.product.id }.take(CART_LIMIT)
+    } catch (_:Exception) { emptyList() }
+    internal fun saveCart(demo:Boolean, lines:List<CartLine>) {
+        store.put("cart:$baseUrl:$demo",codec.encodeToString(lines))
+    }
     fun favorites():List<Product> = try {codec.decodeFromString(store.get("favorites:$baseUrl")?:"[]")}catch(_:Exception){emptyList()}
     fun saveFavorites(items:List<Product>) {store.put("favorites:$baseUrl",codec.encodeToString(items.take(200)))}
 }

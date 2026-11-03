@@ -425,5 +425,43 @@
       "public_page": "https://marmitaria-da-kau-kau-deliveri.ueniweb.com/",
       "reason": "Página local com valores estáticos e sem confirmação de vigência ou disponibilidade"
     }
+  ],
+  "alternate_sources": [
+    {
+      "name": "Nota MT · Menor Preço",
+      "status": "requires_registered_account",
+      "url": "https://www.sefaz.mt.gov.br/notamt/duvida",
+      "evidence": "Preços de vendas fiscais com filtro de município e período. A FAQ exige cadastro. API anônima para ingestão em lote não confirmada."
+    },
+    {
+      "name": "Procon de Sorriso",
+      "status": "out_of_catalogue_scope",
+      "url": "https://site.sorriso.mt.gov.br/procon",
+      "evidence": "Página municipal de pesquisa com médias de combustíveis e gás. Procon-MT continua separado no modo histórico."
+    },
+    {
+      "name": "Cooperriso",
+      "status": "pending_site_tls",
+      "url": "https://shopdaagriculturafamiliar.com.br/loja/cooperativa-dos-produtores-hortifrutigranjeiros-de/",
+      "evidence": "Quitanda local confirmada pela prefeitura. A vitrine indicativa falhou na validação TLS; preço, embalagem e vigência não verificados."
+    },
+    {
+      "name": "DelNorte · Ofertas da semana",
+      "status": "pending_branch_and_validity",
+      "url": "https://delnorteatacarejo.com.br/tabloide",
+      "evidence": "A rota de tabloide redireciona para a página da rede, com preços semanais e endereços de duas filiais. A seção de ofertas não comprova filial e vigência."
+    },
+    {
+      "name": "Atacadão · Encartes de Sorriso",
+      "status": "pending_branch_and_validity",
+      "url": "https://seusfolhetos.com.br/lojas/sorriso/atacadao/rua-idemar-riedi-8150",
+      "evidence": "Índice de terceiros confirma endereço local, mas os encartes examinados eram de setembro e a validade depende das lojas impressas em cada encarte."
+    },
+    {
+      "name": "Casa Aurora · CEP 78896-042",
+      "status": "pending_sorriso_context",
+      "url": "https://casaaurora.com.br/lojas/sorriso-mt/",
+      "evidence": "CEP publicado na ficha da filial. A sessão visitante consultou as rotas de retirada e entrega em teste isolado. Sete requisições e zero ofertas; a filial local não apareceu."
+    }
   ]
 }

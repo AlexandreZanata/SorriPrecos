@@ -2,6 +2,7 @@ package br.com.sorriprecos
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,18 +12,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
-@Composable internal fun ComparisonScreen(repo: Repository, selected: Product, favorite: Boolean, onFavorite: () -> Unit, refresh: Int, onRefresh: () -> Unit) {
+@Composable internal fun ComparisonScreen(repo: Repository, selected: Product, favorite: Boolean, onFavorite: () -> Unit, refresh: Int, onRefresh: () -> Unit, cartQuantity: Int, onAdd: (() -> Unit)?, onCart: () -> Unit) {
     var loaded by remember(selected.id, repo) { mutableStateOf<Loaded<Comparison>?>(null) }
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var details by remember { mutableStateOf(false) }
     var showAll by remember(selected.id) { mutableStateOf(false) }
+    val clipboard = LocalClipboardManager.current
     val uri = LocalUriHandler.current
     val snack = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -34,8 +38,7 @@ import kotlinx.coroutines.launch
     }
     val product = loaded?.data?.product ?: selected
     val offers = loaded?.data?.items.orEmpty()
-    fun current(o: Offer) = o.status == "recent" && o.collectedAt?.let { platformNow()-it<=172800 } == true && (o.validUntil==null || o.validUntil>=platformNow())
-    val best = offers.filter { current(it) }.mapNotNull { it.effectivePriceCents }.minOrNull()
+    val best = offers.filter { it.isCurrent() }.mapNotNull { it.effectivePriceCents }.minOrNull()
     val historical = product.historicalBranchCount > 0 && product.branchCount == 0
     Box(Modifier.fillMaxSize()) {
         LazyColumn(contentPadding = PaddingValues(18.dp, 12.dp, 18.dp, 24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -52,6 +55,16 @@ import kotlinx.coroutines.launch
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     TextButton(onClick = onFavorite, contentPadding = PaddingValues(horizontal = 0.dp)) { Text(if (favorite) "♥ Salvo nos favoritos" else "♡ Salvar nos favoritos", fontSize = 12.sp) }
                     TextButton(onClick = onRefresh) { AppIcon(Glyph.Refresh, Modifier.size(15.dp), MaterialTheme.colorScheme.primary); Spacer(Modifier.width(5.dp)); Text("Atualizar", fontSize = 12.sp) }
+                }
+                if (onAdd != null) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(onClick = onAdd, enabled = cartQuantity < CART_MAX_QUANTITY) {
+                            AppIcon(Glyph.Cart, Modifier.size(17.dp), MaterialTheme.colorScheme.onPrimary)
+                            Spacer(Modifier.width(6.dp))
+                            Text("Adicionar ao carrinho")
+                        }
+                        if (cartQuantity > 0) TextButton(onClick = onCart) { Text("Ver carrinho ($cartQuantity)") }
+                    }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(selected = !details, onClick = { details = false }, label = { Text("Preços", fontSize = 12.sp) })
@@ -74,7 +87,11 @@ import kotlinx.coroutines.launch
                     if (historical) Text("Toque na filial para ver endereço e origem.", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 3.dp))
                 }
                 items(if(showAll) offers else offers.take(5), key = { it.branchId }) { o ->
-                    OfferRow(o, current(o), best != null && current(o) && o.effectivePriceCents == best, ::openSource)
+                    val recent = o.isCurrent()
+                    OfferRow(o, recent, best != null && recent && o.effectivePriceCents == best, ::openSource) {
+                        clipboard.setText(AnnotatedString(o.address))
+                        scope.launch { snack.showSnackbar("Endereço copiado") }
+                    }
                 }
                 if (offers.size > 5) item { TextButton(onClick = { showAll = !showAll }, modifier = Modifier.fillMaxWidth()) { Text(if(showAll) "Mostrar menos filiais" else "Ver todas as ${offers.size} filiais") } }
                 if (loaded != null && offers.isEmpty()) item { EmptyCard("Preço não disponível", "Este produto ainda não possui ofertas vinculadas às filiais.") }
@@ -94,42 +111,131 @@ import kotlinx.coroutines.launch
     }
 }
 
-@Composable private fun OfferRow(offer: Offer, recent: Boolean, lowest: Boolean, onSource: (String) -> Unit) {
+@Composable private fun OfferRow(
+    offer: Offer, recent: Boolean, lowest: Boolean, onSource: (String) -> Unit, onCopyAddress: () -> Unit
+) {
     var expanded by remember(offer.branchId) { mutableStateOf(false) }
-    val value = if (recent) offer.effectivePriceCents else if (offer.status == "stale" || offer.status == "recent") offer.priceCents else null
-    Surface(shape = RoundedCornerShape(13.dp), color = if (lowest) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, if(lowest) MaterialTheme.colorScheme.primary.copy(alpha=.2f) else MaterialTheme.colorScheme.outlineVariant), shadowElevation = if(lowest) 0.dp else 1.dp, modifier = Modifier.fillMaxWidth()) {
-        Column {
-            Row(Modifier.fillMaxWidth().clickable { expanded = !expanded }.padding(horizontal = 11.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                AppIcon(Glyph.Cart, Modifier.size(23.dp), if(lowest) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.width(10.dp))
-                Column(Modifier.weight(1f).padding(end = 6.dp)) {
-                    Text(offer.supermarketName, fontSize = 13.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)
-                    Text(offer.branchName, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 2.dp))
-                    Text(when {
-                        offer.status=="unavailable" -> "Indisponibilidade informada"
-                        offer.status=="stale" || offer.status=="recent" && !recent -> "Histórico · ${offer.collectedAt?.let { formatDate(it).substringBefore(" às") } ?: "Sem data"}"
-                        recent -> age(offer.collectedAt)
-                        else -> "Sem informação atual"
-                    }, fontSize = 9.sp, lineHeight = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 2.dp))
-                    if (recent && !offer.conditions.isNullOrBlank()) Text("Condições especiais · toque para ver", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    val colors = MaterialTheme.colorScheme
+    val value = if (recent) offer.effectivePriceCents else if (offer.status in listOf("stale", "recent")) offer.priceCents else null
+    val shape = RoundedCornerShape(15.dp)
+    Box(Modifier.fillMaxWidth()) {
+        Surface(
+            modifier = Modifier.fillMaxWidth().padding(top = if (lowest) 8.dp else 0.dp),
+            shape = shape, color = if (lowest) colors.primaryContainer else colors.surface,
+            border = BorderStroke(1.dp, if (lowest) colors.primary.copy(alpha = .3f) else colors.outlineVariant),
+            shadowElevation = if (lowest) 0.dp else 1.dp
+        ) {
+            Column {
+                Row(
+                    Modifier.fillMaxWidth().clickable { expanded = !expanded }
+                        .padding(start = 10.dp, end = 10.dp, top = if (lowest) 19.dp else 9.dp, bottom = 9.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(Modifier.size(if (lowest) 42.dp else 34.dp)
+                        .background(if (lowest) colors.primary.copy(alpha = .12f) else colors.surfaceVariant, RoundedCornerShape(10.dp)),
+                        contentAlignment = Alignment.Center) {
+                        AppIcon(Glyph.Cart, Modifier.size(22.dp), if (lowest) colors.primary else colors.onSurfaceVariant)
+                    }
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                        Text(offer.supermarketName, fontSize = 14.sp, lineHeight = 17.sp, fontWeight = FontWeight.Bold)
+                        if (recent || expanded || offer.status == "stale") Row(verticalAlignment = Alignment.CenterVertically) {
+                            AppIcon(Glyph.Pin, Modifier.size(12.dp), colors.onSurfaceVariant)
+                            Spacer(Modifier.width(4.dp))
+                            Text(offer.branchName, fontSize = 11.sp, color = colors.onSurfaceVariant)
+                        }
+                        val status = when {
+                            recent -> age(offer.collectedAt).replaceFirst("Há ", "Verificado há ")
+                            offer.status == "unavailable" -> "Indisponibilidade informada"
+                            offer.status == "stale" || offer.status == "recent" ->
+                                "Histórico · ${offer.collectedAt?.let { formatDate(it).substringBefore(" às") } ?: "Sem data"}"
+                            else -> "Sem informação atual"
+                        }
+                        Row(
+                            if (recent) Modifier.background(colors.primary.copy(alpha = .09f), RoundedCornerShape(12.dp))
+                                .padding(horizontal = 5.dp, vertical = 2.dp) else Modifier,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (recent) {
+                                AppIcon(Glyph.Clock, Modifier.size(11.dp), colors.primary)
+                                Spacer(Modifier.width(4.dp))
+                            }
+                            Text(status, fontSize = 10.sp, lineHeight = 12.sp,
+                                color = if (recent) colors.primary else colors.onSurfaceVariant)
+                        }
+                    }
+                    Surface(color = if (lowest) colors.primary else colors.surfaceVariant, shape = RoundedCornerShape(11.dp)) {
+                        Text(if (value == null) "Preço indisponível" else money(value),
+                            fontSize = if (value != null) 18.sp else 10.sp,
+                            lineHeight = if (value != null) 22.sp else 13.sp,
+                            fontWeight = FontWeight.Bold, color = if (lowest) colors.onPrimary else colors.onSurfaceVariant,
+                            modifier = Modifier.widthIn(max = 112.dp).padding(horizontal = 9.dp, vertical = 7.dp))
+                    }
                 }
-                Surface(color = if(lowest) MaterialTheme.colorScheme.primary else if(value==null) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp)) {
-                    Text(money(value), fontSize = if(value!=null) 18.sp else 10.sp, lineHeight = if(value!=null) 23.sp else 13.sp, fontWeight = if(value!=null) FontWeight.Bold else FontWeight.Normal,
-                        color = if(lowest) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface, modifier = Modifier.widthIn(max = 115.dp).padding(horizontal = 8.dp, vertical = 6.dp))
-                }
-            }
-            if (expanded) {
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                Column(Modifier.padding(13.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
-                    Text(offer.address, fontSize = 12.sp, lineHeight = 17.sp)
-                    offer.collectedAt?.let { Text("Observado em ${formatDate(it)}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-                    if (lowest) Text(if(offer.isDemo) "MENOR PREÇO · DEMO" else "MENOR PREÇO CONHECIDO", fontSize = 10.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
-                    offer.conditions?.takeIf { it.isNotBlank() }?.let { Text(it, fontSize = 11.sp, lineHeight = 16.sp) }
-                    if (offer.promotionalPriceCents!=null && !offer.conditions.isNullOrBlank()) Text("Preço condicionado: ${money(offer.promotionalPriceCents)}", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                    offer.sourceUrl?.let { url -> TextButton(onClick = { onSource(url) }, contentPadding = PaddingValues(0.dp)) { Text("Ver na fonte original ↗", fontSize = 12.sp) } }
+                if (expanded) {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().padding(start = 6.dp, end = 6.dp, bottom = 6.dp),
+                        shape = RoundedCornerShape(12.dp), color = colors.surface
+                    ) {
+                        Column(Modifier.padding(8.dp)) {
+                            Row(Modifier.fillMaxWidth().clickable { expanded = false }.padding(vertical = 5.dp),
+                                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                                AppIcon(Glyph.Document, Modifier.size(17.dp), colors.primary)
+                                Text("Detalhes da oferta", Modifier.weight(1f), fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Text("⌃", fontSize = 18.sp)
+                            }
+                            OfferDetail(Glyph.Pin, "Endereço", offer.address)
+                            HorizontalDivider(color = colors.outlineVariant)
+                            OfferDetail(Glyph.Calendar, "Observado em", offer.collectedAt?.let(::formatDate) ?: "Sem data")
+                            HorizontalDivider(color = colors.outlineVariant)
+                            val source = offer.sourceUrl
+                            val sourceLabel = when {
+                                source == null -> "Sem fonte publicada"
+                                source.contains("procon.mt.gov.br") -> "Procon-MT"
+                                source.contains("aiqfome.com/") -> "Vitrine no aiqfome"
+                                else -> "Site do supermercado"
+                            }
+                            OfferDetail(Glyph.Link, "Fonte", sourceLabel)
+                            offer.conditions?.takeIf { it.isNotBlank() }?.let {
+                                Text(it, fontSize = 11.sp, lineHeight = 15.sp)
+                                offer.promotionalPriceCents?.let { price ->
+                                    Text("Preço condicionado: ${money(price)}", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                }
+                            }
+                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                if (source != null) Button(onClick = { onSource(source) }, modifier = Modifier.weight(1.25f),
+                                    shape = RoundedCornerShape(9.dp), contentPadding = PaddingValues(horizontal = 5.dp, vertical = 6.dp)) {
+                                    AppIcon(Glyph.External, Modifier.size(14.dp), colors.onPrimary)
+                                    Spacer(Modifier.width(4.dp))
+                                    Text("Abrir fonte original", fontSize = 11.sp, lineHeight = 13.sp)
+                                }
+                                FilledTonalButton(onClick = onCopyAddress, modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(9.dp), contentPadding = PaddingValues(horizontal = 5.dp, vertical = 6.dp)) {
+                                    AppIcon(Glyph.Copy, Modifier.size(14.dp), colors.primary)
+                                    Spacer(Modifier.width(4.dp))
+                                    Text("Copiar endereço", fontSize = 11.sp, lineHeight = 13.sp, color = colors.primary)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+        if (lowest) Surface(Modifier.padding(start = 14.dp), shape = RoundedCornerShape(7.dp), color = colors.primary) {
+            Row(Modifier.padding(horizontal = 8.dp, vertical = 3.dp), horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                AppIcon(Glyph.Crown, Modifier.size(12.dp), colors.onPrimary)
+                Text(if (offer.isDemo) "Menor preço · DEMO" else "Menor preço", fontSize = 10.sp,
+                    lineHeight = 12.sp, fontWeight = FontWeight.Bold, color = colors.onPrimary)
+            }
+        }
+    }
+}
+
+@Composable private fun OfferDetail(icon: Glyph, label: String, value: String) {
+    Row(Modifier.fillMaxWidth().padding(vertical = 5.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        AppIcon(icon, Modifier.size(14.dp), MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(label, Modifier.weight(.4f), fontSize = 11.sp, lineHeight = 14.sp,
+            fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(value, Modifier.weight(.6f), fontSize = 11.sp, lineHeight = 14.sp)
     }
 }
