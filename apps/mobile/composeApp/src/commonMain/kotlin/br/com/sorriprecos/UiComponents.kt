@@ -14,7 +14,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,34 +42,8 @@ import androidx.compose.ui.unit.sp
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Row(Modifier.padding(16.dp).heightIn(min = 30.dp), verticalAlignment = Alignment.CenterVertically) {
             AppIcon(Glyph.Search, Modifier.size(25.dp)); Spacer(Modifier.width(14.dp))
-            Text("Buscar produto, marca\nou embalagem", fontSize = 13.sp, lineHeight = 18.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+            Text("Buscar arroz, café, leite…", fontSize = 13.sp, lineHeight = 18.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
             AppIcon(Glyph.Chevron, Modifier.size(18.dp), MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-    }
-}
-
-internal fun shortMarket(m: Supermarket): String = when (m.id) {
-    "delmoro" -> "DelMoro"; "sorriso" -> "Sorriso\nSupermercados"; "sorrinorte" -> "Sorrinorte"
-    "machado" -> "Machado"; "casa-aurora" -> "Casa Aurora"; "delnorte" -> "DelNorte"
-    else -> m.name.removeSuffix(" Supermercados").removeSuffix(" Supermercado")
-}
-
-@Composable internal fun MarketTile(m: Supermarket, modifier: Modifier, onClick: () -> Unit) {
-    Surface(shape = RoundedCornerShape(15.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 2.dp,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), modifier = modifier.fillMaxHeight().clickable(onClick = onClick)) {
-        Column(Modifier.padding(horizontal = 5.dp, vertical = 12.dp).heightIn(min = 87.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            AppIcon(Glyph.Cart, Modifier.size(25.dp), MaterialTheme.colorScheme.primary)
-            Text(shortMarket(m), fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 6.dp))
-            Text(if (m.isDemo) "DEMO" else if (m.productCount > 0) if(m.lastCollectedAt?.let { platformNow()-it <= 172800 } == true) "Atualizado" else "Histórico" else "Pendente", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 3.dp))
-        }
-    }
-}
-
-@Composable internal fun UpdateStrip(catalog: CatalogStatus, demo: Boolean, historical: Boolean = false, onRefresh: () -> Unit) {
-    Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(14.dp), modifier = Modifier.fillMaxWidth().clickable(onClick = onRefresh).semantics { contentDescription = "Atualizar fontes" }) {
-        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            AppIcon(Glyph.Refresh, Modifier.size(19.dp), MaterialTheme.colorScheme.primary); Spacer(Modifier.width(10.dp))
-            Text(if (demo) "Dados fictícios de demonstração" else (if(historical) catalog.historicalLastCollectedAt else catalog.lastCollectedAt)?.let { if(historical) "Registro histórico: ${formatDate(it).substringBefore(" às")}" else "Última coleta: ${age(it)}" } ?: "Aguardando os primeiros registros", fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
         }
     }
 }

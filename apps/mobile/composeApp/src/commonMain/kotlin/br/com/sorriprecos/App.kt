@@ -24,7 +24,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +42,7 @@ import kotlinx.coroutines.launch
     val repo = remember(baseUrl) { Repository(store, baseUrl) }
     DisposableEffect(repo) { onDispose { repo.client.close() } }
     var screen by remember { mutableStateOf("home") }
+    var category by remember { mutableStateOf<QuickCategory?>(null) }
     var query by remember { mutableStateOf("") }
     var selected by remember { mutableStateOf<Product?>(null) }
     var cart by remember(repo, demo) { mutableStateOf(repo.cart(demo)) }
@@ -107,7 +107,9 @@ import kotlinx.coroutines.launch
         repo.saveCart(demo, cart)
     }
     fun navigate(destination: String) { selected = null; screen = destination; focus.clearFocus() }
-    fun search(value: String) { query = value; navigate("search") }
+    fun search(value: String) { category = null; query = value; navigate("search") }
+    fun explore() { search("") }
+    fun openCategory(value: QuickCategory) { category = value; query = ""; navigate("search") }
     fun toggleDemo() { historical = false; store.put("historical", "false"); demo = !demo; store.put("demo", demo.toString()); query = ""; selected = null }
     fun toggleHistory() { historical = !historical; demo = false; store.put("demo", "false"); store.put("historical", historical.toString()); query = ""; selected = null }
     fun setLarge(value: Boolean) { largeText = value; store.put("ui-large-text", value.toString()) }
@@ -149,43 +151,19 @@ import kotlinx.coroutines.launch
                     } else {
                         if (offline || searchOffline) Notice("Offline · Mostrando dados salvos. Atualize antes de comprar.")
                         when (screen) {
-                            "home" -> LazyColumn(contentPadding = PaddingValues(18.dp, 10.dp, 18.dp, 22.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                                item {
-                                    Column(Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                                        CartMark(54.dp); Spacer(Modifier.height(6.dp)); Wordmark()
-                                        Text("Compare preços nos mercados\nde Sorriso-MT", textAlign = TextAlign.Center, fontSize = 14.sp, lineHeight = 19.sp, modifier = Modifier.padding(top = 6.dp))
-                                    }
-                                }
-                                item { HomeSearch(onClick = { navigate("search") }) }
-                                item { Suggestions(historical, ::search) }
-                                item { DataDisclosure(demo, catalog, historical) }
-                                item {
-                                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                                        Text(if (demo) "Mercados de demonstração" else if(historical) "Pesquisa histórica" else "Mercados de Sorriso", fontWeight = FontWeight.Bold, fontSize = 19.sp, modifier = Modifier.weight(1f))
-                                        TextButton(onClick = { navigate("sources") }) { Text("Fontes", fontSize = 12.sp) }
-                                    }
-                                    Text(if (demo) "Lojas fictícias para explorar o aplicativo" else "${catalog.discoveredSupermarkets} mapeados · ${if(historical) catalog.historicalSupermarkets else catalog.importedSupermarkets} com registros", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                }
-                                if (sourceLoading) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
-                                if (error != null) item { ErrorCard(error!!) { refresh++ } }
-                                items((if(demo) markets.take(3) else listOf("delmoro", "sorriso", "sorrinorte", "machado", "casa-aurora", "delnorte").mapNotNull { id -> markets.find { it.id == id } }).chunked(3)) { row ->
-                                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                                        row.forEach { m -> MarketTile(m, Modifier.weight(1f)) { marketDialog = m } }
-                                        repeat(3-row.size) { Spacer(Modifier.weight(1f)) }
-                                    }
-                                }
-                                item { UpdateStrip(catalog, demo, historical) { refresh++ } }
-                                item {
-                                    TextButton(onClick = { toggleHistory() }, modifier = Modifier.fillMaxWidth()) { Text(if(historical) "Voltar aos preços atuais" else "Pesquisa histórica do Procon", fontSize = 12.sp) }
-                                    TextButton(onClick = { toggleDemo() }, modifier = Modifier.fillMaxWidth()) { Text(if (demo) "Sair da demonstração" else "Experimentar com dados DEMO", fontSize = 12.sp) }
-                                    Text("Cobertura em expansão. Consulte a origem e confirme os valores com a loja.", textAlign = TextAlign.Center, fontSize = 10.sp, lineHeight = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.fillMaxWidth())
-                                }
-                            }
+                            "home" -> HomeScreen(demo, ::search, ::explore, ::openCategory)
                             "search" -> LazyColumn(contentPadding = PaddingValues(18.dp, 10.dp, 18.dp, 20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                                item { SearchField(query, onChange = { query = it.take(100) }, onSearch = { focus.clearFocus(); refresh++ }) }
+                                item { SearchField(query, autofocus = category == null, onChange = { query = it.take(100) }, onSearch = { focus.clearFocus(); refresh++ }) }
                                 if (query.trim().length < 2) {
-                                    item { Text("Encontre o produto que você procura", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp)) }
-                                    item { Suggestions(historical, ::search) }
+                                    item { Text(category?.label ?: "Encontre o produto que você procura", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp)) }
+                                    val terms = category?.terms ?: if (historical) listOf("Chocolate", "Lacta", "Bacalhau") else quickProducts.map { it.query.replaceFirstChar(Char::uppercaseChar) }
+                                    items(terms.chunked(2)) { row ->
+                                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                            row.forEach { term ->
+                                                SuggestionChip(onClick = { search(term) }, label = { Text(term) })
+                                            }
+                                        }
+                                    }
                                 } else {
                                     item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                         Text(if (searching) "Buscando produtos…" else "${results.size} produtos encontrados${if(nextAfter!=null)" nesta página" else ""}", fontSize = 12.sp)
@@ -274,17 +252,9 @@ import kotlinx.coroutines.launch
     }
 }
 
-@Composable private fun Suggestions(historical: Boolean, search: (String) -> Unit) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        (if (historical) listOf("Chocolate", "Lacta", "Bacalhau") else listOf("Arroz 5kg", "Café", "Leite")).forEach { label ->
-            SuggestionChip(onClick = { search(label) }, label = { Text(label, fontSize = 12.sp) }, shape = RoundedCornerShape(20.dp))
-        }
-    }
-}
-
-@Composable private fun SearchField(query: String, onChange: (String) -> Unit, onSearch: () -> Unit) {
+@Composable private fun SearchField(query: String, autofocus: Boolean, onChange: (String) -> Unit, onSearch: () -> Unit) {
     val requester = remember { FocusRequester() }
-    LaunchedEffect(Unit) { if (query.isEmpty()) requester.requestFocus() }
+    LaunchedEffect(Unit) { if (autofocus && query.isEmpty()) requester.requestFocus() }
     OutlinedTextField(value = query, onValueChange = onChange, modifier = Modifier.fillMaxWidth().focusRequester(requester), singleLine = true,
         placeholder = { Text("Produto, marca ou embalagem", fontSize = 13.sp) }, leadingIcon = { AppIcon(Glyph.Search, Modifier.size(20.dp)) },
         trailingIcon = { if (query.isNotEmpty()) IconButton(onClick = { onChange("") }, modifier = Modifier.semantics { contentDescription = "Limpar busca" }) { AppIcon(Glyph.Close, Modifier.size(18.dp)) } },

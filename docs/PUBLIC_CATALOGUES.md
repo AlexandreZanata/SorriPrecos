@@ -1,5 +1,17 @@
 # Catálogos públicos por filial — 03/11/2026
 
+## Pesquisa adicional de estabelecimentos alimentícios — 03/11/2026
+
+O diretório do aiqfome retornou 532 URLs candidatas para Sorriso. Nesta rodada foram verificadas individualmente 34 vitrines selecionadas principalmente por termos de mercearia, padaria, açougue, congelados, doces e conveniência; as demais URLs do diretório não foram examinadas individualmente. Os resultados e motivos de pendência estão em `docs/testing/local-food-research-2026-11-03.json` e `config/public_catalogue_audit.json`.
+
+Foram habilitadas 17 vitrines: Alento Comidas Caseiras e Congelados, Andressa Doces Caseirinhos, Bendita Fatia Doces Gourmet, Delicatta Doces, Doces da Tina, Doces DiMaria, Fran Abreu Doces (matriz e shopping, com CNPJs distintos), Império Doces, Isabella Doces Artesanais, Italy Doces & Cia, Mais Que Pão, Pão com Linguiça Casanova, Pasta Parma, Posto e Conveniência Avanti, Só Massas Congeladas e Tentação Doces. Cada uma informa identificação, CNPJ e endereço de Sorriso no objeto público da plataforma. A configuração seleciona categorias alimentícias explícitas; presentes, cigarros e categorias mistas não foram habilitados automaticamente.
+
+O coletor existente foi executado primeiro em SQLite isolado e depois no banco local: 17 coletas bem-sucedidas, 605 variantes nas categorias selecionadas e 400 normalizadas, com 170 disponíveis no momento da validação. As outras 205 ficaram registradas para auditoria, principalmente por complemento obrigatório, preço ausente ou tamanho ambíguo. Disponibilidade e preços variam e expiram segundo a regra existente de 30 minutos. Os resultados detalhados de cada fonte refletem aquela rodada, não uma garantia de disponibilidade futura.
+
+O catálogo do Empório Doceria apresenta CEP divergente e aguarda confirmação. GT Bebidas e JL Distribuidora compartilham CNPJ com endereços divergentes; Portal Bebidas compartilha CNPJ e endereço com o Açougue Portal já cadastrado. Essas vitrines não foram habilitadas automaticamente. Outras distribuidoras têm categorias mistas ou condições de vasilhame que requerem revisão; as vitrines de produtos exclusivamente para animais ficaram fora do escopo. Padaria Popular continuou com objeto vazio no GET direto. NutraBake, Steakhouse 67 e o diretório bysell foram registrados como pistas, sem validação de ingestão. O levantamento não prova que todos os estabelecimentos de Sorriso tenham sido encontrados.
+
+As novas fontes usam `config/aiqfome.json` e o mesmo comando `collect-local-food --watch`. Um processo já iniciado lê a configuração na inicialização e precisa ser reiniciado para incluir as novas fontes em suas próximas rodadas. A primeira coleta acima não substitui um serviço contínuo.
+
 O coletor `collect-vip` usa a mesma sessão **anônima da vitrine** que o navegador cria antes de qualquer login de cliente. A presença de `Authorization: Bearer` não significa, por si, que seja uma conta de comprador. Na resposta observada, os campos `client`, `operator` e `vipcommerceClienteId` estavam vazios. O coletor recusa sessões que tragam esses identificadores ou uma organização diferente.
 
 A sessão autentica o contexto da loja na API; não deve ser descrita como uma API sem autenticação. Não se utiliza login de consumidor, senha pessoal, token de operador, carrinho, pedido ou checkout. Os parâmetros de bootstrap são lidos dos módulos JavaScript publicados pelo próprio site e permanecem em memória, assim como o token. Nenhuma chave ou sessão real integra a configuração, os logs ou o Git. Uma nova sessão é criada em cada ciclo, sem depender de um JWT permanente.
@@ -72,7 +84,7 @@ As outras referências do levantamento não entregaram API pública de produtos/
 
 ## Procon exclusivamente histórico
 
-As origens agora têm `source_kind=retail|public_report`. A busca padrão e a comparação retornam somente o catálogo varejista; `historical=true` seleciona exclusivamente o relatório, sem misturar mínimos ou filiais com preços de outra origem. Os 27 produtos/31 observações do Procon conservam março de 2026 e estoque desconhecido. No app, use **Pesquisa histórica do Procon**; **Voltar aos preços atuais** restaura o catálogo varejista. Cache e chamadas do cliente incluem esse modo.
+As origens agora têm `source_kind=retail|public_report`. A busca padrão e a comparação retornam somente o catálogo varejista; `historical=true` seleciona exclusivamente o relatório, sem misturar mínimos ou filiais com preços de outra origem. Os 27 produtos/31 observações do Procon conservam março de 2026 e estoque desconhecido. No app, use **Ajustes → Pesquisa histórica do Procon** para alternar entre o relatório e o catálogo varejista. Cache e chamadas do cliente incluem esse modo.
 
 O acesso público da vitrine e a autorização do usuário para testar esse mecanismo não constituem licença comercial de redistribuição concedida pelos supermercados. A classificação de pesquisa continua B, não A; o estado técnico legado `authorized` indica coletor habilitado, sem afirmar contrato. A licença MIT cobre o código. Condições para lançamento e atribuição continuam em `LEGAL_CONSIDERATIONS.md`.
 

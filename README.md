@@ -41,7 +41,7 @@ scripts/android-install.sh
 
 O script seleciona um único celular conectado, instala o APK e cria `adb reverse tcp:8080 tcp:8080`. Para selecionar explicitamente um aparelho, passe o serial como argumento. Não inicia emulador. O APK está em `apps/mobile/composeApp/build/outputs/apk/debug/composeApp-debug.apk`.
 
-No app, use a busca padrão por **Arroz 5kg**, café, leite ou GTIN para os catálogos atuais. **Pesquisa histórica do Procon** abre os registros antigos separadamente; **Voltar aos preços atuais** restaura a busca varejista. DEMO continua opcional. Em **Ajustes → Conexão**, use `http://127.0.0.1:8080`. Mantenha backend, coletor e USB ativos. Consultas salvas continuam legíveis offline, com aviso; novas consultas precisam de conexão.
+No app, toque em um produto da tela inicial para pesquisar a embalagem indicada. Também é possível buscar por nome, marca ou GTIN. Use **Ajustes → Pesquisa histórica do Procon** para alternar entre registros antigos e preços atuais. As fotos ilustrativas da tela inicial foram geradas para os atalhos. Os resultados usam as fotos das vitrines. Em **Ajustes → Conexão**, use `http://127.0.0.1:8080`. Mantenha backend, coletor e USB ativos. Consultas salvas continuam legíveis offline, com aviso; novas consultas precisam de conexão.
 
 Teste de interface reproduzível, em aparelho desbloqueado com o app instalado:
 

@@ -10,17 +10,17 @@ def main():
     def passed(name):report['tests'].append({'name':name,'status':'passed'});print('PASS:',name,flush=True)
     phone.command('reverse','tcp:8080','tcp:8080')
     try:
-        root=phone.launch()
+        phone.launch();phone.tap('Buscar');root=phone.wait('Resultados da busca')
         if not any('DADOS REAIS HISTÓRICOS' in t for t in phone.texts(root)):
             phone.tap('Ajustes');root=phone.wait('Do seu jeito')
             for _ in range(5):
                 if 'Pesquisa histórica do Procon' in phone.texts(root):break
                 phone.command('shell','input','swipe',str(phone.width//2),str(int(phone.height*.8)),str(phone.width//2),str(int(phone.height*.4)),'350');root=phone.dump()
             phone.tap('Pesquisa histórica do Procon');phone.tap('Início')
-        phone.launch()
+        phone.launch();phone.tap('Buscar')
         root=phone.wait('DADOS REAIS HISTÓRICOS')
         assert not any('MODO DEMO' in t for t in phone.texts(root))
-        phone.screenshot(output/'home.png');passed('Modo real com aviso de referência histórica, sem DEMO')
+        phone.screenshot(output/'historical-mode.png');passed('Modo real com aviso de referência histórica, sem DEMO')
         phone.tap('Lacta');root=phone.wait('R$ 69,90')
         assert 'REGISTRO HISTÓRICO · DESATUALIZADO' in phone.texts(root)
         phone.screenshot(output/'search.png');passed('Busca real no localhost retorna valor documentado de 6990 centavos')

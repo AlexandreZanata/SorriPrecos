@@ -52,7 +52,7 @@ internal val AppContrast = darkColorScheme(
     outline = Color(0xFFC6D2C6), outlineVariant = Color(0xFF7D907D)
 )
 
-internal enum class Glyph { Cart, Search, Home, Heart, Settings, Back, Chevron, Close, Refresh, Contrast, Pin, Clock, Info, Check, Calendar, Document, Link, External, Copy, Crown }
+internal enum class Glyph { Cart, Search, Home, Heart, Settings, Back, Chevron, Close, Refresh, Contrast, Pin, Clock, Info, Check, Calendar, Document, Link, External, Copy, Crown, Bottle, Bread, Spray, Pump, Paw, Grid }
 
 @Composable internal fun AppIcon(glyph: Glyph, modifier: Modifier = Modifier, tint: Color = MaterialTheme.colorScheme.onSurface, filled: Boolean = false) {
     Canvas(modifier.size(24.dp)) {
@@ -82,6 +82,20 @@ internal enum class Glyph { Cart, Search, Home, Heart, Settings, Back, Chevron, 
                 Glyph.External -> {path(11f to 5f,4f to 5f,4f to 20f,19f to 20f,19f to 13f);path(14f to 3f,21f to 3f,21f to 10f);line(10f,14f,21f,3f)}
                 Glyph.Copy -> {path(8f to 3f,21f to 3f,21f to 16f,8f to 16f,8f to 3f);path(4f to 7f,4f to 21f,17f to 21f)}
                 Glyph.Crown -> {path(3f to 6f,7f to 11f,12f to 5f,17f to 11f,21f to 6f,18f to 17f,6f to 17f,3f to 6f);line(7f,21f,17f,21f)}
+                Glyph.Bottle -> path(9f to 3f,15f to 3f,15f to 7f,18f to 10f,18f to 21f,6f to 21f,6f to 10f,9f to 7f,9f to 3f)
+                Glyph.Bread -> {
+                    drawOval(tint,Offset(2f,6f),Size(20f,13f),style=stroke)
+                    line(8f,7f,10f,11f); line(13f,7f,15f,11f)
+                }
+                Glyph.Spray -> { path(6f to 3f,17f to 3f,20f to 6f,13f to 6f,13f to 10f,17f to 14f,17f to 21f,7f to 21f,7f to 14f,10f to 10f,10f to 6f,6f to 6f,6f to 3f); line(7f,7f,4f,10f) }
+                Glyph.Pump -> { path(8f to 8f,16f to 8f,18f to 11f,18f to 21f,6f to 21f,6f to 11f,8f to 8f); path(12f to 8f,12f to 3f,17f to 3f) }
+                Glyph.Paw -> {
+                    drawOval(tint,Offset(6f,12f),Size(12f,9f),style=stroke)
+                    listOf(4f to 9f,9f to 5f,15f to 5f,20f to 9f).forEach { (x,y) -> drawCircle(tint,1.7f,Offset(x,y),style=stroke) }
+                }
+                Glyph.Grid -> for (x in listOf(3f,13f)) for (y in listOf(3f,13f)) {
+                    drawRoundRect(tint,Offset(x,y),Size(8f,8f),androidx.compose.ui.geometry.CornerRadius(2f),style=stroke)
+                }
                 Glyph.Check -> path(4f to 12f,9f to 17f,20f to 6f)
             }
         }

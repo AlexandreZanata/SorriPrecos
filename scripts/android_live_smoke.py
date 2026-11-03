@@ -21,8 +21,8 @@ def main():
     def passed(name):report['tests'].append({'name':name,'status':'passed'});print('PASS:',name,flush=True)
     phone.command('reverse','tcp:8080','tcp:8080')
     try:
-        root=phone.launch()
-        texts=phone.texts(root)
+        phone.launch();phone.tap('Buscar')
+        texts=phone.texts(phone.wait('Resultados da busca'))
         if any('DADOS REAIS HISTÓRICOS' in t or 'MODO DEMO' in t for t in texts):
             label='Pesquisa histórica do Procon' if any('DADOS REAIS HISTÓRICOS' in t for t in texts) else 'Modo DEMO'
             phone.tap('Ajustes');root=phone.wait('Do seu jeito')
@@ -30,7 +30,7 @@ def main():
                 if label in phone.texts(root):break
                 scroll(phone);root=phone.dump()
             phone.tap(label);phone.tap('Início')
-        phone.launch();root=phone.wait('Mercados de Sorriso');assert not any('MODO DEMO' in t or 'DADOS REAIS HISTÓRICOS' in t for t in phone.texts(root))
+        phone.launch();root=phone.wait('Produtos do dia a dia');assert not any('MODO DEMO' in t or 'DADOS REAIS HISTÓRICOS' in t for t in phone.texts(root))
         phone.screenshot(output/'home.png');passed('Catálogo atual é separado do Procon e da demonstração')
         phone.tap('Buscar');phone.wait('Encontre o produto');phone.command('shell','input','text',product['gtin']);root=phone.wait(expected)
         assert product['name'] in phone.texts(root);assert 'Embalagem: 5 kg' in phone.texts(root)

@@ -54,7 +54,7 @@ def main():
                 phone.command('shell','input','swipe',str(phone.width//2),str(int(phone.height*.8)),str(phone.width//2),str(int(phone.height*.4)),'350');root=phone.dump()
             phone.tap('Modo DEMO');phone.tap('Início');phone.wait('MODO DEMO');phone.launch()
         phone.screenshot(args.output/'home.png');passed('Inicialização e identificação explícita de DEMO')
-        phone.tap('Arroz 5kg');root=phone.wait('R$ 22,70')
+        phone.tap('Arroz');root=phone.wait('R$ 22,70')
         assert not any('1 kg' in t for t in phone.texts(root))
         phone.screenshot(args.output/'search.png');passed('Busca API por arroz 5kg sem misturar embalagem de 1kg')
         phone.tap('Comparar ›');root=phone.wait('Mercado Cerrado · DEMO')
@@ -80,7 +80,7 @@ def main():
         phone.screenshot(args.output/'reconnected.png');passed('Reconexão ao backend após restaurar USB')
         # Verify Android system Back returns from comparison to the favorites screen.
         phone.command('shell','input','keyevent','4');phone.wait('Sua lista de favoritos');passed('Botão Voltar do Android')
-        phone.tap('Início');phone.tap('Arroz 5kg');phone.wait('R$ 22,70');phone.tap('Comparar ›');phone.wait('Mercado Cerrado · DEMO')
+        phone.tap('Início');phone.tap('Arroz');phone.wait('R$ 22,70');phone.tap('Comparar ›');phone.wait('Mercado Cerrado · DEMO')
         report['status']='passed'
     finally:
         phone.command('reverse','tcp:8080','tcp:8080')
