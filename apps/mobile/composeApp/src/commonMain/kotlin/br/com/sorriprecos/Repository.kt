@@ -90,14 +90,19 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
             val key = "search:v1:$baseUrl:$path"
             val page = disk.get(key)?.let { codec.decodeFromString<SearchPage>(it) }
             if (page != null) {
-                val stored = page.ids.mapNotNull { record(it, historical)?.product }
-                if (stored.isNotEmpty() || platformNow() - page.savedAt in 0 until PRODUCT_SYNC_INTERVAL) {
+                val stored = page.ids.mapNotNull { record(it, historical)?.product }.filter { it.isDiscoverable() }
+                if (stored.isNotEmpty() || (page.ids.isEmpty() && platformNow() - page.savedAt in 0 until PRODUCT_SYNC_INTERVAL)) {
                     return@withContext Loaded(Items(stored, page.nextAfter), offline = syncFailed.value, savedAt = page.savedAt)
                 }
             }
             val legacyKey = "cache:v2:$baseUrl:$path"
             val legacy = if (page == null) store.get(legacyKey)?.let { codec.decodeFromString<Items<Product>>(it) } else null
-            val loaded = legacy?.let { Loaded(it, offline = true, savedAt = 0) } ?: request<Items<Product>>(path)
+            val loaded = try {
+                legacy?.let { Loaded(it, offline = true, savedAt = 0) } ?: request<Items<Product>>(path)
+            } catch (e: CatalogUnavailable) {
+                if (page != null) return@withContext Loaded(Items(emptyList(), page.nextAfter), offline = true, savedAt = page.savedAt)
+                throw e
+            }
             syncLock.withLock {
                 val at = if (loaded.offline) 0 else platformNow()
                 for (product in loaded.data.items) {
@@ -107,7 +112,7 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
                 }
                 disk.put(key, codec.encodeToString(SearchPage(loaded.data.items.map(Product::id), loaded.data.nextAfter, at)))
             }
-            loaded
+            loaded.copy(data = loaded.data.copy(items = loaded.data.items.filter { it.isDiscoverable() }))
         }
 
     internal suspend fun latestProducts(products: List<Product>): Loaded<List<Product>> =
@@ -115,7 +120,7 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
             Loaded(products.mapNotNull { product ->
                 val latest = record(product.id, product.isHistorical)
                 if (latest?.removed == true) null else latest?.product ?: product
-            }, offline = syncFailed.value)
+            }.filter { it.isDiscoverable() }, offline = syncFailed.value)
         }
 
     suspend fun prices(id: Long, historical: Boolean = false): Loaded<Comparison> =

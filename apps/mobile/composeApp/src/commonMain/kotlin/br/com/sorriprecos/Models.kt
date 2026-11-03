@@ -53,6 +53,10 @@ import kotlinx.serialization.SerialName
 )
 @Serializable data class Comparison(val product:Product,val items:List<Offer>,@SerialName("coverage_note") val coverageNote:String="")
 
+internal fun Product.isDiscoverable(at: Long = platformNow()): Boolean =
+    isHistorical || (minPriceCents != null && branchCount > 0 &&
+        lastCollectedAt?.let { it >= at - 172800 } == true)
+
 fun money(cents:Long?):String {
     if(cents==null)return "Preço não disponível"
     val whole=(cents/100).toString().reversed().chunked(3).joinToString(".").reversed()

@@ -512,8 +512,15 @@ async fn search_matches(
     } else {
         ""
     };
+    let offer_filter = if historical {
+        ""
+    } else {
+        " AND o.available=1 AND o.price_cents IS NOT NULL
+          AND o.collected_at>=CAST(strftime('%s','now') AS INTEGER)-172800
+          AND (o.valid_until IS NULL OR o.valid_until>=CAST(strftime('%s','now') AS INTEGER))"
+    };
     let sql = format!(
-        "WITH hits AS MATERIALIZED ({candidates} AND p.is_demo=? AND p.id>? AND EXISTS(SELECT 1 FROM source_products sp WHERE sp.product_id=p.id AND sp.source_kind=?){pack_filter} ORDER BY p.id LIMIT ?) SELECT {PRODUCT_FIELDS},{} AS is_historical FROM hits h JOIN products p ON p.id=h.id LEFT JOIN offers o ON o.product_id=p.id AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) GROUP BY p.id ORDER BY p.id",
+        "WITH hits AS MATERIALIZED ({candidates} AND p.is_demo=? AND p.id>? AND EXISTS(SELECT 1 FROM source_products sp JOIN offers o ON o.source_product_id=sp.id JOIN branches b ON b.id=o.branch_id AND b.active=1 WHERE sp.product_id=p.id AND sp.source_kind=?{offer_filter}){pack_filter} ORDER BY p.id LIMIT ?) SELECT {PRODUCT_FIELDS},{} AS is_historical FROM hits h JOIN products p ON p.id=h.id LEFT JOIN offers o ON o.product_id=p.id AND o.branch_id IN(SELECT id FROM branches WHERE active=1) AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) GROUP BY p.id ORDER BY p.id",
         i32::from(historical)
     );
     let mut query = sqlx::query_as(&sql)
@@ -548,7 +555,7 @@ pub async fn product_scope(
         "retail"
     };
     let sql = format!(
-        "SELECT {PRODUCT_FIELDS},{} AS is_historical FROM products p JOIN offers o ON o.product_id=p.id AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) WHERE p.id=? GROUP BY p.id",
+        "SELECT {PRODUCT_FIELDS},{} AS is_historical FROM products p JOIN offers o ON o.product_id=p.id AND o.branch_id IN(SELECT id FROM branches WHERE active=1) AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) WHERE p.id=? GROUP BY p.id",
         i32::from(historical)
     );
     Ok(sqlx::query_as(&sql)

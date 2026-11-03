@@ -44,9 +44,12 @@ import kotlinx.coroutines.launch
         catch (e: Exception) { error = e.message } finally { loading = false }
     }
     val product = loaded?.data?.product ?: selected
-    val offers = loaded?.data?.items.orEmpty()
+    val offers = loaded?.data?.items.orEmpty().filter { offer ->
+        if (product.isHistorical) offer.collectedAt != null && offer.priceCents != null
+        else offer.isCurrent() && offer.effectivePriceCents != null
+    }
     val best = offers.filter { it.isCurrent() }.mapNotNull { it.effectivePriceCents }.minOrNull()
-    val historical = product.historicalBranchCount > 0 && product.branchCount == 0
+    val historical = product.isHistorical
     Box(Modifier.fillMaxSize()) {
         LazyColumn(contentPadding = PaddingValues(18.dp, 12.dp, 18.dp, 24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             if (loaded?.offline == true) item { Notice("Offline · Comparação salva. Preços podem ter mudado.") }
@@ -63,9 +66,9 @@ import kotlinx.coroutines.launch
                     TextButton(onClick = onFavorite, contentPadding = PaddingValues(horizontal = 0.dp)) { AppIcon(Glyph.Heart, Modifier.size(16.dp), MaterialTheme.colorScheme.primary, filled = favorite); Spacer(Modifier.width(5.dp)); Text(if (favorite) "Salvo nos favoritos" else "Salvar nos favoritos", fontSize = 12.sp) }
                     TextButton(onClick = refreshOffer) { AppIcon(Glyph.Refresh, Modifier.size(15.dp), MaterialTheme.colorScheme.primary); Spacer(Modifier.width(5.dp)); Text("Atualizar", fontSize = 12.sp) }
                 }
-                if (onAdd != null) {
+                if (onAdd != null && (offers.isNotEmpty() || cartQuantity > 0)) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Button(onClick = onAdd, enabled = cartQuantity < CART_MAX_QUANTITY) {
+                        if (offers.isNotEmpty()) Button(onClick = onAdd, enabled = cartQuantity < CART_MAX_QUANTITY) {
                             AppIcon(Glyph.Cart, Modifier.size(17.dp), MaterialTheme.colorScheme.onPrimary)
                             Spacer(Modifier.width(6.dp))
                             Text("Adicionar ao carrinho")
@@ -101,7 +104,7 @@ import kotlinx.coroutines.launch
                     }
                 }
                 if (offers.size > 5) item { TextButton(onClick = { showAll = !showAll }, modifier = Modifier.fillMaxWidth()) { Text(if(showAll) "Mostrar menos filiais" else "Ver todas as ${offers.size} filiais") } }
-                if (loaded != null && offers.isEmpty()) item { EmptyCard("Preço não disponível", "Este produto ainda não possui ofertas vinculadas às filiais.") }
+                if (loaded != null && offers.isEmpty()) item { EmptyCard("Preço não disponível", "Nenhuma filial tem preço confirmado para este produto no momento.") }
                 item {
                     Spacer(Modifier.height(4.dp))
                     Text("Histórico de preços", fontSize = 18.sp, fontWeight = FontWeight.Bold)

@@ -298,7 +298,7 @@ async fn ordering_and_branch_links() {
     let (_, v) = call(app(&p), "/v1/products/1/prices").await;
     assert_eq!(v["items"][0]["branch_id"], "demo-b-1");
     assert_eq!(v["items"][0]["effective_price_cents"], 2199);
-    assert_eq!(v["items"][2]["status"], "unknown");
+    assert_eq!(v["items"].as_array().unwrap().len(), 2);
 }
 #[tokio::test]
 async fn conditional_promo_does_not_mislead() {
@@ -330,7 +330,13 @@ async fn stale_unavailable_unknown_and_expired() {
         .collect();
     assert!(states.contains(&"stale"));
     assert!(states.contains(&"unavailable"));
-    assert!(states.contains(&"unknown"));
+    assert!(!states.contains(&"unknown"));
+    assert!(
+        catalog::search(&p, "arroz", 20, 0, true)
+            .await
+            .unwrap()
+            .is_empty()
+    );
     assert!(v["product"]["min_price_cents"].is_null());
     let mut c = row("demo-c", 1999);
     c.collected_at = now() - 60;
@@ -581,7 +587,7 @@ async fn duplicate_canonical_skus_have_one_offer_per_branch() {
     b.price_cents = Some(2299);
     catalog::import(&p, "demo-a", &[a, b], None).await.unwrap();
     let (_, v) = call(app(&p), "/v1/products/1/prices").await;
-    assert_eq!(v["items"].as_array().unwrap().len(), 3);
+    assert_eq!(v["items"].as_array().unwrap().len(), 1);
     assert_eq!(v["items"][0]["effective_price_cents"], 2299);
     assert_eq!(v["product"]["branch_count"], 1);
 }
@@ -649,7 +655,7 @@ async fn historical_reference_never_becomes_a_current_minimum() {
         .await
         .unwrap();
     let (_, current) = call(app(&p), "/v1/products/search?q=arroz").await;
-    assert_eq!(current["items"][0]["historical_branch_count"], 0);
+    assert!(current["items"].as_array().unwrap().is_empty());
     let (_, v) = call(app(&p), "/v1/products/search?q=arroz&historical=true").await;
     assert!(v["items"][0]["min_price_cents"].is_null());
     assert_eq!(v["items"][0]["reference_price_cents"], 6990);

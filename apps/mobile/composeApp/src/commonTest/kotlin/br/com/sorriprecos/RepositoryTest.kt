@@ -61,7 +61,7 @@ class RepositoryTest {
 
     @Test fun productsSurviveRepositoryRestartAndReconcileThroughOneBatch()=runTest {
         val disk=MemoryStore()
-        val product=Product(1,"Arroz","Marca",5000,"g","pacote","Mercearia",minPriceCents=2399)
+        val product=Product(1,"Arroz","Marca",5000,"g","pacote","Mercearia",minPriceCents=2399,lastCollectedAt=platformNow(),branchCount=1)
         val first=Repository(disk,"https://example.test",HttpClient(MockEngine { request ->
             assertEquals("/v1/products/search",request.url.encodedPath)
             respond(codec.encodeToString(Items(listOf(product))))
