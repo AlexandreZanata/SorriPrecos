@@ -422,3 +422,13 @@ curl -fsS -c "$cookies" "$base/minhafarmacia.php?farmacia=835" -o /dev/null
 curl -fsS -b "$cookies" "$base/ofertas.php"
 rm -f "$cookies"
 ```
+
+### Drogaria Nebrasca e Drogaria Aurora por CNPJ
+
+A consulta `opencnpj get SNAPSHOT 09039622` confirmou quatro estabelecimentos ativos em Sorriso. O GET público de `/contato/` respondeu HTTP 200 e mostrou três CNPJs com canais de atendimento. O site não expôs itens, preços ou estoque nessas fichas. [Contato oficial Nebrasca](https://drogarianebrasca24horas.com.br/contato/) · [Serviços](https://drogarianebrasca24horas.com.br/servicos/)
+
+- **Nebrasca Natalino · 09.039.622/0001-06.** Avenida Natalino João Brescansin, 955. CNPJ e endereço coincidem com a unidade 1. Catálogo pendente.
+- **Nebrasca Blumenau · 09.039.622/0002-89.** Avenida Blumenau, 3014. CNPJ e endereço coincidem com a unidade 2. O agregador oficial de contatos lista dois canais para a mesma loja Blumenau; conte uma única unidade. Catálogo pendente. [Canais de atendimento](https://linkme.bio/drogaria_nebrasca)
+- **Nebrasca Tangará · 09.039.622/0003-60.** Rua Tangará, 709. CNPJ e endereço coincidem com a unidade 3. Catálogo pendente.
+- **Nebrasca Porto Alegre Sul · 09.039.622/0004-40.** Avenida Porto Alegre Sul, 1321, sala 01. Registro ativo, ausente no HTML de contato consultado. Operação de varejo e vitrine pública pendentes. [Registro do endereço](https://todasempresas.com.br/cnpj/09039622000440-drogaria-nebrasca-24h-ltda)
+- **Drogaria Aurora, Belo Horizonte, 94.** Os GETs de `/sorriso-mt/` e `/medicamentos/` responderam HTTP 200. O site identifica o ponto anexo ao DelMoro e oferece atendimento para entregas. A página de medicamentos apresenta conteúdo institucional sem preço ou estoque por SKU. O CNPJ histórico **05.247.687/0001-88**, Drogaria Floriso, consta baixado (08) no OpenCNPJ no número 94A. A busca no snapshot ativo por 94 e 94A encontrou DelMoro e O Boticário, sem correspondência ativa de drogaria nesses números. Confirme o operador atual antes de atribuir ofertas ao endereço. [Unidade anunciada](https://www.farmaciaaurora.com.br/sorriso-mt/) · [Medicamentos](https://www.farmaciaaurora.com.br/medicamentos/) · [Vínculo histórico no Diário Oficial](https://transparencia.mpf.mp.br/conteudo/diarios-e-boletins/diario-oficial-da-uniao-1/2013/dou1_2013_04_22_suplementar.pdf)
