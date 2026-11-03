@@ -26,7 +26,7 @@ def main():
             if (row.get("uf"), row.get("municipio"), row.get("situacao_cadastral")) != ("MT", "9907", "02"):
                 raise ValueError("OpenCNPJ retornou uma filial fora do filtro local")
             codes = {row["cnae_fiscal_principal"], *row["cnae_fiscal_secundaria"].split(",")}
-            if not any(code.startswith(("47", "56")) for code in codes):
+            if not any(code.startswith(("45", "47", "56")) for code in codes):
                 continue
             group = "pharmacy" if codes & {"4771701", "4771702", "4771703"} else "commerce"
             candidates[row["cnpj"]] = {
