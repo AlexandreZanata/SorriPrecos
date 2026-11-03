@@ -1,0 +1,10 @@
+[
+  {"source_names":["LOJA 04 - SORRISO BH","LOJA 04 - SORRISO BH (DEL MORO)"],"supermarket_id":"delmoro","branch_id":"delmoro-bh","street_hint":"BELO HORIZONTE","street_number":"94"},
+  {"source_names":["LOJA 18 - SORRISO RDS","LOJA 18 - SORRISO RDS - DELMORO SUPERMERCADO"],"supermarket_id":"delmoro","branch_id":"delmoro-rota","street_hint":"BLUMENAU","street_number":"754"},
+  {"source_names":["LOJA 13 - DEL NORTE - SORRISO","LOJA 13 - DEL NORTE - SORRISO - DELNORTE ATACAREJO"],"supermarket_id":"delnorte","branch_id":"delnorte-br163","street_hint":"PERIMETRAL SUDESTE","street_number":"8157"},
+  {"source_names":["MACHADO TANCREDO NEVES","SUPERMERCADOS MACHADO LOJA 11"],"supermarket_id":"machado","branch_id":"machado-universitario","street_hint":"NOEMIA TONELLO DALMOLIN","street_number":"2501"},
+  {"source_names":["SORRISO SUPERMERCADOS LTDA"],"supermarket_id":"sorriso","branch_id":"sorriso-centro","street_hint":"BRESCANSIN","street_number":"220"},
+  {"source_names":["SOL SUPERMERCADO"],"supermarket_id":"sol","branch_id":"sol-industrial","street_hint":"SAO FRANCISCO DE ASSIS","street_number":"2073"},
+  {"source_names":["SUPERMERCADO UNIAO"],"supermarket_id":"uniao","branch_id":"uniao-tancredo","street_hint":"TANCREDO NEVES","street_number":"2122"},
+  {"source_names":["ATACADÃO SORRISO","SORRISO - ATACADÃO SORRISO"],"supermarket_id":"atacadao","branch_id":"atacadao-sorriso","street_hint":"IDEMAR RIEDI","street_number":"8150"}
+]

@@ -258,6 +258,12 @@
         "name": "Parque Universitário",
         "address": "Av. Noêmia Tonello Dalmolin, 2285 · Parque Universitário",
         "source_id": null
+      },
+      {
+        "id": "uniao-tancredo",
+        "name": "Centro Norte · Tancredo Neves",
+        "address": "Av. Tancredo Neves, 2122 · Centro Norte",
+        "source_id": "91232843000500"
       }
     ]
   },
@@ -327,7 +333,8 @@
         "id": "berte-centro-norte",
         "name": "Centro Norte · número não confirmado",
         "address": "Centro Norte · endereço completo pendente",
-        "source_id": null
+        "source_id": null,
+        "active": false
       }
     ]
   },

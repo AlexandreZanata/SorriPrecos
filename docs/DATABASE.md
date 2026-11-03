@@ -19,3 +19,5 @@ Categorias farmacêuticas e medicamentos comuns são rejeitados. Essa lista dete
 O índice de preços começa por `product_id`; outro índice atende filial/tempo. FTS é uma tabela dedicada, sem gatilhos que dependeriam de colunas artificiais. Escritas externas diretas ao banco não são suportadas; utilize o importador.
 
 `collect` não marca um preço como novo ao receber HTTP 304: preserva a data de observação declarada. `import` ignora snapshots mais antigos de uma oferta. Ausência em um lote incremental não significa indisponibilidade. `maintain` usa checkpoint PASSIVE e PRAGMA optimize, sem VACUUM durante consultas.
+
+Importação real exige `source_city=Sorriso` e `source_state=MT` na entrada, além da FK de filial/rede e do CHECK geográfico das filiais. Filiais desativadas no registro não recebem novas ofertas nem aparecem na comparação. O relatório público preserva `available=NULL` e `collected_at` de março de 2026. Campos de resposta `reference_price_cents` e `historical_branch_count` são agregações calculadas; não exigem alteração da migração existente. `min_price_cents` continua limitado a preço recente com disponibilidade confirmada.

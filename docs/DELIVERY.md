@@ -1,14 +1,40 @@
 # Entrega do MVP — 03/11/2026
 
-1. **Descoberta:** 26 redes/estabelecimentos referenciados e 28 registros de filiais em Sorriso-MT. Inclui fontes secundárias, endereços divergentes e referências históricas; não representa censo de lojas ativas. Matriz e evidências em SUPERMARKETS_AUDIT.md.
-2. **Catálogos:** zero catálogos locais com produtos, preços e filial obtidos/validados. Duas lojas virtuais declaradas, um catálogo nacional com contexto regional e um domínio bloqueado são candidatos, não integrações confirmadas.
-3. **Integração legítima pronta:** zero fontes classe A/autorizadas comprovadas. Quatro candidatos B dependem de autorização e validação do contrato/filial.
-4. **Efetivamente integrados:** zero supermercados reais. Cada adaptador permanece configurado como pendente; o adaptador de feed autorizado foi testado com servidor sintético de contrato.
-5. **Produtos reais obtidos:** zero. A demonstração local tem 12 produtos canônicos, 36 ofertas e três lojas fictícias; não utiliza preços inventados atribuídos às redes reais.
-6. **Módulos:** API Rust/Axum, SQLite WAL/FTS5 e migrações, normalização/GTIN/embalagens, importador CSV/JSON, SourceAdapter de feeds autorizados com paginação/condicionais/backoff, histórico/retenção, app KMP/Compose Android+iOS preparado, favoritos/cache, documentação, CI e configuração VPS/Caddy/systemd/backup.
-7. **Testes:** 26 testes Rust e cinco Kotlin passaram; nove checks de interface passaram no celular físico Android 16 por ADB. Rustfmt/Clippy e geração do APK passaram. Lint concluiu com regras sem erro, mas tem limitação do analisador Kotlin descrita em TESTING.md. Backup/restauração de SQLite sintético preservou integridade e contagens.
-8. **Benchmarks:** seis cenários de 10 mil/50 mil/100 mil produtos, com uma/três ofertas. O maior tem 300 mil ofertas, banco de 122,68 MiB, RSS API medido em 23,81 MiB, p95 de 17,812 ms e 640,83 requisições/s em uma fase curta local. Não se extrapola esse resultado para capacidade de uma VPS ou quantidade de usuários. Parâmetros e JSON bruto em PERFORMANCE.md.
-9. **Iniciar:** da raiz, `cargo build --release --locked`, `./target/release/sorriprecos demo` (somente desenvolvimento) e `./target/release/sorriprecos serve`. Compile Android em `apps/mobile` com `./gradlew :composeApp:assembleDebug`; depois execute `scripts/android-install.sh` da raiz com backend ativo e celular autorizado. Use DEMO e endereço local `http://127.0.0.1:8080` por USB. O APK final também foi copiado para `artifacts/sorriprecos-0.1.0-debug.apk`.
-10. **Para publicar:** receber ao menos um feed autorizado, validar cadastro/filiais e preços reais, configurar domínio/VPS/HTTPS, repetir carga sustentada, revisar retenção/privacidade, alinhar lint e produzir APK release assinado. iOS depende de build/testes em Mac/Xcode. O código MIT está no repositório local, sem publicação externa automática.
+O aplicativo está instalado e foi testado no celular físico Android conectado por ADB, consumindo a API Rust em `http://127.0.0.1:8080` pelo USB. Não foi utilizado emulador. O código foi publicado em [AlexandreZanata/SorriPrecos](https://github.com/AlexandreZanata/SorriPrecos).
 
-O resultado é um MVP técnico executável e testado no Android, com fluxo completo em DEMO e importação real preparada. Não satisfaz ainda a condição de comparador público com preços reais. Essa limitação é externa às telas/API e está explicitamente apresentada ao usuário no aplicativo.
+## Dados e cobertura
+
+- 26 redes/estabelecimentos pesquisados individualmente; 29 referências de filiais, uma inativa. Isso não constitui censo de lojas operantes.
+- 27 produtos e 31 observações **reais históricas**, em sete redes e oito filiais de Sorriso-MT, extraídos do relatório público Procon-MT / Páscoa 2026. Datas originais de março de 2026, origem/página e embalagem preservadas; estoque atual desconhecido.
+- **Zero preços atuais confirmados e zero feeds comerciais varejistas autorizados ativos.** O histórico público não equivale a integração automática com a loja. Não foram atribuídos preços nacionais ou de outros municípios às filiais locais.
+- DelMoro, DelNorte, Machado, Sorriso Supermercados, Sol, União e Atacadão possuem registros históricos importados. Pesquisa, critérios por mercado e impedimentos estão em [SORRISO_INTEGRATIONS.md](SORRISO_INTEGRATIONS.md).
+- DEMO opcional e separado: 12 produtos/36 ofertas em três lojas fictícias. Não são preços inventados atribuídos às redes reais.
+
+## Implementação e validação
+
+API Rust/Axum, SQLite WAL/FTS5, migrações, normalização conservadora, importação CSV/JSON transacional, histórico/retenção e adaptador de feeds autorizados. Coletor específico do relatório público filtra município, UF, nome e endereço/número; importações reais rejeitam município ausente ou diferente de Sorriso-MT. Consultas do consumidor usam apenas SQLite local.
+
+App KMP/Compose com busca, comparação, favoritos, cache persistente e avisos explícitos para DEMO, histórico e offline. Histórico não entra no menor preço recente. Android validado; iOS preparado, mas depende de Mac/Xcode para compilação e testes.
+
+Passaram 28 testes Rust, cinco Kotlin e cinco Python; nove checks físicos DEMO e sete checks físicos com dados reais históricos. Rustfmt/Clippy e APK debug passaram. Lint tem limitação de metadados Kotlin descrita em [TESTING.md](TESTING.md). CI contém jobs Rust/Python e Android. Backup/restauração SQLite foi verificado.
+
+Seis benchmarks sintéticos iniciais cobrem 10 mil/50 mil/100 mil produtos com uma/três ofertas. O maior registrou banco de 122,68 MiB, RSS API de 23,81 MiB, p95 de 17,812 ms e 640,83 req/s em fase curta local; não é teste sustentado nem capacidade de VPS. São medições anteriores à adição dos campos de referência histórica: [PERFORMANCE.md](PERFORMANCE.md).
+
+## Reproduzir
+
+```sh
+cargo build --release --locked
+./target/release/sorriprecos init
+python3 scripts/load_public_history.py
+./target/release/sorriprecos serve
+# Em outro terminal, com SDK/Java configurados:
+cd apps/mobile
+./gradlew :composeApp:assembleDebug
+cd ../..
+scripts/android-install.sh SERIAL
+python3 scripts/android_real_smoke.py SERIAL
+```
+
+Use o modo real, chip Lacta, para os registros históricos. O endereço no app é `http://127.0.0.1:8080`; mantenha backend e USB ativos. APK local em `artifacts/sorriprecos-0.1.0-debug.apk`.
+
+Para oferecer comparação de preços atuais, falta uma origem local verificável com filial, validade e condições de acesso, ou arquivo/feed autorizado da loja. Também permanecem domínio/VPS/HTTPS, carga sustentada, alinhamento lint/AGP e assinatura release para lançamento público. Não foi implantada VPS.

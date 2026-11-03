@@ -9,7 +9,9 @@ import kotlinx.serialization.SerialName
     val gtin:String?=null,@SerialName("is_demo") val isDemo:Boolean=false,
     @SerialName("min_price_cents") val minPriceCents:Long?=null,
     @SerialName("last_collected_at") val lastCollectedAt:Long?=null,
-    @SerialName("branch_count") val branchCount:Int=0
+    @SerialName("branch_count") val branchCount:Int=0,
+    @SerialName("reference_price_cents") val referencePriceCents:Long?=null,
+    @SerialName("historical_branch_count") val historicalBranchCount:Int=0
 ) {val pack:String get()=if (quantity%1000L==0L && unit in listOf("g","ml")) "${quantity/1000} ${if(unit=="g") "kg" else "L"}" else "$quantity $unit"}
 @Serializable data class Supermarket(
     val id:String,val name:String,val website:String?=null,
@@ -26,6 +28,9 @@ import kotlinx.serialization.SerialName
     @SerialName("automatic_integrations") val automaticIntegrations:Int=0,
     @SerialName("real_products") val realProducts:Int=0,
     @SerialName("demo_products") val demoProducts:Int=0,
+    @SerialName("historical_products") val historicalProducts:Int=0,
+    @SerialName("recent_products") val recentProducts:Int=0,
+    @SerialName("imported_supermarkets") val importedSupermarkets:Int=0,
     @SerialName("last_collected_at") val lastCollectedAt:Long?=null
 )
 @Serializable data class Offer(

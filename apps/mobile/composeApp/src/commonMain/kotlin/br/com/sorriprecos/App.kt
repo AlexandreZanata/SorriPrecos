@@ -108,6 +108,7 @@ private val dark=darkColorScheme(primary=Color(0xFF9CD3AE),primaryContainer=Colo
                     if(selected==null)TextButton(onClick={settings=true},modifier=Modifier.semantics{contentDescription="Configurar conexão"}){Text("Conexão",fontSize=12.sp)}
                 }
                 if(demo)Notice("MODO DEMO · Preços fictícios para testar o app",demo=true)
+                if(!demo && catalog.historicalProducts>0 && catalog.recentProducts==0)Notice("DADOS REAIS HISTÓRICOS · Procon-MT / março de 2026. Nenhuma oferta atual confirmada.")
                 if(selected!=null) {
                     ComparisonScreen(repo,selected!!,favorites.any{it.id==selected!!.id},onFavorite={toggleFavorite(selected!!)},refresh=refresh,onRefresh={refresh++})
                 } else {
@@ -128,19 +129,19 @@ private val dark=darkColorScheme(primary=Color(0xFF9CD3AE),primaryContainer=Colo
                                 items(results,key={it.id}) {p->ProductCard(p,favorites.any{it.id==p.id},onClick={selected=p;focus.clearFocus()},onFavorite={toggleFavorite(p)},offline=searchOffline)}
                                 if(nextAfter!=null)item{OutlinedButton(onClick={paginationJob=scope.launch {searching=true;try{val loaded=repo.search(query.trim(),demo,nextAfter!!);results=results+loaded.data.items;nextAfter=loaded.data.nextAfter;searchOffline=loaded.offline}catch(e:CancellationException){throw e}catch(e:Exception){error=e.message}finally{searching=false}}},enabled=!searching,modifier=Modifier.fillMaxWidth()){Text("Carregar mais")}}
                             } else {
-                                item {Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){listOf("Arroz 5kg","Café","Leite").forEach{suggestion->SuggestionChip(onClick={query=suggestion},label={Text(suggestion)})}}}
+                                item {Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){(if(!demo && catalog.historicalProducts>0)listOf("Chocolate","Lacta","Bacalhau") else listOf("Arroz 5kg","Café","Leite")).forEach{suggestion->SuggestionChip(onClick={query=suggestion},label={Text(suggestion)})}}}
                                 item {Surface(shape=RoundedCornerShape(20.dp),color=Green) {
                                     Column(Modifier.padding(22.dp)) {
-                                        Text(if(demo)"EXPLORE O MVP" else "PREÇOS COM ORIGEM",fontSize=10.sp,fontWeight=FontWeight.Bold,letterSpacing=1.4.sp,color=Lime)
-                                        Text(if(demo)"Compare. Favorite.\nTeste sem cadastro." else "Cada preço tem\numa filial e uma data.",fontSize=24.sp,lineHeight=29.sp,fontWeight=FontWeight.Bold,color=Color.White,modifier=Modifier.padding(vertical=13.dp))
-                                        Text(if(demo)"12 produtos de demonstração. Nenhum valor representa uma oferta real." else "Estamos preparando as primeiras fontes autorizadas. Você já pode conhecer a experiência.",fontSize=13.sp,color=Color(0xFFD8E9DC),lineHeight=20.sp)
+                                        Text(if(demo)"EXPLORE O MVP" else if(catalog.realProducts>0)"REGISTROS REAIS · SORRISO-MT" else "PREÇOS COM ORIGEM",fontSize=10.sp,fontWeight=FontWeight.Bold,letterSpacing=1.4.sp,color=Lime)
+                                        Text(if(demo)"Compare. Favorite.\nTeste sem cadastro." else if(catalog.realProducts>0)"Registros reais.\nOrigem e data visíveis." else "Cada preço tem\numa filial e uma data.",fontSize=24.sp,lineHeight=29.sp,fontWeight=FontWeight.Bold,color=Color.White,modifier=Modifier.padding(vertical=13.dp))
+                                        Text(if(demo)"12 produtos de demonstração. Nenhum valor representa uma oferta real." else if(catalog.historicalProducts>0)"O arquivo público do Procon contém preços observados em março de 2026. Use para testar a busca; esses valores estão desatualizados." else "Estamos preparando as primeiras fontes autorizadas. Você já pode conhecer a experiência.",fontSize=13.sp,color=Color(0xFFD8E9DC),lineHeight=20.sp)
                                     }
                                 }}
                                 item {Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically){Text("Cobertura transparente",fontSize=19.sp,fontWeight=FontWeight.Bold);TextButton(onClick={screen="sources"}){Text("Ver fontes ›")}}}
-                                item {Row(horizontalArrangement=Arrangement.spacedBy(10.dp)){Metric("${catalog.discoveredSupermarkets}","mapeados",Modifier.weight(1f));Metric("${catalog.automaticIntegrations}","integrados",Modifier.weight(1f));Metric("${catalog.realProducts}","produtos reais",Modifier.weight(1f))}}
+                                item {Row(horizontalArrangement=Arrangement.spacedBy(10.dp)){Metric("${catalog.discoveredSupermarkets}","mapeados",Modifier.weight(1f));Metric("${catalog.importedSupermarkets}","com registros",Modifier.weight(1f));Metric("${catalog.realProducts}","produtos reais",Modifier.weight(1f))}}
                                 if(sourceLoading)item{LinearProgressIndicator(Modifier.fillMaxWidth())}
                                 if(error!=null)item{ErrorCard(error!!){refresh++}}
-                                item {Text(if(demo)"Ambiente de demonstração" else "Fontes em preparação",fontSize=13.sp,fontWeight=FontWeight.SemiBold,color=MaterialTheme.colorScheme.onSurfaceVariant)}
+                                item {Text(if(demo)"Ambiente de demonstração" else if(catalog.importedSupermarkets>0)"Fontes e registros históricos" else "Fontes em preparação",fontSize=13.sp,fontWeight=FontWeight.SemiBold,color=MaterialTheme.colorScheme.onSurfaceVariant)}
                                 items(markets.take(if(demo)3 else 4),key={it.id}) {MarketRow(it)}
                                 item {OutlinedButton(onClick={demo=!demo;store.put("demo",demo.toString());query="";selected=null},modifier=Modifier.fillMaxWidth()){Text(if(demo)"Sair da demonstração" else "Experimentar com dados DEMO")}}
                                 item {Text("Menor preço conhecido entre as fontes disponíveis. A cobertura da cidade ainda está em expansão.",fontSize=11.sp,lineHeight=17.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
@@ -153,7 +154,7 @@ private val dark=darkColorScheme(primary=Color(0xFF9CD3AE),primaryContainer=Colo
                         }
                         "sources"->LazyColumn(contentPadding=PaddingValues(22.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
                             item {Text("De onde vêm os preços",fontSize=28.sp,lineHeight=32.sp,fontWeight=FontWeight.Bold);Text("${catalog.discoveredSupermarkets} estabelecimentos mapeados · ${catalog.discoveredBranches} filiais referenciadas",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=10.dp))}
-                            item {Notice(if(demo)"Estas lojas são fictícias. Saia do DEMO para consultar o levantamento real." else "Uma presença digital não significa integração. Fontes pendentes ainda não fornecem preços ao app.")}
+                            item {Notice(if(demo)"Estas lojas são fictícias. Saia do DEMO para consultar o levantamento real." else "Registros públicos históricos não significam integração atual com a loja. Confira a data e a origem de cada preço.")}
                             item {Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text(if(demo)"Fontes DEMO" else "Levantamento inicial",fontWeight=FontWeight.Bold);TextButton(onClick={refresh++}){Text("Atualizar")}}}
                             if(sourceLoading)item{LinearProgressIndicator(Modifier.fillMaxWidth())}
                             if(error!=null)item{ErrorCard(error!!){refresh++}}
@@ -195,10 +196,10 @@ private val dark=darkColorScheme(primary=Color(0xFF9CD3AE),primaryContainer=Colo
 }
 @Composable private fun MarketRow(m:Supermarket) {
     Row(Modifier.fillMaxWidth().padding(vertical=7.dp),verticalAlignment=Alignment.CenterVertically) {
-        Box(Modifier.size(9.dp).clip(RoundedCornerShape(5.dp)).background(if(m.productCount>0)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline))
+        Box(Modifier.size(9.dp).clip(RoundedCornerShape(5.dp)).background(if(m.productCount>0 && m.lastCollectedAt?.let{platformNow()-it<=172800}==true)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline))
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)){Text(m.name,fontSize=14.sp,fontWeight=FontWeight.SemiBold);Text("${m.branchCount} filial(is) · ${if(m.productCount>0)age(m.lastCollectedAt) else "Coleta pendente"}",fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
-        Text(if(m.isDemo)"DEMO" else if(m.integrationStatus=="authorized")"Integrado" else "Pendente",fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(if(m.isDemo)"DEMO" else if(m.integrationStatus=="authorized")"Integrado" else if(m.productCount>0)"Histórico" else "Pendente",fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 @Composable private fun ProductCard(p:Product,favorite:Boolean,onClick:()->Unit,onFavorite:()->Unit,offline:Boolean) {
@@ -211,11 +212,12 @@ private val dark=darkColorScheme(primary=Color(0xFF9CD3AE),primaryContainer=Colo
             HorizontalDivider(Modifier.padding(vertical=13.dp),color=MaterialTheme.colorScheme.outlineVariant)
             Row(verticalAlignment=Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text(if(offline)"REFERÊNCIA SALVA" else if(p.isDemo)"MENOR PREÇO DEMO" else "MENOR PREÇO CONHECIDO",fontSize=9.sp,letterSpacing=.7.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(if(!p.isDemo && p.minPriceCents==null && p.historicalBranchCount>0)"REGISTRO HISTÓRICO · DESATUALIZADO" else if(offline)"REFERÊNCIA SALVA" else if(p.isDemo)"MENOR PREÇO DEMO" else "MENOR PREÇO CONHECIDO",fontSize=9.sp,letterSpacing=.7.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
                     val current=p.lastCollectedAt?.let{platformNow()-it<=172800}==true
-                    Text(money(if(current)p.minPriceCents else null),fontWeight=FontWeight.Bold,fontSize=if(p.minPriceCents!=null && current)25.sp else 13.sp,color=MaterialTheme.colorScheme.primary,modifier=Modifier.padding(top=3.dp))
+                    val reference=if(current && p.minPriceCents!=null)p.minPriceCents else if(p.historicalBranchCount>0)p.referencePriceCents else null
+                    Text(money(reference),fontWeight=FontWeight.Bold,fontSize=if(reference!=null)25.sp else 13.sp,color=MaterialTheme.colorScheme.primary,modifier=Modifier.padding(top=3.dp))
                 }
-                Column(horizontalAlignment=Alignment.End){Text("Comparar ›",fontSize=12.sp,fontWeight=FontWeight.Bold);Text("${p.branchCount} filiais",fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
+                Column(horizontalAlignment=Alignment.End){Text("Comparar ›",fontSize=12.sp,fontWeight=FontWeight.Bold);Text(if(p.branchCount>0)"${p.branchCount} filiais" else if(p.historicalBranchCount>0)"${p.historicalBranchCount} registros antigos" else "Sem preço recente",fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
             }
         }
     }
@@ -255,7 +257,7 @@ private val dark=darkColorScheme(primary=Color(0xFF9CD3AE),primaryContainer=Colo
                 items(offers.filter{it.sourceUrl!=null},key={it.branchId}) {o->TextButton(onClick={try{uri.openUri(o.sourceUrl!!)}catch(_:Exception){scope.launch{snack.showSnackbar("Não foi possível abrir a fonte")}}}){Text("${o.supermarketName} ›")}}
                 if(offers.none{it.sourceUrl!=null})item{Text(if(product.isDemo)"Dados fictícios. Não há site de oferta real." else "Sem URLs de produtos informadas pelas fontes.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
             } else {
-                item {Text("${offers.count{isCurrent(it)}} filiais com preço recente",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant);Text("Menor preço conhecido. Cobertura incompleta.",fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=4.dp))}
+                item {Text(if(product.historicalBranchCount>0 && product.branchCount==0)"Registros históricos · não são ofertas atuais" else "${offers.count{isCurrent(it)}} filiais com preço recente",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant);Text(if(product.historicalBranchCount>0 && product.branchCount==0)"Observe a data de cada registro e confirme os valores com a loja." else "Menor preço conhecido. Cobertura incompleta.",fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=4.dp))}
                 items(offers,key={it.branchId}) {o->
                     val recent=isCurrent(o);val lowest=recent && o.effectivePriceCents==best && best!=null
                     Surface(shape=RoundedCornerShape(17.dp),color=if(lowest)MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,modifier=Modifier.fillMaxWidth().border(1.dp,if(lowest)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,RoundedCornerShape(17.dp))) {

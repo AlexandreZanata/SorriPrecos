@@ -35,3 +35,5 @@ python3 scripts/benchmark.py --sizes 10000 50000 100000 --offers 1 3 --requests 
 ```
 
 O script recusa reutilizar um arquivo de banco existente. Usa porta 8099 e não toca na base `data/sorriprecos.db`. Os resultados brutos preservados estão em `docs/benchmarks/2026-11-03.json` e `2026-11-03-before-pagination.json`. Repita no hardware da VPS, com o mesmo conjunto de versões e carga sustentada, antes de dimensionar uso público.
+
+As medições acima pertencem à versão inicial do MVP, anterior à adição das agregações de referência histórica e do coletor público. Não foi repetida a carga após essa alteração; os números não são apresentados como benchmark do commit final atualizado.

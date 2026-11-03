@@ -35,6 +35,10 @@ pub struct ImportRow {
     pub collected_at: i64,
     #[serde(default)]
     pub valid_until: Option<i64>,
+    #[serde(default)]
+    pub source_city: Option<String>,
+    #[serde(default)]
+    pub source_state: Option<String>,
 }
 fn regular() -> String {
     "regular".into()
@@ -68,6 +72,18 @@ pub async fn read_file(path: &Path) -> Result<Vec<ImportRow>> {
 }
 
 pub fn validate(row: &ImportRow) -> Result<()> {
+    if row.source_city.is_some() || row.source_state.is_some() {
+        ensure!(
+            row.source_city
+                .as_deref()
+                .is_some_and(|s| normalize::text(s) == "sorriso")
+                && row
+                    .source_state
+                    .as_deref()
+                    .is_some_and(|s| s.eq_ignore_ascii_case("MT")),
+            "fonte fora do escopo Sorriso-MT"
+        );
+    }
     for (field, value, max) in [
         ("nome", row.name.as_str(), 180),
         ("marca", &row.brand, 80),
@@ -193,6 +209,10 @@ async fn import_transaction(
     for r in rows {
         validate(r)?;
         ensure!(
+            demo || (r.source_city.is_some() && r.source_state.is_some()),
+            "dados reais exigem source_city=Sorriso e source_state=MT"
+        );
+        ensure!(
             seen.insert((&r.source_id, &r.branch_id)),
             "código/filial duplicado no lote"
         );
@@ -307,9 +327,11 @@ pub struct Product {
     pub min_price_cents: Option<i64>,
     pub last_collected_at: Option<i64>,
     pub branch_count: i64,
+    pub reference_price_cents: Option<i64>,
+    pub historical_branch_count: i64,
 }
 
-pub const PRODUCT_FIELDS: &str = "p.id,p.gtin,p.name,p.brand,p.quantity,p.unit,p.presentation,p.category,p.is_demo, MIN(CASE WHEN o.available=1 AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN CASE WHEN o.offer_type IN ('regular','promotion') AND COALESCE(o.conditions,'')='' THEN COALESCE(o.promotional_price_cents,o.price_cents) ELSE o.price_cents END END) AS min_price_cents,MAX(o.collected_at) AS last_collected_at, COUNT(DISTINCT CASE WHEN o.available=1 AND o.price_cents IS NOT NULL AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN o.branch_id END) AS branch_count";
+pub const PRODUCT_FIELDS: &str = "p.id,p.gtin,p.name,p.brand,p.quantity,p.unit,p.presentation,p.category,p.is_demo, MIN(CASE WHEN o.available=1 AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN CASE WHEN o.offer_type IN ('regular','promotion') AND COALESCE(o.conditions,'')='' THEN COALESCE(o.promotional_price_cents,o.price_cents) ELSE o.price_cents END END) AS min_price_cents,MAX(o.collected_at) AS last_collected_at, COUNT(DISTINCT CASE WHEN o.available=1 AND o.price_cents IS NOT NULL AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN o.branch_id END) AS branch_count, MIN(CASE WHEN o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.price_cents END) AS reference_price_cents, COUNT(DISTINCT CASE WHEN o.price_cents IS NOT NULL AND o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.branch_id END) AS historical_branch_count";
 
 pub async fn search(
     pool: &SqlitePool,

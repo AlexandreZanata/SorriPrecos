@@ -1,0 +1,42 @@
+{
+  "device_model": "2311DRK48G",
+  "android": "16",
+  "tested_at": "2026-11-03T14:24:31.934683+00:00",
+  "scope": {
+    "city": "Sorriso",
+    "state": "MT"
+  },
+  "dataset": "Procon-MT Páscoa 2026",
+  "kind": "historical",
+  "tests": [
+    {
+      "name": "Modo real com aviso de referência histórica, sem DEMO",
+      "status": "passed"
+    },
+    {
+      "name": "Busca real no localhost retorna valor documentado de 6990 centavos",
+      "status": "passed"
+    },
+    {
+      "name": "Comparação mantém datas antigas e não destaca preço como oferta atual",
+      "status": "passed"
+    },
+    {
+      "name": "Mesmo produto ligado às duas filiais DelMoro de Sorriso do relatório",
+      "status": "passed"
+    },
+    {
+      "name": "Dados reais históricos continuam legíveis no cache offline",
+      "status": "passed"
+    },
+    {
+      "name": "Reconexão restaurada e aplicativo deixado na comparação real histórica",
+      "status": "passed"
+    },
+    {
+      "name": "Mesmo produto de 357g compara registros reais DelMoro e DelNorte de Sorriso, sem oferta atual",
+      "status": "passed"
+    }
+  ],
+  "status": "passed"
+}

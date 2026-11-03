@@ -51,6 +51,8 @@ fn row(source: &str, price: i64) -> ImportRow {
         source_url: None,
         collected_at: now(),
         valid_until: None,
+        source_city: Some("Sorriso".into()),
+        source_state: Some("MT".into()),
     }
 }
 async fn call(app: Router, path: &str) -> (StatusCode, Value) {
@@ -581,4 +583,88 @@ async fn duplicate_canonical_skus_have_one_offer_per_branch() {
     assert_eq!(v["items"].as_array().unwrap().len(), 3);
     assert_eq!(v["items"][0]["effective_price_cents"], 2299);
     assert_eq!(v["product"]["branch_count"], 1);
+}
+
+#[tokio::test]
+async fn real_import_rejects_foreign_or_missing_municipality() {
+    let (_d, p) = fixture().await;
+    let mut r = row("demo-a", 6990);
+    r.branch_id = "sorriso-centro".into();
+    for city in [Some("Sinop".into()), None] {
+        r.source_city = city;
+        assert!(
+            catalog::import(
+                &p,
+                "sorriso",
+                std::slice::from_ref(&r),
+                Some("autorização de teste")
+            )
+            .await
+            .is_err()
+        );
+    }
+    r.source_city = Some("Sorriso".into());
+    r.source_state = Some("MS".into());
+    assert!(
+        catalog::import(
+            &p,
+            "sorriso",
+            std::slice::from_ref(&r),
+            Some("autorização de teste")
+        )
+        .await
+        .is_err()
+    );
+    assert_eq!(
+        sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM offers")
+            .fetch_one(&p)
+            .await
+            .unwrap(),
+        0
+    );
+}
+#[tokio::test]
+async fn historical_reference_never_becomes_a_current_minimum() {
+    let (_d, p) = fixture().await;
+    let mut r = row("demo-a", 6990);
+    r.branch_id = "sorriso-centro".into();
+    r.collected_at = 1774152000;
+    r.available = None;
+    r.conditions = Some("HISTÓRICO · Procon-MT / março de 2026".into());
+    catalog::import(
+        &p,
+        "sorriso",
+        &[r],
+        Some("PUBLIC_REPORT: relatório público de teste"),
+    )
+    .await
+    .unwrap();
+    // A newer unconfirmed price must not replace the documented historical reference.
+    let mut unknown = row("demo-a", 1000);
+    unknown.branch_id = "delmoro-rota".into();
+    unknown.available = None;
+    catalog::import(&p, "delmoro", &[unknown], Some("referência de teste"))
+        .await
+        .unwrap();
+    let (_, v) = call(app(&p), "/v1/products/search?q=arroz").await;
+    assert!(v["items"][0]["min_price_cents"].is_null());
+    assert_eq!(v["items"][0]["reference_price_cents"], 6990);
+    assert_eq!(v["items"][0]["historical_branch_count"], 1);
+    let id = v["items"][0]["id"].as_i64().unwrap();
+    let (_, prices) = call(app(&p), &format!("/v1/products/{id}/prices")).await;
+    let historic = prices["items"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|o| o["price_cents"] == 6990)
+        .unwrap();
+    assert_eq!(historic["status"], "stale");
+    assert!(historic["available"].is_null());
+    assert!(historic["effective_price_cents"].is_null());
+    let (_, status) = call(app(&p), "/v1/catalog/status").await;
+    assert_eq!(status["scope"]["city"], "Sorriso");
+    assert_eq!(status["scope"]["state"], "MT");
+    assert_eq!(status["recent_products"], 0);
+    assert_eq!(status["historical_products"], 1);
+    assert_eq!(status["automatic_integrations"], 0);
 }

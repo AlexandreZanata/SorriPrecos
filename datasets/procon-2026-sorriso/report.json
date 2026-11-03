@@ -1,0 +1,29 @@
+{
+  "source_url": "https://www.procon.mt.gov.br/documents/d/procon/tabela-produtos-analisados-pascoa-final",
+  "pdf_sha256": "db9d50a347f161bd3b9b7ce0569137410bdb895c944a8d0c38b03271bb80f49c",
+  "scope": {
+    "city": "Sorriso",
+    "state": "MT"
+  },
+  "observation_period": "2026-03",
+  "kind": "historical_public_report",
+  "source_rows_sorriso": 75,
+  "accepted_offers": 31,
+  "mapped_candidate_rows": 33,
+  "collapsed_or_conflicting_rows": 2,
+  "markets": {
+    "delmoro": 7,
+    "sol": 2,
+    "uniao": 2,
+    "delnorte": 8,
+    "sorriso": 4,
+    "atacadao": 1,
+    "machado": 7
+  },
+  "rejected": {
+    "marca_nao_confirmada": 7,
+    "embalagem_ausente_ou_fracionaria": 1,
+    "filial_fora_do_mapeamento": 34
+  },
+  "note": "Preços históricos reais, sem catálogo atual ou autorização comercial de integração com varejistas."
+}

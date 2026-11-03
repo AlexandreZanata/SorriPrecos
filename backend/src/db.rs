@@ -37,8 +37,14 @@ pub async fn seed_sources(pool: &SqlitePool) -> Result<()> {
         .execute(&mut *tx)
         .await?;
         for b in m["branches"].as_array().unwrap() {
-            sqlx::query("INSERT OR IGNORE INTO branches(id,supermarket_id,name,address,city,source_id) VALUES(?,?,?,?,'Sorriso',?)")
-                .bind(b["id"].as_str()).bind(m["id"].as_str()).bind(b["name"].as_str()).bind(b["address"].as_str()).bind(b["source_id"].as_str()).execute(&mut *tx).await?;
+            sqlx::query("INSERT OR IGNORE INTO branches(id,supermarket_id,name,address,city,source_id,active) VALUES(?,?,?,?,'Sorriso',?,?)")
+                .bind(b["id"].as_str()).bind(m["id"].as_str()).bind(b["name"].as_str()).bind(b["address"].as_str()).bind(b["source_id"].as_str()).bind(b["active"].as_bool().unwrap_or(true)).execute(&mut *tx).await?;
+            if b["active"].as_bool() == Some(false) {
+                sqlx::query("UPDATE branches SET active=0 WHERE id=?")
+                    .bind(b["id"].as_str())
+                    .execute(&mut *tx)
+                    .await?;
+            }
         }
     }
     tx.commit().await?;

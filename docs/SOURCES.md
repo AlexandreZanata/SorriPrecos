@@ -1,6 +1,6 @@
 # Fontes e rastreabilidade
 
-Data da pesquisa: 03/11/2026. A matriz, as limitações e os endereços estão em SUPERMARKETS_AUDIT.md. O registro executável correspondente está em `config/supermarkets.json`; não contém contatos pessoais ou credenciais.
+Data da pesquisa: 03/11/2026. A matriz inicial está em SUPERMARKETS_AUDIT.md; a revisão individual e os critérios de separação geográfica estão em SORRISO_INTEGRATIONS.md. O registro executável correspondente está em `config/supermarkets.json`; não contém contatos pessoais ou credenciais.
 
 Fontes primárias utilizadas:
 
@@ -23,3 +23,14 @@ Referências técnicas oficiais consultadas para a seleção de versões:
 - [Engines Ktor](https://ktor.io/docs/client-engines.html).
 
 Não foram incorporadas imagens de folhetos, marcas gráficas ou bases proprietárias dos supermercados. A licença MIT cobre o código do projeto; não concede direitos sobre dados de terceiros.
+
+Fontes adicionais da revisão individual:
+
+- [IBGE — Sorriso](https://www.ibge.gov.br/cidades-e-estados/mt/sorriso.html): município/UF e código 5107925.
+- [Loja vinculada pelo DelMoro](https://www.delmorosupermercados.com.br/): vitrine genérica observada, sem produtos/filial verificáveis.
+- [Sorriso Supermercados — app local](https://play.google.com/store/apps/details?id=br.com.sorrisosuper.omnichannel): distinto do Mais Sorriso de Uberlândia.
+- [Mercado Amazonas no aiqfome](https://aiqfome.com/MT/sorriso/mercado-amazonas): vendedor/endereço locais confirmados, sem cardápio de produtos/preços observado.
+- [Procon municipal](https://site.sorriso.mt.gov.br/procon): pesquisa recente exibida é de combustíveis/GLP, não catálogo de supermercado; não importada.
+- [Índice Custo por Prato em Sorriso](https://indice.custoporprato.com.br/cidades/sorriso-mt): observações de outubro de 2026, mas supermercados deliberadamente pseudonimizados. Não foram atribuídos seus preços a nenhuma rede/filial identificada.
+
+O subconjunto histórico Procon-MT foi extraído por células, restrito a Sorriso-MT e a filiais mapeadas: 27 produtos/31 observações de março de 2026. Snapshot, contadores de rejeição, origem/página e SHA-256 do documento em `datasets/procon-2026-sorriso/`. Não são preços atuais nem um feed contratado das redes.

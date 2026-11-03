@@ -165,7 +165,7 @@ async fn supermarkets(
     Query(m): Query<Mode>,
     headers: HeaderMap,
 ) -> ApiResult {
-    let rows=sqlx::query("SELECT s.*,MAX(o.collected_at) last_collected_at,COUNT(DISTINCT b.id) branch_count,COUNT(DISTINCT o.product_id) product_count FROM supermarkets s LEFT JOIN branches b ON b.supermarket_id=s.id LEFT JOIN offers o ON o.branch_id=b.id WHERE s.is_demo=? GROUP BY s.id ORDER BY s.name").bind(m.demo).fetch_all(&s.pool).await?;
+    let rows=sqlx::query("SELECT s.*,MAX(o.collected_at) last_collected_at,COUNT(DISTINCT CASE WHEN b.active=1 THEN b.id END) branch_count,COUNT(DISTINCT o.product_id) product_count FROM supermarkets s LEFT JOIN branches b ON b.supermarket_id=s.id LEFT JOIN offers o ON o.branch_id=b.id WHERE s.is_demo=? GROUP BY s.id ORDER BY s.name").bind(m.demo).fetch_all(&s.pool).await?;
     let items:Vec<Value>=rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"name":r.get::<String,_>("name"),"website":r.get::<Option<String>,_>("website"),"integration_status":r.get::<String,_>("integration_status"),"audit_class":r.get::<String,_>("audit_class"),"is_demo":r.get::<bool,_>("is_demo"),"last_collected_at":r.get::<Option<i64>,_>("last_collected_at"),"branch_count":r.get::<i64,_>("branch_count"),"product_count":r.get::<i64,_>("product_count")})).collect();
     Ok(cached(&headers, &json!({"items":items})))
 }
@@ -239,9 +239,9 @@ async fn prices(State(s): State<AppState>, Path(id): Path<i64>, headers: HeaderM
         let price=r.get::<Option<i64>,_>("price_cents");let promo=r.get::<Option<i64>,_>("promotional_price_cents");
         let kind=r.get::<Option<String>,_>("offer_type");let conditions=r.get::<Option<String>,_>("conditions");
         let until=r.get::<Option<i64>,_>("valid_until");
-        let state=if collected.is_none() {"unknown"} else if available==Some(false) {"unavailable"} else if available.is_none() || price.is_none() || until.is_some_and(|t|t<now()) {"unknown"} else if collected.is_some_and(|t|t<now()-172800) {"stale"} else {"recent"};
+        let state=if collected.is_none() {"unknown"} else if available==Some(false) {"unavailable"} else if price.is_none() || until.is_some_and(|t|t<now()) {"unknown"} else if collected.is_some_and(|t|t<now()-172800) {"stale"} else if available.is_none() {"unknown"} else {"recent"};
         let effective=if state=="recent" {if matches!(kind.as_deref(),Some("regular"|"promotion")) && conditions.as_deref().unwrap_or("").is_empty() {promo.or(price)} else {price}} else {None};
-        json!({"branch_id":r.get::<String,_>("branch_id"),"branch_name":r.get::<String,_>("branch_name"),"address":r.get::<String,_>("address"),"supermarket_id":r.get::<String,_>("supermarket_id"),"supermarket_name":r.get::<String,_>("supermarket_name"),"price_cents":price,"promotional_price_cents":promo,"effective_price_cents":effective,"offer_type":kind,"conditions":conditions,"available":available,"source_url":r.get::<Option<String>,_>("source_url"),"collected_at":collected,"valid_until":until,"status":state,"is_demo":p.is_demo})
+        json!({"branch_id":r.get::<String,_>("branch_id"),"branch_name":r.get::<String,_>("branch_name"),"address":r.get::<String,_>("address"),"supermarket_id":r.get::<String,_>("supermarket_id"),"supermarket_name":r.get::<String,_>("supermarket_name"),"price_cents":price,"promotional_price_cents":promo,"effective_price_cents":effective,"offer_type":kind,"conditions":conditions,"available":available,"source_url":r.get::<Option<String>,_>("source_url"),"collected_at":collected,"valid_until":until,"status":state,"is_demo":p.is_demo,"city":"Sorriso","state":"MT"})
     }).collect();
     // Multiple source SKUs can map to the same canonical product in one branch.
     // Keep the cheapest eligible observation per branch; otherwise prefer the latest.
@@ -260,7 +260,7 @@ async fn prices(State(s): State<AppState>, Path(id): Path<i64>, headers: HeaderM
 }
 
 async fn status(State(s): State<AppState>, headers: HeaderMap) -> ApiResult {
-    let row=sqlx::query("SELECT (SELECT COUNT(*) FROM supermarkets WHERE is_demo=0) discovered_supermarkets,(SELECT COUNT(*) FROM branches b JOIN supermarkets s ON s.id=b.supermarket_id WHERE s.is_demo=0) discovered_branches,(SELECT COUNT(DISTINCT o.supermarket_id) FROM offers o JOIN supermarkets s ON s.id=o.supermarket_id WHERE s.is_demo=0) imported_supermarkets,(SELECT COUNT(*) FROM supermarkets WHERE integration_status='authorized' AND is_demo=0) automatic_integrations,(SELECT COUNT(*) FROM products WHERE is_demo=0) real_products,(SELECT COUNT(*) FROM products WHERE is_demo=1) demo_products,(SELECT MAX(o.collected_at) FROM offers o JOIN products p ON p.id=o.product_id WHERE p.is_demo=0) last_collected_at").fetch_one(&s.pool).await?;
+    let row=sqlx::query("SELECT (SELECT COUNT(*) FROM supermarkets WHERE is_demo=0) discovered_supermarkets,(SELECT COUNT(*) FROM branches b JOIN supermarkets s ON s.id=b.supermarket_id WHERE s.is_demo=0) discovered_branches,(SELECT COUNT(DISTINCT o.supermarket_id) FROM offers o JOIN supermarkets s ON s.id=o.supermarket_id WHERE s.is_demo=0) imported_supermarkets,(SELECT COUNT(*) FROM supermarkets WHERE integration_status='authorized' AND is_demo=0) automatic_integrations,(SELECT COUNT(*) FROM products WHERE is_demo=0) real_products,(SELECT COUNT(*) FROM products WHERE is_demo=1) demo_products,(SELECT MAX(o.collected_at) FROM offers o JOIN products p ON p.id=o.product_id WHERE p.is_demo=0) last_collected_at,(SELECT COUNT(DISTINCT p.id) FROM products p JOIN offers o ON o.product_id=p.id WHERE p.is_demo=0 AND o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800) historical_products,(SELECT COUNT(DISTINCT p.id) FROM products p JOIN offers o ON o.product_id=p.id WHERE p.is_demo=0 AND o.price_cents IS NOT NULL AND o.collected_at>=CAST(strftime('%s','now') AS INTEGER)-172800 AND o.available=1 AND (o.valid_until IS NULL OR o.valid_until>=CAST(strftime('%s','now') AS INTEGER))) recent_products").fetch_one(&s.pool).await?;
     let mut v = serde_json::Map::new();
     for key in [
         "discovered_supermarkets",
@@ -270,6 +270,8 @@ async fn status(State(s): State<AppState>, headers: HeaderMap) -> ApiResult {
         "real_products",
         "demo_products",
         "last_collected_at",
+        "historical_products",
+        "recent_products",
     ] {
         v.insert(
             key.into(),
@@ -279,6 +281,10 @@ async fn status(State(s): State<AppState>, headers: HeaderMap) -> ApiResult {
         );
     }
     v.insert("freshness_hours".into(), json!(48));
+    v.insert(
+        "scope".into(),
+        json!({"city":"Sorriso","state":"MT","ibge_code":"5107925"}),
+    );
     v.insert(
         "coverage_note".into(),
         json!("Levantamento inicial; não representa todos os estabelecimentos ativos da cidade."),

@@ -33,6 +33,12 @@ enum Command {
         authorization: Option<String>,
     },
     Demo,
+    ImportPublicReport {
+        #[arg(long)]
+        source: String,
+        #[arg(long)]
+        file: PathBuf,
+    },
     Collect {
         #[arg(long, default_value = "config/sources.json")]
         config: PathBuf,
@@ -63,6 +69,24 @@ async fn main() -> Result<()> {
     db::seed_sources(&pool).await?;
     match cli.command {
         Command::Init => tracing::info!("database_initialized"),
+        Command::ImportPublicReport { source, file } => {
+            let rows = catalog::read_file(&file).await?;
+            for r in &rows {
+                anyhow::ensure!(r.source_url.as_deref().is_some_and(|u|u.starts_with("https://www.procon.mt.gov.br/documents/d/procon/tabela-produtos-analisados-pascoa-final#page=")),"relatório público não reconhecido");
+                anyhow::ensure!(
+                    r.collected_at < now() - 172800,
+                    "relatório histórico não pode virar observação atual"
+                );
+                anyhow::ensure!(
+                    r.conditions
+                        .as_deref()
+                        .is_some_and(|s| s.contains("HISTÓRICO")),
+                    "referência histórica precisa de aviso"
+                );
+            }
+            let n=catalog::import(&pool,&source,&rows,Some("PUBLIC_REPORT: Procon-MT Páscoa 2026; dados históricos, sem integração comercial com a loja")).await?;
+            tracing::info!(imported = n, "public_historical_report_imported");
+        }
         Command::Serve { bind, rate_limit } => {
             let listener = tokio::net::TcpListener::bind(bind).await?;
             tracing::info!(%bind,"api_listening");
@@ -148,6 +172,8 @@ async fn main() -> Result<()> {
                             source_url: None,
                             collected_at: now(),
                             valid_until: None,
+                            source_city: Some("Sorriso".into()),
+                            source_state: Some("MT".into()),
                         })
                         .collect();
                     catalog::import(&pool, source, &rows, None).await?;

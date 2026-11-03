@@ -1,6 +1,6 @@
 # Arquitetura
 
-Um binário Rust oferece comandos separados `serve`, `import`, `collect`, `maintain` e `demo`. Uma API Axum/Tokio atende exclusivamente o SQLite local. Nenhuma consulta do consumidor chama supermercados. Não há serviços externos obrigatórios, login, pagamentos ou telemetria.
+Um binário Rust oferece comandos separados `serve`, `import`, `import-public-report`, `collect`, `maintain` e `demo`. Uma API Axum/Tokio atende exclusivamente o SQLite local. Nenhuma consulta do consumidor chama supermercados. Não há serviços externos obrigatórios, login, pagamentos ou telemetria.
 
 O coletor roda por systemd timer, em outro processo do mesmo binário. Cada estabelecimento tem uma instância configurada do adaptador `AuthorizedFeedAdapter`, implementando `SourceAdapter`. Os 26 registros de pesquisa começam pendentes; não existem raspadores ou endpoints privados disfarçados de integração. O adaptador reutilizável consome CSV, arrays JSON ou páginas JSON com `items` e `next`, após autorização documentada pelo operador.
 
@@ -19,3 +19,5 @@ O APK debug permite HTTP somente para loopback e o host do emulador. O teste aut
 A API limita 64 consultas concorrentes, 180 consultas/minuto por IP de conexão e até 50 resultados por página. O mapa de IPs tem limite de memória. ETag, Cache-Control de 30 s e gzip reduzem transferência. Atrás do Caddy, o IP da conexão é o proxy; o limite passa a ser compartilhado. Não se confia automaticamente em X-Forwarded-For enviado pelo cliente. Para lançamento, dimensionar o limite total conforme os benchmarks e implementar limitação no proxy se necessário.
 
 iOS está preparado para aparelho arm64 e simulador Apple Silicon. Compose 1.11 não oferece o antigo target Intel x64 utilizado em versões anteriores. Não houve compilação iOS em Linux.
+
+Um caminho independente em Python extrai o relatório público Procon-MT de março de 2026 e gera lotes JSON por rede. O filtro exige município, UF, nome e endereço/número mapeados; o importador Rust exige município/UF também em toda linha real. `import-public-report` conserva a proveniência pública sem classificar a fonte como feed varejista autorizado. O snapshot tem 27 produtos/31 observações, em sete redes/oito filiais; zero preços atuais. A API expõe referência histórica separada do menor preço recente, e o app apresenta avisos explícitos. O levantamento tem 26 redes e 29 referências de filiais, uma inativa; não representa censo de lojas operantes.

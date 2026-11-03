@@ -1,0 +1,23 @@
+[
+  {
+    "source_id": "procon-2026-2b92a9b4191314778635",
+    "branch_id": "atacadao-sorriso",
+    "name": "OVO P.LACTA BARBIE",
+    "brand": "LACTA",
+    "quantity": 166,
+    "unit": "g",
+    "presentation": "unidade conforme relatório",
+    "category": "Ovo de Chocolate - Infantil/Licen ciado",
+    "gtin": null,
+    "price_cents": 8390,
+    "promotional_price_cents": null,
+    "offer_type": "regular",
+    "conditions": "HISTÓRICO · Procon-MT / Páscoa 2026. Nota de 21/03/2026; pesquisa de 25/03/2026. Não é oferta atual nem confirmação de estoque.",
+    "available": null,
+    "source_url": "https://www.procon.mt.gov.br/documents/d/procon/tabela-produtos-analisados-pascoa-final#page=36",
+    "collected_at": 1774065600,
+    "valid_until": null,
+    "source_city": "Sorriso",
+    "source_state": "MT"
+  }
+]
