@@ -226,3 +226,34 @@ Os sete sites desta rodada responderam HTTP 200. Nas páginas de produto, compar
 - **Hipersom · 03.476.691/0001-92.** Marca, Rua Genésio Roberto Baggio, 545, e município coincidem com o OpenCNPJ, com divergência de CEP. O GET retornou HTTP 200 e apresenta tipos de acessórios automotivos, sem preços de item no HTML consultado. [Site](https://hipersomsorriso.com.br/)
 - **Extra Bike e Ninu’s Bike.** O localizador oficial OGGI ainda aponta Extra Bike na Avenida Blumenau, 2895. No OpenCNPJ, **22.301.018/0001-66** (Extra Bike) consta baixado e **51.364.603/0001-03** (Ninu’s Bike) consta ativo no mesmo endereço. A ficha da revendedora não demonstra vínculo de sucessão ou catálogo atual da Ninu’s Bike. Preço e estoque locais seguem pendentes. [Ficha OGGI](https://oggibikes.com.br/placemarks/extra-bike/)
 - **Loja das Abraçadeiras · 07.797.567/0001-80.** O nome aparece em documento de compra de Sorriso, e a vitrine retornou HTTP 200 com preços. O CNPJ exibido no rodapé consta no município do Rio de Janeiro-RJ no OpenCNPJ. Classificada como fornecedor externo. [Vitrine](https://www.abracadeiras.store/) · [Documento municipal](https://site.sorriso.mt.gov.br/dl/436817)
+
+### Combustíveis e gás de cozinha — preços observados pela ANP
+
+O GET da [planilha semanal por revendedor](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2026/revendas_lpc_2026_10_25-2026_10_31.xlsx), publicada em 03/11/2026, funcionou sem conta. Na aba `POSTOS REVENDEDORES`, filtre as colunas I e J por `SORRISO` e `MATO GROSSO`. Leia produto, unidade, valor e data nas colunas L a O. Complete os CNPJs numéricos da coluna A com zeros à esquerda até 14 dígitos.
+
+A seleção contém **41 observações de 27/10/2026** para **17 CNPJs**. Todos estavam ativos em Sorriso no snapshot 2026-10 do OpenCNPJ, com endereço correspondente após normalizar abreviações e pontuação. Favretto apresenta a grafia Moraes na ANP e Morais no cadastro. Há divergências de CEP entre as fontes. A amostra abrange oito postos e nove revendas de GLP. Os valores são de uma pesquisa de campo datada e ficam classificados como referência histórica. A planilha não informa disponibilidade ou estoque atual. [Publicação semanal](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas)
+
+Postos da amostra, com gasolina comum em reais por litro:
+
+- Praça das Fontes · 08.609.198/0001-17 · Brescansin, 2440 · R$ 6,92.
+- Dallas · 06.047.857/0001-43 · Idemar Riedi, 9164 · R$ 6,39.
+- Smile · 02.412.522/0001-26 · Tancredo Neves, 2219 · R$ 6,59.
+- Paraíso · 04.208.206/0001-62 · Brescansin, 1375 · R$ 6,79.
+- Cidade · 02.583.241/0001-36 · Brescansin, 1691 · R$ 6,89.
+- Redentor · 00.345.307/0001-24 · Perimetral Sudeste, 8245 · R$ 6,89.
+- Nossa Senhora do Sorriso · 09.060.760/0001-69 · Tancredo Neves, 2943 · R$ 6,59.
+- Motter · 09.074.874/0001-68 · Blumenau, 1140 · R$ 6,68.
+
+Revendas da amostra, com GLP em reais por botijão de 13 kg:
+
+- Pirapó · 01.872.282/0001-80 · Brescansin, 2102 · R$ 145,00.
+- Lorenz e Martini · 04.419.333/0001-00 · Perimetral Sudoeste, 2199 · R$ 140,00.
+- Peters Gás Porto Alegre · 07.693.574/0001-31 · Porto Alegre, 2164 · R$ 144,00.
+- V. J. Barbieri · 05.526.729/0001-10 · Carazinho, 415 · R$ 145,00.
+- Favretto e Favretto · 12.600.767/0001-30 · Vinicius de Moraes, 818 · R$ 135,00.
+- Gaz Centro Oeste · 01.977.586/0001-01 · La Paz, 169 · R$ 145,00.
+- Disk Água Gás e Carvão Nilson · 17.992.813/0001-08 · Las Vegas, 959 · R$ 135,00.
+- Peters Gás Horácio Lafer · 07.693.574/0003-01 · Horácio Lafer, 1033 · R$ 144,00.
+- Chico do Gás · 52.779.175/0001-42 · Iguaçu, 230A · R$ 135,00.
+
+A tabela municipal de 02/04/2025 também separa retirada e entrega de GLP. Para Chico do Gás, ela identifica **34.308.629/0001-15**, Rua Iguaçu, 230, enquanto a amostra ANP identifica **52.779.175/0001-42**, número 230A. A semelhança de nome e endereço não autoriza unir os dois CNPJs. [Tabela do Procon Sorriso](https://site.sorriso.mt.gov.br/noticia/procon-disponibiliza-tabela-de-precos-do-gas-de-cozinha-67eeb3e38916c)
