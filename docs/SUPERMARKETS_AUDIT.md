@@ -1,5 +1,7 @@
 # Auditoria inicial das fontes de Sorriso-MT
 
+Revisão posterior da integração: três vitrines VipCommerce locais foram validadas e habilitadas. Esta matriz preserva o levantamento inicial; o estado atual, bootstrap visitante e exclusões por município estão em [PUBLIC_CATALOGUES.md](PUBLIC_CATALOGUES.md) e [SORRISO_INTEGRATIONS.md](SORRISO_INTEGRATIONS.md).
+
 Pesquisa realizada em **03/11/2026**, com páginas oficiais, diretório municipal, cadastros públicos e diretórios comerciais. Este levantamento registra **26 redes/estabelecimentos referenciados e 29 registros de filiais (uma inativa)**; não é um censo de empresas ativas. Duas referências não têm endereço de filial suficientemente detalhado. Endereços divergentes e históricos estão sinalizados abaixo e devem ser reconfirmados antes de receber preços.
 
 Resultado atualizado: **27 produtos e 31 observações reais históricas de março de 2026**, em sete redes/oito filiais, importados do relatório público Procon-MT. **Zero preços atuais confirmados, zero fontes classe A e zero feeds comerciais ativos.** Histórico público não equivale a integração comercial automática. Há também 12 produtos/36 ofertas DEMO de três lojas fictícias separadas. A revisão detalhada, com bloqueios e regras de cidade/endereço por mercado, está em [SORRISO_INTEGRATIONS.md](SORRISO_INTEGRATIONS.md). A matriz abaixo registra descoberta e pendências de catálogo atual.

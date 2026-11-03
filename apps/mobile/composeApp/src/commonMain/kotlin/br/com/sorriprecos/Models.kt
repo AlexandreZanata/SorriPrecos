@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 @Serializable data class Items<T>(val items:List<T>,@SerialName("next_after") val nextAfter:Long?=null)
 @Serializable data class Product(
     val id:Long,val name:String,val brand:String,val quantity:Long,val unit:String,val presentation:String,val category:String,
-    val gtin:String?=null,@SerialName("is_demo") val isDemo:Boolean=false,
+    val gtin:String?=null,@SerialName("is_demo") val isDemo:Boolean=false,@SerialName("is_historical") val isHistorical:Boolean=false,
     @SerialName("min_price_cents") val minPriceCents:Long?=null,
     @SerialName("last_collected_at") val lastCollectedAt:Long?=null,
     @SerialName("branch_count") val branchCount:Int=0,
@@ -29,6 +29,8 @@ import kotlinx.serialization.SerialName
     @SerialName("real_products") val realProducts:Int=0,
     @SerialName("demo_products") val demoProducts:Int=0,
     @SerialName("historical_products") val historicalProducts:Int=0,
+    @SerialName("historical_supermarkets") val historicalSupermarkets:Int=0,
+    @SerialName("historical_last_collected_at") val historicalLastCollectedAt:Long?=null,
     @SerialName("recent_products") val recentProducts:Int=0,
     @SerialName("imported_supermarkets") val importedSupermarkets:Int=0,
     @SerialName("last_collected_at") val lastCollectedAt:Long?=null

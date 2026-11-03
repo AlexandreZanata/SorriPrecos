@@ -1,5 +1,7 @@
 # Importação e feeds autorizados
 
+Este documento descreve o adaptador genérico de arquivos/feeds contratados. O coletor das três vitrines públicas usa configuração própria e está documentado em [PUBLIC_CATALOGUES.md](PUBLIC_CATALOGUES.md).
+
 Todas as redes descobertas começam desabilitadas em `config/sources.example.json`. Há uma configuração independente por rede; campos de autorização e URL são intencionalmente nulos. O operador precisa obter e guardar a autorização, confirmar a filial e ajustar o formato antes de habilitar uma fonte. Uma referência de autorização é uma declaração do operador, não uma verificação jurídica automática feita pelo software.
 
 JSON é um array de objetos; CSV usa cabeçalho com os mesmos campos. Valores opcionais ficam nulos/ausentes no JSON ou vazios no CSV. Booleanos são `true`/`false`; preço não aceita ponto ou vírgula decimal. `quantity` é inteiro, com unidade g/kg/ml/l/un. Para 1,5 kg, use 1500 g.
@@ -18,7 +20,7 @@ cargo run -- import --source sorriso --file /caminho/precos.json \
   --authorization 'Acordo de fornecimento de dados, referência interna 123'
 ```
 
-Adaptador HTTP aceita array JSON, CSV ou página no formato `{"items":[...],"next":"/feed?page=2"}`. `next` pode ser URL relativa ou absoluta, sempre da mesma origem. Fonte deve usar HTTPS; HTTP de localhost é permitido para testes de contrato. Não segue redirecionamentos e não admite credenciais embutidas em URLs. Não há suporte a login em plataformas varejistas.
+Adaptador HTTP aceita array JSON, CSV ou página no formato `{"items":[...],"next":"/feed?page=2"}`. `next` pode ser URL relativa ou absoluta, sempre da mesma origem. Fonte deve usar HTTPS; HTTP de localhost é permitido para testes de contrato. Não segue redirecionamentos e não admite credenciais embutidas em URLs. Esse adaptador genérico não inicia sessões de plataformas varejistas. O adaptador VipCommerce separado inicia somente a sessão anônima publicada pelo frontend.
 
 Copie a configuração para um arquivo privado. Por exemplo, uma entrada fornecida pelo estabelecimento deve conter `enabled: true`, `authorization_reference`, `url`, `format`, `interval_seconds: 86400`, `max_pages: 100`, além de `supermarket_id`. Não use uma URL hipotética como se fosse uma API existente.
 
@@ -26,7 +28,7 @@ Copie a configuração para um arquivo privado. Por exemplo, uma entrada forneci
 cargo run -- collect --config /caminho/sources.json
 ```
 
-ETag/Last-Modified são persistidos somente ao completar todas as páginas. `collection_runs.requests` mede requisições reais, incluindo retentativas. Até a obtenção de um feed verdadeiro, não há medição de requisições de catálogo real. O teste automatizado do feed sintético de duas páginas mede duas requisições.
+ETag/Last-Modified são persistidos somente ao completar todas as páginas. `collection_runs.requests` mede requisições reais, incluindo retentativas. As medições do catálogo público VipCommerce estão em `testing/vipcommerce-2026-11-03.json`; não pertencem a este adaptador genérico. O teste automatizado do feed sintético de duas páginas mede duas requisições.
 
 Datas devem representar a observação na origem, não a data de publicação de um arquivo antigo. `demo` é um comando separado que atualiza apenas as fixtures fictícias para facilitar os testes de interface. O importador normal nunca altera as datas fornecidas.
 

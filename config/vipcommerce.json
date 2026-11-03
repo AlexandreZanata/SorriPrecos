@@ -1,0 +1,71 @@
+[
+  {
+    "supermarket_id": "sorrinorte",
+    "enabled": true,
+    "website": "https://www.sorrinorte.com.br",
+    "domain": "sorrinorte.com.br",
+    "organization_id": 365,
+    "storefront_id": 412,
+    "filial_id": 1,
+    "configuration_path": "/chunk-IBICK36J.js",
+    "interval_seconds": 600,
+    "page_size": 100,
+    "max_pages": 500,
+    "delay_ms": 300,
+    "branches": [
+      {
+        "distribution_id": 1,
+        "branch_id": "sorrinorte-industrial",
+        "cnpj": "02756536000167",
+        "street": "Palmares",
+        "number": "489"
+      }
+    ]
+  },
+  {
+    "supermarket_id": "sorriso",
+    "enabled": true,
+    "website": "https://www.sorrisosuper.com.br",
+    "domain": "sorrisosuper.com.br",
+    "organization_id": 324,
+    "storefront_id": 369,
+    "filial_id": 1,
+    "configuration_path": "/chunk-IBICK36J.js",
+    "interval_seconds": 600,
+    "page_size": 100,
+    "max_pages": 500,
+    "delay_ms": 300,
+    "branches": [
+      {
+        "distribution_id": 1,
+        "branch_id": "sorriso-centro",
+        "cnpj": "14953277000143",
+        "street": "Brescansin",
+        "number": "220"
+      }
+    ]
+  },
+  {
+    "supermarket_id": "delmoro",
+    "enabled": true,
+    "website": "https://www.delmorosupermercados.com.br",
+    "domain": "delmorosupermercados.com.br",
+    "organization_id": 287,
+    "storefront_id": 328,
+    "filial_id": 1,
+    "configuration_path": "/chunk-IBICK36J.js",
+    "interval_seconds": 600,
+    "page_size": 100,
+    "max_pages": 500,
+    "delay_ms": 300,
+    "branches": [
+      {
+        "distribution_id": 1,
+        "branch_id": "delmoro-bh",
+        "cnpj": "00877761000479",
+        "street": "Belo Horizonte",
+        "number": "94"
+      }
+    ]
+  }
+]

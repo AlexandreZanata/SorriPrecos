@@ -1,10 +1,13 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use sorriprecos::{adapters, api, catalog, db, now};
+use sorriprecos::{adapters, api, catalog, db, now, vip};
 use std::{net::SocketAddr, path::PathBuf};
 
 #[derive(Parser)]
-#[command(version, about = "SorriPreços · API e coletor de feeds autorizados")]
+#[command(
+    version,
+    about = "SorriPreços · API e coleta de catálogos públicos de Sorriso-MT"
+)]
 struct Cli {
     #[arg(
         long,
@@ -42,6 +45,12 @@ enum Command {
     Collect {
         #[arg(long, default_value = "config/sources.json")]
         config: PathBuf,
+    },
+    CollectVip {
+        #[arg(long, default_value = "config/vipcommerce.json")]
+        config: PathBuf,
+        #[arg(long)]
+        watch: bool,
     },
     Maintain,
     BenchSeed {
@@ -128,6 +137,7 @@ async fn main() -> Result<()> {
             tracing::info!("demo_loaded_never_real_prices");
         }
         Command::Collect { config } => adapters::collect_config(&pool, &config).await?,
+        Command::CollectVip { config, watch } => vip::run(&pool, &config, watch).await?,
         Command::Maintain => {
             sqlx::query("DELETE FROM price_history WHERE collected_at<?")
                 .bind(now() - 90 * 86400)

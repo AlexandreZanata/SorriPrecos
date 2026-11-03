@@ -47,7 +47,10 @@ impl AuthorizedFeedAdapter {
                 .is_some_and(|s| s.len() >= 8),
             "autorização não documentada"
         );
-        ensure!(config.interval_seconds >= 3600, "intervalo mínimo: 1 hora");
+        ensure!(
+            config.interval_seconds >= 600,
+            "intervalo mínimo: 10 minutos"
+        );
         ensure!(
             (1..=100).contains(&config.max_pages),
             "máximo de páginas: 100"

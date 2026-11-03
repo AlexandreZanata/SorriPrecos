@@ -1,0 +1,116 @@
+{
+  "tested_at": "2026-11-03T15:24:27.461791+00:00",
+  "device_model": "2311DRK48G",
+  "android": "16",
+  "scope": {
+    "city": "Sorriso",
+    "state": "MT"
+  },
+  "kind": "current_public_storefront",
+  "product": {
+    "branch_count": 3,
+    "brand": "Não informada",
+    "category": "Cereais e farináceos / Arroz",
+    "gtin": "07896038306039",
+    "historical_branch_count": 0,
+    "id": 3083,
+    "is_demo": false,
+    "is_historical": false,
+    "last_collected_at": 1793719436,
+    "min_price_cents": 2699,
+    "name": "Arroz Urbano Parboilizado 5Kg",
+    "presentation": "unidade de venda",
+    "quantity": 5000,
+    "reference_price_cents": null,
+    "unit": "g"
+  },
+  "recent_offers": [
+    {
+      "address": "Rua Palmares, 489 · Industrial 2ª Etapa",
+      "available": true,
+      "branch_id": "sorrinorte-industrial",
+      "branch_name": "Industrial 2ª Etapa",
+      "city": "Sorriso",
+      "collected_at": 1793719436,
+      "conditions": null,
+      "effective_price_cents": 2699,
+      "is_demo": false,
+      "offer_type": "regular",
+      "price_cents": 2699,
+      "promotional_price_cents": null,
+      "source_url": "https://www.sorrinorte.com.br/produto/188/arroz-urbano-parboilizado-5kg",
+      "state": "MT",
+      "status": "recent",
+      "supermarket_id": "sorrinorte",
+      "supermarket_name": "Sorrinorte Supermercados",
+      "valid_until": null
+    },
+    {
+      "address": "Av. Belo Horizonte, 94 · Centro Sul",
+      "available": true,
+      "branch_id": "delmoro-bh",
+      "branch_name": "Loja Belo Horizonte",
+      "city": "Sorriso",
+      "collected_at": 1793719016,
+      "conditions": null,
+      "effective_price_cents": 2790,
+      "is_demo": false,
+      "offer_type": "regular",
+      "price_cents": 2790,
+      "promotional_price_cents": null,
+      "source_url": "https://www.delmorosupermercados.com.br/produto/8523/arroz-parboilizado-urbano-5kg",
+      "state": "MT",
+      "status": "recent",
+      "supermarket_id": "delmoro",
+      "supermarket_name": "DelMoro Supermercados",
+      "valid_until": null
+    },
+    {
+      "address": "Av. Natalino João Brescansin, 220 · Centro Sul",
+      "available": true,
+      "branch_id": "sorriso-centro",
+      "branch_name": "Centro",
+      "city": "Sorriso",
+      "collected_at": 1793718931,
+      "conditions": null,
+      "effective_price_cents": 2899,
+      "is_demo": false,
+      "offer_type": "regular",
+      "price_cents": 2899,
+      "promotional_price_cents": null,
+      "source_url": "https://www.sorrisosuper.com.br/produto/556/arroz-urbano-parboilizado-5kg",
+      "state": "MT",
+      "status": "recent",
+      "supermarket_id": "sorriso",
+      "supermarket_name": "Sorriso Supermercados",
+      "valid_until": null
+    }
+  ],
+  "tests": [
+    {
+      "name": "Catálogo atual é separado do Procon e da demonstração",
+      "status": "passed"
+    },
+    {
+      "name": "Pesquisa pelo GTIN retorna produto real, embalagem e preço iguais à API local",
+      "status": "passed"
+    },
+    {
+      "name": "Mesmo GTIN e embalagem com preços recentes de duas ou mais redes de Sorriso",
+      "status": "passed"
+    },
+    {
+      "name": "Detalhes conservam GTIN, embalagem e origem do produto real",
+      "status": "passed"
+    },
+    {
+      "name": "Comparação real disponível no cache com identificação offline",
+      "status": "passed"
+    },
+    {
+      "name": "Reconexão ao localhost e aplicativo deixado nos preços atuais",
+      "status": "passed"
+    }
+  ],
+  "status": "passed"
+}

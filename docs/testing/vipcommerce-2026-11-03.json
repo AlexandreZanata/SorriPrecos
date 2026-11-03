@@ -1,0 +1,247 @@
+{
+  "observed_at": "2026-11-03T15:19:07.103365+00:00",
+  "scope": {
+    "city": "Sorriso",
+    "state": "MT"
+  },
+  "mode": "public_anonymous_storefront",
+  "collectors": [
+    {
+      "supermarket_id": "sorrinorte",
+      "adapter": "vipcommerce",
+      "interval_seconds": 600,
+      "status": "success",
+      "last_started_at": 1793718791,
+      "last_success_at": 1793718880,
+      "last_finished_at": 1793718880,
+      "requests": 139,
+      "raw_items": 12700,
+      "normalized_items": 9073,
+      "scope_rejected": 0,
+      "last_error": null
+    },
+    {
+      "supermarket_id": "sorriso",
+      "adapter": "vipcommerce",
+      "interval_seconds": 600,
+      "status": "success",
+      "last_started_at": 1793718880,
+      "last_success_at": 1793718979,
+      "last_finished_at": 1793718979,
+      "requests": 130,
+      "raw_items": 11724,
+      "normalized_items": 9084,
+      "scope_rejected": 0,
+      "last_error": null
+    },
+    {
+      "supermarket_id": "delmoro",
+      "adapter": "vipcommerce",
+      "interval_seconds": 600,
+      "status": "success",
+      "last_started_at": 1793718979,
+      "last_success_at": 1793719074,
+      "last_finished_at": 1793719074,
+      "requests": 120,
+      "raw_items": 10677,
+      "normalized_items": 8931,
+      "scope_rejected": 4,
+      "last_error": null
+    }
+  ],
+  "pending_reasons": [
+    {
+      "reason": "embalagem ausente ou ambígua",
+      "items": 7235
+    },
+    {
+      "reason": "decimal não representável",
+      "items": 418
+    },
+    {
+      "reason": "GTIN associado a embalagem diferente",
+      "items": 311
+    },
+    {
+      "reason": "multipack exige revisão de embalagem",
+      "items": 43
+    },
+    {
+      "reason": "quantidade inválida",
+      "items": 6
+    }
+  ],
+  "raw_items": 35101,
+  "normalized_source_items": 27088,
+  "catalog": {
+    "automatic_integrations": 3,
+    "coverage_note": "Levantamento inicial; não representa todos os estabelecimentos ativos da cidade.",
+    "demo_products": 12,
+    "discovered_branches": 29,
+    "discovered_supermarkets": 26,
+    "freshness_hours": 48,
+    "historical_last_collected_at": 1774584000,
+    "historical_products": 27,
+    "historical_supermarkets": 7,
+    "imported_supermarkets": 3,
+    "last_collected_at": 1793719074,
+    "real_products": 20316,
+    "recent_products": 16011,
+    "scope": {
+      "city": "Sorriso",
+      "ibge_code": "5107925",
+      "state": "MT"
+    }
+  },
+  "comparison_example": {
+    "branch_count": 3,
+    "brand": "Não informada",
+    "category": "Cereais e farináceos / Arroz",
+    "gtin": "07896038306039",
+    "historical_branch_count": 0,
+    "id": 3083,
+    "is_demo": false,
+    "is_historical": false,
+    "last_collected_at": 1793719016,
+    "min_price_cents": 2699,
+    "name": "Arroz Urbano Parboilizado 5Kg",
+    "presentation": "unidade de venda",
+    "quantity": 5000,
+    "reference_price_cents": null,
+    "unit": "g",
+    "recent_offers": [
+      {
+        "address": "Rua Palmares, 489 · Industrial 2ª Etapa",
+        "available": true,
+        "branch_id": "sorrinorte-industrial",
+        "branch_name": "Industrial 2ª Etapa",
+        "city": "Sorriso",
+        "collected_at": 1793718829,
+        "conditions": null,
+        "effective_price_cents": 2699,
+        "is_demo": false,
+        "offer_type": "regular",
+        "price_cents": 2699,
+        "promotional_price_cents": null,
+        "source_url": "https://www.sorrinorte.com.br/produto/188/arroz-urbano-parboilizado-5kg",
+        "state": "MT",
+        "status": "recent",
+        "supermarket_id": "sorrinorte",
+        "supermarket_name": "Sorrinorte Supermercados",
+        "valid_until": null
+      },
+      {
+        "address": "Av. Belo Horizonte, 94 · Centro Sul",
+        "available": true,
+        "branch_id": "delmoro-bh",
+        "branch_name": "Loja Belo Horizonte",
+        "city": "Sorriso",
+        "collected_at": 1793719016,
+        "conditions": null,
+        "effective_price_cents": 2790,
+        "is_demo": false,
+        "offer_type": "regular",
+        "price_cents": 2790,
+        "promotional_price_cents": null,
+        "source_url": "https://www.delmorosupermercados.com.br/produto/8523/arroz-parboilizado-urbano-5kg",
+        "state": "MT",
+        "status": "recent",
+        "supermarket_id": "delmoro",
+        "supermarket_name": "DelMoro Supermercados",
+        "valid_until": null
+      },
+      {
+        "address": "Av. Natalino João Brescansin, 220 · Centro Sul",
+        "available": true,
+        "branch_id": "sorriso-centro",
+        "branch_name": "Centro",
+        "city": "Sorriso",
+        "collected_at": 1793718931,
+        "conditions": null,
+        "effective_price_cents": 2899,
+        "is_demo": false,
+        "offer_type": "regular",
+        "price_cents": 2899,
+        "promotional_price_cents": null,
+        "source_url": "https://www.sorrisosuper.com.br/produto/556/arroz-urbano-parboilizado-5kg",
+        "state": "MT",
+        "status": "recent",
+        "supermarket_id": "sorriso",
+        "supermarket_name": "Sorriso Supermercados",
+        "valid_until": null
+      }
+    ]
+  },
+  "validation": [
+    "três catálogos paginados completos",
+    "nenhuma filial de outro município ingerida",
+    "comparação por GTIN com embalagem igual",
+    "Procon separado por origem e modo",
+    "sessões e chaves ausentes do relatório"
+  ],
+  "recurring_validation": {
+    "observed_at": "2026-11-03T15:28:15.489129+00:00",
+    "runs": [
+      {
+        "supermarket_id": "sorrinorte",
+        "started_at": 1793718791,
+        "finished_at": 1793718880,
+        "imported": 9073,
+        "requests": 139,
+        "status": "success"
+      },
+      {
+        "supermarket_id": "sorriso",
+        "started_at": 1793718880,
+        "finished_at": 1793718979,
+        "imported": 9084,
+        "requests": 130,
+        "status": "success"
+      },
+      {
+        "supermarket_id": "delmoro",
+        "started_at": 1793718979,
+        "finished_at": 1793719074,
+        "imported": 8931,
+        "requests": 120,
+        "status": "success"
+      },
+      {
+        "supermarket_id": "sorrinorte",
+        "started_at": 1793719394,
+        "finished_at": 1793719489,
+        "imported": 9073,
+        "requests": 139,
+        "status": "success"
+      },
+      {
+        "supermarket_id": "sorriso",
+        "started_at": 1793719489,
+        "finished_at": 1793719580,
+        "imported": 9084,
+        "requests": 130,
+        "status": "success"
+      },
+      {
+        "supermarket_id": "delmoro",
+        "started_at": 1793719580,
+        "finished_at": 1793719669,
+        "imported": 8931,
+        "requests": 120,
+        "status": "success"
+      }
+    ],
+    "start_intervals_seconds": {
+      "sorrinorte": [
+        603
+      ],
+      "sorriso": [
+        609
+      ],
+      "delmoro": [
+        601
+      ]
+    },
+    "note": "600 seconds per source, checked every 15 seconds; delayed sources wait for sequential collection."
+  }
+}

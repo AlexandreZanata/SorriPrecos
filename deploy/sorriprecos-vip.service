@@ -1,0 +1,26 @@
+[Unit]
+Description=SorriPrecos public storefront catalogues (Sorriso-MT, every 10 minutes)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=sorriprecos
+Group=sorriprecos
+WorkingDirectory=/opt/sorriprecos
+Environment=DATABASE_URL=sqlite:///var/lib/sorriprecos/catalog.db
+Environment=RUST_LOG=sorriprecos=info
+ExecStart=/usr/bin/flock -n /var/lib/sorriprecos/vip-collector.lock /opt/sorriprecos/sorriprecos collect-vip --config /etc/sorriprecos/vipcommerce.json --watch
+Restart=on-failure
+RestartSec=30
+KillSignal=SIGINT
+TimeoutStopSec=30
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/sorriprecos
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target

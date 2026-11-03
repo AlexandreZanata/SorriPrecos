@@ -19,9 +19,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Composable internal fun DataDisclosure(demo: Boolean, catalog: CatalogStatus) {
+@Composable internal fun DataDisclosure(demo: Boolean, catalog: CatalogStatus, historical: Boolean = false) {
     if (demo) Notice("MODO DEMO · Preços fictícios para testar o app", demo = true)
-    else if (catalog.historicalProducts > 0 && catalog.recentProducts == 0)
+    else if (historical && catalog.historicalProducts > 0)
         Notice("DADOS REAIS HISTÓRICOS · Procon-MT / março de 2026. Nenhuma oferta atual confirmada.", historical = true)
 }
 
@@ -61,16 +61,16 @@ internal fun shortMarket(m: Supermarket): String = when (m.id) {
         Column(Modifier.padding(horizontal = 5.dp, vertical = 12.dp).heightIn(min = 87.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             AppIcon(Glyph.Cart, Modifier.size(25.dp), MaterialTheme.colorScheme.primary)
             Text(shortMarket(m), fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 6.dp))
-            Text(if (m.isDemo) "DEMO" else if (m.productCount > 0) "Histórico" else "Pendente", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 3.dp))
+            Text(if (m.isDemo) "DEMO" else if (m.productCount > 0) if(m.lastCollectedAt?.let { platformNow()-it <= 172800 } == true) "Atualizado" else "Histórico" else "Pendente", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 3.dp))
         }
     }
 }
 
-@Composable internal fun UpdateStrip(catalog: CatalogStatus, demo: Boolean, onRefresh: () -> Unit) {
+@Composable internal fun UpdateStrip(catalog: CatalogStatus, demo: Boolean, historical: Boolean = false, onRefresh: () -> Unit) {
     Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(14.dp), modifier = Modifier.fillMaxWidth().clickable(onClick = onRefresh).semantics { contentDescription = "Atualizar fontes" }) {
         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             AppIcon(Glyph.Refresh, Modifier.size(19.dp), MaterialTheme.colorScheme.primary); Spacer(Modifier.width(10.dp))
-            Text(if (demo) "Dados fictícios de demonstração" else catalog.lastCollectedAt?.let { "Último registro: ${formatDate(it).substringBefore(" às")}" } ?: "Aguardando os primeiros registros", fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(if (demo) "Dados fictícios de demonstração" else (if(historical) catalog.historicalLastCollectedAt else catalog.lastCollectedAt)?.let { if(historical) "Registro histórico: ${formatDate(it).substringBefore(" às")}" else "Última coleta: ${age(it)}" } ?: "Aguardando os primeiros registros", fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
         }
     }
 }

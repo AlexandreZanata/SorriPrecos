@@ -183,7 +183,12 @@ pub async fn import(
         "importação real exige referência de autorização (--authorization)"
     );
     let run:i64=sqlx::query_scalar("INSERT INTO collection_runs(supermarket_id,started_at,status,authorization_reference) VALUES(?,?,'running',?) RETURNING id").bind(source).bind(now()).bind(authorization).fetch_one(pool).await?;
-    let result = import_transaction(pool, source, rows, demo).await;
+    let kind = if authorization.is_some_and(|s| s.starts_with("PUBLIC_REPORT:")) {
+        "public_report"
+    } else {
+        "retail"
+    };
+    let result = import_transaction(pool, source, rows, demo, kind).await;
     let (status, count, error) = match &result {
         Ok(n) => ("success", *n as i64, None),
         Err(e) => ("failed", 0, Some(e.to_string())),
@@ -204,10 +209,18 @@ async fn import_transaction(
     source: &str,
     rows: &[ImportRow],
     demo: bool,
+    kind: &str,
 ) -> Result<usize> {
     let mut seen = HashSet::new();
     for r in rows {
         validate(r)?;
+        if kind == "public_report" {
+            ensure!(
+                !demo && r.collected_at < now() - 172800,
+                "relatório público deve ser histórico real"
+            );
+            ensure!(r.source_url.as_deref().is_some_and(|u|u.starts_with("https://www.procon.mt.gov.br/documents/d/procon/tabela-produtos-analisados-pascoa-final#page=")), "origem pública não reconhecida");
+        }
         ensure!(
             demo || (r.source_city.is_some() && r.source_state.is_some()),
             "dados reais exigem source_city=Sorriso e source_state=MT"
@@ -277,16 +290,16 @@ async fn import_transaction(
                 .await?;
         }
         // A source SKU must not silently change its canonical product.
-        sqlx::query("INSERT OR IGNORE INTO source_products(supermarket_id,source_id,product_id,original_name,source_url) VALUES(?,?,?,?,?)").bind(source).bind(&r.source_id).bind(pid).bind(&r.name).bind(&r.source_url).execute(&mut *tx).await?;
+        sqlx::query("INSERT OR IGNORE INTO source_products(supermarket_id,source_id,product_id,original_name,source_url,source_kind) VALUES(?,?,?,?,?,?)").bind(source).bind(&r.source_id).bind(pid).bind(&r.name).bind(&r.source_url).bind(kind).execute(&mut *tx).await?;
         let sp = sqlx::query(
-            "SELECT id,product_id FROM source_products WHERE supermarket_id=? AND source_id=?",
+            "SELECT id,product_id,source_kind FROM source_products WHERE supermarket_id=? AND source_id=?",
         )
         .bind(source)
         .bind(&r.source_id)
         .fetch_one(&mut *tx)
         .await?;
         ensure!(
-            sp.get::<i64, _>("product_id") == pid,
+            sp.get::<i64, _>("product_id") == pid && sp.get::<String, _>("source_kind") == kind,
             "código de origem mudou de produto; revisão manual necessária"
         );
         let sid: i64 = sp.get("id");
@@ -324,6 +337,7 @@ pub struct Product {
     pub presentation: String,
     pub category: String,
     pub is_demo: bool,
+    pub is_historical: bool,
     pub min_price_cents: Option<i64>,
     pub last_collected_at: Option<i64>,
     pub branch_count: i64,
@@ -340,35 +354,77 @@ pub async fn search(
     after: i64,
     demo: bool,
 ) -> Result<Vec<Product>> {
+    search_scope(pool, q, limit, after, demo, false).await
+}
+pub async fn search_scope(
+    pool: &SqlitePool,
+    q: &str,
+    limit: i64,
+    after: i64,
+    demo: bool,
+    historical: bool,
+) -> Result<Vec<Product>> {
     let fts = normalize::fts_query(q);
     if fts.is_empty() {
         return Ok(vec![]);
     }
+    let kind = if historical {
+        "public_report"
+    } else {
+        "retail"
+    };
+    let (candidates, query) = if normalize::valid_gtin(q.trim()) {
+        (
+            "SELECT p.id FROM products p WHERE p.gtin=?",
+            format!("{:0>14}", q.trim()),
+        )
+    } else {
+        (
+            "SELECT p.id FROM products_fts f JOIN products p ON p.id=f.rowid WHERE products_fts MATCH ?",
+            fts,
+        )
+    };
     let sql = format!(
-        "WITH hits AS MATERIALIZED (SELECT f.rowid id FROM products_fts f JOIN products p ON p.id=f.rowid WHERE products_fts MATCH ? AND p.is_demo=? AND f.rowid>? ORDER BY f.rowid LIMIT ?) SELECT {PRODUCT_FIELDS} FROM hits h JOIN products p ON p.id=h.id LEFT JOIN offers o ON o.product_id=p.id GROUP BY p.id ORDER BY p.id"
+        "WITH hits AS MATERIALIZED ({candidates} AND p.is_demo=? AND p.id>? AND EXISTS(SELECT 1 FROM source_products sp WHERE sp.product_id=p.id AND sp.source_kind=?) ORDER BY p.id LIMIT ?) SELECT {PRODUCT_FIELDS},{} AS is_historical FROM hits h JOIN products p ON p.id=h.id LEFT JOIN offers o ON o.product_id=p.id AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) GROUP BY p.id ORDER BY p.id",
+        i32::from(historical)
     );
     Ok(sqlx::query_as(&sql)
-        .bind(fts)
+        .bind(query)
         .bind(demo)
         .bind(after)
+        .bind(kind)
         .bind(limit)
         .bind(now() - 172800)
         .bind(now())
         .bind(now() - 172800)
         .bind(now())
+        .bind(kind)
         .fetch_all(pool)
         .await?)
 }
-
 pub async fn product(pool: &SqlitePool, id: i64) -> Result<Option<Product>> {
+    product_scope(pool, id, false).await
+}
+pub async fn product_scope(
+    pool: &SqlitePool,
+    id: i64,
+    historical: bool,
+) -> Result<Option<Product>> {
+    let kind = if historical {
+        "public_report"
+    } else {
+        "retail"
+    };
     let sql = format!(
-        "SELECT {PRODUCT_FIELDS} FROM products p LEFT JOIN offers o ON o.product_id=p.id WHERE p.id=? GROUP BY p.id"
+        "SELECT {PRODUCT_FIELDS},{} AS is_historical FROM products p JOIN offers o ON o.product_id=p.id AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) WHERE p.id=? GROUP BY p.id",
+        i32::from(historical)
     );
     Ok(sqlx::query_as(&sql)
         .bind(now() - 172800)
         .bind(now())
         .bind(now() - 172800)
         .bind(now())
+        .bind(kind)
         .bind(id)
         .fetch_optional(pool)
         .await?)

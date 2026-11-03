@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 @Composable fun App(store: LocalStore) {
     var baseUrl by remember { mutableStateOf(store.get("api-url") ?: "http://127.0.0.1:8080") }
     var demo by remember { mutableStateOf(store.get("demo") == "true") }
+    var historical by remember { mutableStateOf(!demo && store.get("historical") == "true") }
     var contrast by remember { mutableStateOf(store.get("ui-contrast") == "true") }
     var largeText by remember { mutableStateOf(store.get("ui-large-text") == "true") }
     val repo = remember(baseUrl) { Repository(store, baseUrl) }
@@ -63,24 +64,24 @@ import kotlinx.coroutines.launch
     val uri = LocalUriHandler.current
     val snack = remember { SnackbarHostState() }
 
-    LaunchedEffect(repo, demo, refresh) {
+    LaunchedEffect(repo, demo, historical, refresh) {
         sourceLoading = true; error = null
         try {
             val status = repo.status(); catalog = status.data
-            val sources = repo.markets(demo); markets = sources.data.items
+            val sources = repo.markets(demo, historical); markets = sources.data.items
             offline = status.offline || sources.offline
         } catch (e: CancellationException) { throw e }
         catch (e: Exception) { error = e.message }
         finally { sourceLoading = false }
     }
-    LaunchedEffect(query, demo, repo, refresh) {
+    LaunchedEffect(query, demo, historical, repo, refresh) {
         paginationJob?.cancelAndJoin()
         results = emptyList(); nextAfter = null; searchOffline = false
         if (query.trim().length < 2) { searching = false; return@LaunchedEffect }
         searching = true; error = null
         try {
             delay(350)
-            val loaded = repo.search(query.trim(), demo)
+            val loaded = repo.search(query.trim(), demo, historical = historical)
             results = loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline
         } catch (e: CancellationException) { throw e }
         catch (e: Exception) { error = e.message }
@@ -92,7 +93,8 @@ import kotlinx.coroutines.launch
     }
     fun navigate(destination: String) { selected = null; screen = destination; focus.clearFocus() }
     fun search(value: String) { query = value; navigate("search") }
-    fun toggleDemo() { demo = !demo; store.put("demo", demo.toString()); query = ""; selected = null }
+    fun toggleDemo() { historical = false; store.put("historical", "false"); demo = !demo; store.put("demo", demo.toString()); query = ""; selected = null }
+    fun toggleHistory() { historical = !historical; demo = false; store.put("demo", "false"); store.put("historical", historical.toString()); query = ""; selected = null }
     fun setLarge(value: Boolean) { largeText = value; store.put("ui-large-text", value.toString()) }
     fun setContrast(value: Boolean) { contrast = value; store.put("ui-contrast", value.toString()) }
     NavigationBackHandler(selected != null || screen != "home") {
@@ -118,7 +120,7 @@ import kotlinx.coroutines.launch
                 bottomBar = { if (selected == null) BottomNavigation(screen, ::navigate) }
             ) { padding ->
                 Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
-                    if (screen != "home" || selected != null) Box(Modifier.padding(horizontal = 18.dp, vertical = 5.dp)) { DataDisclosure(demo, catalog) }
+                    if (screen != "home" || selected != null) Box(Modifier.padding(horizontal = 18.dp, vertical = 5.dp)) { DataDisclosure(demo, catalog, historical) }
                     if (selected != null) {
                         ComparisonScreen(repo, selected!!, favorites.any { it.id == selected!!.id },
                             onFavorite = { favorite(selected!!) }, refresh = refresh, onRefresh = { refresh++ })
@@ -133,14 +135,14 @@ import kotlinx.coroutines.launch
                                     }
                                 }
                                 item { HomeSearch(onClick = { navigate("search") }) }
-                                item { Suggestions(demo, catalog, ::search) }
-                                item { DataDisclosure(demo, catalog) }
+                                item { Suggestions(historical, ::search) }
+                                item { DataDisclosure(demo, catalog, historical) }
                                 item {
                                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                                        Text(if (demo) "Mercados de demonstração" else "Mercados de Sorriso", fontWeight = FontWeight.Bold, fontSize = 19.sp, modifier = Modifier.weight(1f))
+                                        Text(if (demo) "Mercados de demonstração" else if(historical) "Pesquisa histórica" else "Mercados de Sorriso", fontWeight = FontWeight.Bold, fontSize = 19.sp, modifier = Modifier.weight(1f))
                                         TextButton(onClick = { navigate("sources") }) { Text("Fontes", fontSize = 12.sp) }
                                     }
-                                    Text(if (demo) "Lojas fictícias para explorar o aplicativo" else "${catalog.discoveredSupermarkets} mapeados · ${catalog.importedSupermarkets} com registros", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    Text(if (demo) "Lojas fictícias para explorar o aplicativo" else "${catalog.discoveredSupermarkets} mapeados · ${if(historical) catalog.historicalSupermarkets else catalog.importedSupermarkets} com registros", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                                 if (sourceLoading) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
                                 if (error != null) item { ErrorCard(error!!) { refresh++ } }
@@ -150,8 +152,9 @@ import kotlinx.coroutines.launch
                                         repeat(3-row.size) { Spacer(Modifier.weight(1f)) }
                                     }
                                 }
-                                item { UpdateStrip(catalog, demo) { refresh++ } }
+                                item { UpdateStrip(catalog, demo, historical) { refresh++ } }
                                 item {
+                                    TextButton(onClick = { toggleHistory() }, modifier = Modifier.fillMaxWidth()) { Text(if(historical) "Voltar aos preços atuais" else "Pesquisa histórica do Procon", fontSize = 12.sp) }
                                     TextButton(onClick = { toggleDemo() }, modifier = Modifier.fillMaxWidth()) { Text(if (demo) "Sair da demonstração" else "Experimentar com dados DEMO", fontSize = 12.sp) }
                                     Text("Cobertura em expansão. Consulte a origem e confirme os valores com a loja.", textAlign = TextAlign.Center, fontSize = 10.sp, lineHeight = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.fillMaxWidth())
                                 }
@@ -160,7 +163,7 @@ import kotlinx.coroutines.launch
                                 item { SearchField(query, onChange = { query = it.take(100) }, onSearch = { focus.clearFocus(); refresh++ }) }
                                 if (query.trim().length < 2) {
                                     item { Text("Encontre o produto que você procura", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp)) }
-                                    item { Suggestions(demo, catalog, ::search) }
+                                    item { Suggestions(historical, ::search) }
                                 } else {
                                     item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                         Text(if (searching) "Buscando produtos…" else "${results.size} produtos encontrados${if(nextAfter!=null)" nesta página" else ""}", fontSize = 12.sp)
@@ -173,7 +176,7 @@ import kotlinx.coroutines.launch
                                     if (nextAfter != null) item { OutlinedButton(onClick = {
                                         paginationJob = scope.launch {
                                             searching = true
-                                            try { val loaded = repo.search(query.trim(), demo, nextAfter!!); results += loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline }
+                                            try { val loaded = repo.search(query.trim(), demo, nextAfter!!, historical); results += loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline }
                                             catch (e: CancellationException) { throw e } catch (e: Exception) { error = e.message } finally { searching = false }
                                         }
                                     }, enabled = !searching, modifier = Modifier.fillMaxWidth()) { Text("Carregar mais") } }
@@ -186,7 +189,7 @@ import kotlinx.coroutines.launch
                             }
                             "sources" -> LazyColumn(contentPadding = PaddingValues(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                                 item { Text("De onde vêm os preços", fontSize = 23.sp, fontWeight = FontWeight.Bold); Text("${catalog.discoveredSupermarkets} estabelecimentos mapeados · ${catalog.discoveredBranches} filiais referenciadas", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 6.dp)) }
-                                item { Notice(if (demo) "Estas lojas são fictícias." else "Registros públicos históricos não significam integração atual com a loja. Confira a data e a origem de cada preço.") }
+                                item { Notice(if (demo) "Estas lojas são fictícias." else if(historical) "Pesquisa histórica do Procon: valores antigos, sem confirmação de preço ou estoque atual." else "Catálogos online das filiais de Sorriso-MT. Coleta a cada 10 minutos. Confirme preços e condições na origem.") }
                                 item { TextButton(onClick = { refresh++ }) { AppIcon(Glyph.Refresh, Modifier.size(17.dp), MaterialTheme.colorScheme.primary); Spacer(Modifier.width(8.dp)); Text("Atualizar") } }
                                 if (sourceLoading) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
                                 if (error != null) item { ErrorCard(error!!) { refresh++ } }
@@ -199,6 +202,7 @@ import kotlinx.coroutines.launch
                                 item { SettingsToggle("Alto contraste", "Fundo escuro e cores com mais contraste.", contrast, ::setContrast) }
                                 item { SettingsLink("Fontes e filiais", "Veja a cobertura de Sorriso-MT.", Glyph.Cart) { navigate("sources") } }
                                 item { SettingsLink("Conexão", baseUrl, Glyph.Refresh) { connectionDialog = true } }
+                                item { SettingsToggle("Pesquisa histórica do Procon", "Consulta separada dos preços atuais dos mercados.", historical) { toggleHistory() } }
                                 item { SettingsToggle("Modo DEMO", "Produtos e preços fictícios, separados dos reais.", demo) { toggleDemo() } }
                                 item { EmptyCard("Feito para Sorriso", "Sem cadastro. Favoritos e preferências ficam neste aparelho. Registros históricos nunca são apresentados como ofertas atuais.") }
                             }
@@ -210,7 +214,7 @@ import kotlinx.coroutines.launch
             marketDialog?.let { market ->
                 AlertDialog(onDismissRequest = { marketDialog = null }, title = { Text(market.name) }, text = { Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text("Sorriso-MT · ${market.branchCount} filial(is) referenciada(s)")
-                    Text(if (market.isDemo) "Loja fictícia de demonstração." else if (market.productCount > 0) "${market.productCount} produtos com registros. Última observação: ${age(market.lastCollectedAt)}. Histórico não confirma preço nem estoque atual." else "Coleta pendente. Ainda não há preços dessa loja disponíveis no aplicativo.", fontSize = 14.sp)
+                    Text(if (market.isDemo) "Loja fictícia de demonstração." else if (market.productCount > 0) "${market.productCount} produtos com registros. Última observação: ${age(market.lastCollectedAt)}. ${if(historical) "Histórico não confirma preço nem estoque atual." else "Confira as condições na loja."}" else "Coleta pendente. Ainda não há preços dessa loja disponíveis no aplicativo.", fontSize = 14.sp)
                 } }, confirmButton = { TextButton(onClick = { marketDialog = null }) { Text("Fechar") } }, dismissButton = {
                     market.website?.let { site -> TextButton(onClick = { try { uri.openUri(site) } catch (_: Exception) { scope.launch { snack.showSnackbar("Não foi possível abrir o site") } } }) { Text("Abrir site") } }
                 })
@@ -247,9 +251,9 @@ import kotlinx.coroutines.launch
     }
 }
 
-@Composable private fun Suggestions(demo: Boolean, catalog: CatalogStatus, search: (String) -> Unit) {
+@Composable private fun Suggestions(historical: Boolean, search: (String) -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        (if (!demo && catalog.historicalProducts > 0) listOf("Chocolate", "Lacta", "Bacalhau") else listOf("Arroz 5kg", "Café", "Leite")).forEach { label ->
+        (if (historical) listOf("Chocolate", "Lacta", "Bacalhau") else listOf("Arroz 5kg", "Café", "Leite")).forEach { label ->
             SuggestionChip(onClick = { search(label) }, label = { Text(label, fontSize = 12.sp) }, shape = RoundedCornerShape(20.dp))
         }
     }

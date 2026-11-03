@@ -33,13 +33,24 @@ class RepositoryTest {
         val offline=Repository(store,"https://example.test",HttpClient(MockEngine{error("offline")}))
         assertTrue(offline.markets(false).offline);offline.client.close()
     }
+    @Test fun historicalCacheNeverLeaksIntoCurrentSearch()=runTest {
+        val store=MemoryStore()
+        val good=Repository(store,"https://example.test",HttpClient(MockEngine{request ->
+            assertEquals("true",request.url.parameters["historical"])
+            respond("{\"items\":[]}")
+        }))
+        good.search("arroz",false,historical=true);good.client.close()
+        val offline=Repository(store,"https://example.test",HttpClient(MockEngine{error("offline")}))
+        assertFailsWith<CatalogUnavailable>{offline.search("arroz",false)}
+        assertTrue(offline.search("arroz",false,historical=true).offline);offline.client.close()
+    }
     @Test fun cancellationNeverFallsBackToOldResults()=runTest {
-        val store=MemoryStore();store.put("cache:https://example.test:/v1/supermarkets?demo=false","{\"items\":[]}")
+        val store=MemoryStore();store.put("cache:v2:https://example.test:/v1/supermarkets?demo=false&historical=false","{\"items\":[]}")
         val repo=Repository(store,"https://example.test",HttpClient(MockEngine{throw CancellationException("obsolete")}))
         assertFailsWith<CancellationException>{repo.markets(false)};repo.client.close()
     }
     @Test fun cachesDoNotCrossServers()=runTest {
-        val store=MemoryStore();store.put("cache:https://one.test:/v1/supermarkets?demo=false","{\"items\":[]}")
+        val store=MemoryStore();store.put("cache:v2:https://one.test:/v1/supermarkets?demo=false&historical=false","{\"items\":[]}")
         val repo=Repository(store,"https://two.test",HttpClient(MockEngine{respond("{}",HttpStatusCode.ServiceUnavailable)}))
         assertFailsWith<CatalogUnavailable>{repo.markets(false)};repo.client.close()
     }

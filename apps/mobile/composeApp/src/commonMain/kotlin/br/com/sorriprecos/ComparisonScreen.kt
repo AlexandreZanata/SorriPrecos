@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
     fun openSource(url: String) { try { uri.openUri(url) } catch (_: Exception) { scope.launch { snack.showSnackbar("Não foi possível abrir a fonte") } } }
     LaunchedEffect(selected.id, repo, refresh) {
         loading = true; error = null
-        try { loaded = repo.prices(selected.id) } catch (e: CancellationException) { throw e }
+        try { loaded = repo.prices(selected.id, selected.isHistorical) } catch (e: CancellationException) { throw e }
         catch (e: Exception) { error = e.message } finally { loading = false }
     }
     val product = loaded?.data?.product ?: selected

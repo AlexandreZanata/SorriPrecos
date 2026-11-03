@@ -34,7 +34,7 @@ class Phone:
         x1,y1,x2,y2=bounds;self.command('shell','input','tap',str((x1+x2)//2),str((y1+y2)//2))
     def launch(self):
         self.command('shell','am','force-stop',PACKAGE)
-        self.command('shell','am','start','-n',PACKAGE+'/.MainActivity')
+        self.command('shell','am','start','-W','-n',PACKAGE+'/.MainActivity')
         return self.wait('SorriPreços')
     def screenshot(self,path):path.write_bytes(self.command('exec-out','screencap','-p'))
 
@@ -47,10 +47,12 @@ def main():
     try:
         root=phone.launch()
         if not any('MODO DEMO' in t for t in phone.texts(root)):
-            for _ in range(6):
-                if 'Experimentar com dados DEMO' in phone.texts(root):break
-                phone.command('shell','input','swipe',str(phone.width//2),str(int(phone.height*.8)),str(phone.width//2),str(int(phone.height*.33)),'400');root=phone.dump()
-            phone.tap('Experimentar com dados DEMO');phone.wait('MODO DEMO');phone.launch()
+            phone.tap('Ajustes');root=phone.wait('Do seu jeito')
+            phone.command('shell','input','swipe',str(phone.width//2),str(int(phone.height*.75)),str(phone.width//2),str(int(phone.height*.45)),'350');root=phone.dump()
+            for _ in range(5):
+                if 'Modo DEMO' in phone.texts(root):break
+                phone.command('shell','input','swipe',str(phone.width//2),str(int(phone.height*.8)),str(phone.width//2),str(int(phone.height*.4)),'350');root=phone.dump()
+            phone.tap('Modo DEMO');phone.tap('Início');phone.wait('MODO DEMO');phone.launch()
         phone.screenshot(args.output/'home.png');passed('Inicialização e identificação explícita de DEMO')
         phone.tap('Arroz 5kg');root=phone.wait('R$ 22,70')
         assert not any('1 kg' in t for t in phone.texts(root))

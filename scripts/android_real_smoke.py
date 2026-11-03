@@ -11,13 +11,13 @@ def main():
     phone.command('reverse','tcp:8080','tcp:8080')
     try:
         root=phone.launch()
-        if any('MODO DEMO' in t for t in phone.texts(root)):
-            phone.tap('Fontes')
-            for _ in range(6):
-                root=phone.dump()
-                if 'Ver fontes reais' in phone.texts(root):break
-                phone.command('shell','input','swipe',str(phone.width//2),str(int(phone.height*.78)),str(phone.width//2),str(int(phone.height*.35)),'350')
-            phone.tap('Ver fontes reais');phone.wait('DADOS REAIS HISTÓRICOS');phone.launch()
+        if not any('DADOS REAIS HISTÓRICOS' in t for t in phone.texts(root)):
+            phone.tap('Ajustes');root=phone.wait('Do seu jeito')
+            for _ in range(5):
+                if 'Pesquisa histórica do Procon' in phone.texts(root):break
+                phone.command('shell','input','swipe',str(phone.width//2),str(int(phone.height*.8)),str(phone.width//2),str(int(phone.height*.4)),'350');root=phone.dump()
+            phone.tap('Pesquisa histórica do Procon');phone.tap('Início')
+        phone.launch()
         root=phone.wait('DADOS REAIS HISTÓRICOS')
         assert not any('MODO DEMO' in t for t in phone.texts(root))
         phone.screenshot(output/'home.png');passed('Modo real com aviso de referência histórica, sem DEMO')

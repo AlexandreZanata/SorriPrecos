@@ -26,19 +26,23 @@ def main():
     phone.command('reverse','tcp:8080','tcp:8080')
     try:
         phone.launch();phone.tap('Ajustes');root=phone.wait('Do seu jeito')
-        for label in ['Texto maior','Alto contraste','Modo DEMO']:
+        for label in ['Texto maior','Alto contraste','Modo DEMO','Pesquisa histórica do Procon']:
             for _ in range(5):
                 try:node(root,label);break
                 except StopIteration:
                     phone.command('shell','input','swipe',str(phone.width//2),str(int(phone.height*.8)),str(phone.width//2),str(int(phone.height*.4)),'350');root=phone.dump()
             if setting(root,label):phone.tap(label);root=phone.dump()
-        phone.tap('Início');root=phone.wait('DADOS REAIS HISTÓRICOS')
+        phone.tap('Início');root=phone.wait('Mercados de Sorriso')
         texts=phone.texts(root)
         assert all(label in texts for label in ['Início','Buscar','Favoritos','Ajustes','Mercados de Sorriso','DelMoro','Sorrinorte'])
-        phone.screenshot(output/'home.png');passed('Início com marca, grade de mercados, quatro abas e aviso histórico')
+        phone.screenshot(output/'home.png');passed('Início com marca, grade de mercados e quatro abas no catálogo atual')
         phone.tap('DelMoro');phone.wait('DelMoro Supermercados');phone.wait('Sorriso-MT');phone.tap('Fechar')
         passed('Cartão de mercado abre cobertura e procedência reais')
-        phone.tap('Lacta');root=phone.wait('R$ 69,90')
+        phone.tap('Ajustes');root=phone.wait('Do seu jeito')
+        for _ in range(5):
+            if 'Pesquisa histórica do Procon' in phone.texts(root):break
+            phone.command('shell','input','swipe',str(phone.width//2),str(int(phone.height*.8)),str(phone.width//2),str(int(phone.height*.4)),'350');root=phone.dump()
+        phone.tap('Pesquisa histórica do Procon');phone.tap('Início');phone.launch();phone.wait('DADOS REAIS HISTÓRICOS');phone.tap('Lacta');root=phone.wait('R$ 69,90')
         assert 'Resultados da busca' in phone.texts(root)
         assert any('Ilustração de categoria' in n.attrib.get('content-desc','') for n in root.iter('node'))
         phone.screenshot(output/'search.png');passed('Busca separada com miniaturas identificadas como ilustrações e preço histórico')
@@ -60,7 +64,11 @@ def main():
         assert setting(root,'Texto maior') and setting(root,'Alto contraste')
         phone.screenshot(output/'settings.png');passed('Preferências de acessibilidade persistem ao reiniciar o aplicativo')
         phone.tap('Texto maior');phone.tap('Alto contraste');phone.tap('Conexão');phone.wait('http://127.0.0.1:8080');phone.tap('Cancelar')
-        phone.tap('Início');phone.wait('Mercados de Sorriso');phone.screenshot(output/'final-home.png')
+        root=phone.dump()
+        for _ in range(5):
+            if 'Pesquisa histórica do Procon' in phone.texts(root):break
+            phone.command('shell','input','swipe',str(phone.width//2),str(int(phone.height*.8)),str(phone.width//2),str(int(phone.height*.4)),'350');root=phone.dump()
+        phone.tap('Pesquisa histórica do Procon');phone.tap('Início');phone.launch();phone.wait('Mercados de Sorriso');phone.screenshot(output/'final-home.png')
         passed('Conexão local preservada e aplicativo devolvido ao início claro')
         report['status']='passed'
     finally:

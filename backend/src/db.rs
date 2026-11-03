@@ -28,7 +28,7 @@ pub async fn seed_sources(pool: &SqlitePool) -> Result<()> {
     let mut tx = pool.begin().await?;
     for m in data.as_array().unwrap() {
         sqlx::query(
-            "INSERT OR IGNORE INTO supermarkets(id,name,website,audit_class) VALUES(?,?,?,?)",
+            "INSERT INTO supermarkets(id,name,website,audit_class) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,website=excluded.website,audit_class=excluded.audit_class",
         )
         .bind(m["id"].as_str())
         .bind(m["name"].as_str())
@@ -37,7 +37,7 @@ pub async fn seed_sources(pool: &SqlitePool) -> Result<()> {
         .execute(&mut *tx)
         .await?;
         for b in m["branches"].as_array().unwrap() {
-            sqlx::query("INSERT OR IGNORE INTO branches(id,supermarket_id,name,address,city,source_id,active) VALUES(?,?,?,?,'Sorriso',?,?)")
+            sqlx::query("INSERT OR IGNORE INTO branches(id,supermarket_id,name,address,city,source_id,active) VALUES(?,?,?,?,'Sorriso',?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,address=excluded.address,source_id=excluded.source_id")
                 .bind(b["id"].as_str()).bind(m["id"].as_str()).bind(b["name"].as_str()).bind(b["address"].as_str()).bind(b["source_id"].as_str()).bind(b["active"].as_bool().unwrap_or(true)).execute(&mut *tx).await?;
             if b["active"].as_bool() == Some(false) {
                 sqlx::query("UPDATE branches SET active=0 WHERE id=?")

@@ -2,14 +2,14 @@
   {
     "id": "delmoro",
     "name": "DelMoro Supermercados",
-    "website": "https://delmoro.com.br/",
-    "audit_class": "C",
+    "website": "https://www.delmorosupermercados.com.br/",
+    "audit_class": "B",
     "branches": [
       {
         "id": "delmoro-bh",
         "name": "Loja Belo Horizonte",
         "address": "Av. Belo Horizonte, 94 · Centro Sul",
-        "source_id": null
+        "source_id": "vip:287:1:1:cnpj:00877761000479"
       },
       {
         "id": "delmoro-brescansin",
@@ -28,14 +28,14 @@
   {
     "id": "sorriso",
     "name": "Sorriso Supermercados",
-    "website": "https://www.sorrisosupermercados.com.br/",
-    "audit_class": "D",
+    "website": "https://www.sorrisosuper.com.br/",
+    "audit_class": "B",
     "branches": [
       {
         "id": "sorriso-centro",
         "name": "Centro",
         "address": "Av. Natalino João Brescansin, 220 · Centro Sul",
-        "source_id": null
+        "source_id": "vip:324:1:1:cnpj:14953277000143"
       }
     ]
   },
@@ -47,9 +47,9 @@
     "branches": [
       {
         "id": "sorrinorte-industrial",
-        "name": "Industrial · endereço a reconfirmar",
+        "name": "Industrial 2ª Etapa",
         "address": "Rua Palmares, 489 · Industrial 2ª Etapa",
-        "source_id": null
+        "source_id": "vip:365:1:1:cnpj:02756536000167"
       }
     ]
   },

@@ -631,6 +631,7 @@ async fn historical_reference_never_becomes_a_current_minimum() {
     r.collected_at = 1774152000;
     r.available = None;
     r.conditions = Some("HISTÓRICO · Procon-MT / março de 2026".into());
+    r.source_url = Some("https://www.procon.mt.gov.br/documents/d/procon/tabela-produtos-analisados-pascoa-final#page=12".into());
     catalog::import(
         &p,
         "sorriso",
@@ -646,12 +647,18 @@ async fn historical_reference_never_becomes_a_current_minimum() {
     catalog::import(&p, "delmoro", &[unknown], Some("referência de teste"))
         .await
         .unwrap();
-    let (_, v) = call(app(&p), "/v1/products/search?q=arroz").await;
+    let (_, current) = call(app(&p), "/v1/products/search?q=arroz").await;
+    assert_eq!(current["items"][0]["historical_branch_count"], 0);
+    let (_, v) = call(app(&p), "/v1/products/search?q=arroz&historical=true").await;
     assert!(v["items"][0]["min_price_cents"].is_null());
     assert_eq!(v["items"][0]["reference_price_cents"], 6990);
     assert_eq!(v["items"][0]["historical_branch_count"], 1);
     let id = v["items"][0]["id"].as_i64().unwrap();
-    let (_, prices) = call(app(&p), &format!("/v1/products/{id}/prices")).await;
+    let (_, prices) = call(
+        app(&p),
+        &format!("/v1/products/{id}/prices?historical=true"),
+    )
+    .await;
     let historic = prices["items"]
         .as_array()
         .unwrap()
@@ -667,4 +674,25 @@ async fn historical_reference_never_becomes_a_current_minimum() {
     assert_eq!(status["recent_products"], 0);
     assert_eq!(status["historical_products"], 1);
     assert_eq!(status["automatic_integrations"], 0);
+}
+
+#[tokio::test]
+async fn barcode_search_uses_canonical_gtin_and_preserves_mode() {
+    let (_d, p) = fixture().await;
+    let mut r = row("demo-a", 2390);
+    r.gtin = Some("7896025800106".into());
+    catalog::import(&p, "demo-a", &[r], None).await.unwrap();
+    for code in ["7896025800106", "07896025800106"] {
+        let (_, v) = call(app(&p), &format!("/v1/products/search?q={code}&demo=true")).await;
+        assert_eq!(v["items"].as_array().unwrap().len(), 1);
+        assert_eq!(v["items"][0]["min_price_cents"], 2390);
+        let (_, v) = call(app(&p), &format!("/v1/products/search?q={code}&demo=false")).await;
+        assert!(v["items"].as_array().unwrap().is_empty());
+        let (_, v) = call(
+            app(&p),
+            &format!("/v1/products/search?q={code}&demo=true&historical=true"),
+        )
+        .await;
+        assert!(v["items"].as_array().unwrap().is_empty());
+    }
 }

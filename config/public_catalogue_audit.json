@@ -1,0 +1,192 @@
+{
+  "verified_at": "2026-11-03",
+  "scope": {
+    "city": "Sorriso",
+    "state": "MT"
+  },
+  "documentation": "docs/PUBLIC_CATALOGUES.md",
+  "sources": [
+    {
+      "market": "sorrinorte",
+      "platform": "VipCommerce",
+      "status": "enabled",
+      "organization_id": 365,
+      "storefront_id": 412,
+      "filial_id": 1,
+      "distribution_id": 1,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "sorriso",
+      "platform": "VipCommerce",
+      "status": "enabled",
+      "organization_id": 324,
+      "storefront_id": 369,
+      "filial_id": 1,
+      "distribution_id": 1,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "delmoro",
+      "platform": "VipCommerce",
+      "status": "enabled",
+      "organization_id": 287,
+      "storefront_id": 328,
+      "filial_id": 1,
+      "distribution_id": 1,
+      "scope": "Sorriso-MT, Belo Horizonte 94; four other cities excluded"
+    },
+    {
+      "market": "casa-aurora",
+      "platform": "VipCommerce",
+      "status": "excluded_other_city",
+      "organization_id": 289,
+      "storefront_id": 330,
+      "filial_id": 1,
+      "distribution_id": 1,
+      "observed_city": "Sinop",
+      "reason": "No Sorriso distribution centre in the public storefront pickup list"
+    },
+    {
+      "market": "machado",
+      "platform": "Agile B2B",
+      "status": "pending_sorriso_context",
+      "anonymous_bootstrap": "https://www.redemachado.com.br/controllers/api-controller.php?acao=tokens",
+      "public_search": "https://www.redemachado.com.br/components/products-assistent.php",
+      "token_parameter": "agile_token",
+      "bootstrap_http": 200,
+      "search_with_visitor_session_http": 200,
+      "observed_city": "Sinop",
+      "observed_filial": 3,
+      "reason": "No verified public storefront selector for the Sorriso branch; no product ingestion"
+    },
+    {
+      "market": "delnorte",
+      "status": "pending_public_catalogue",
+      "reason": "Current offers/flyer UI empty; no product API identified in observed public script"
+    },
+    {
+      "market": "atacadao",
+      "status": "pending_sorriso_context",
+      "reason": "Store-specific catalogue not verified; TLS certificate failure was not bypassed"
+    },
+    {
+      "market": "amazonas",
+      "platform": "aiqfome",
+      "status": "pending_public_catalogue",
+      "public_page": "https://aiqfome.com/MT/sorriso/mercado-amazonas",
+      "seller_id": 136278,
+      "city_id": 4430,
+      "observed_city": "Sorriso",
+      "reason": "Public restaurant object contains menu.cardapios_categorias=[]; not product data"
+    },
+    {
+      "market": "babi",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "novos-campos",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "real",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "londrina",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "vipi",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "sol",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "realeza",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "docelar",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "uniao",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "ferreirao",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "amorim",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "filezao",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "nortao",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "berte",
+      "website": null,
+      "status": "excluded_inactive",
+      "reason": "No active branch confirmed"
+    },
+    {
+      "market": "lider",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "chico",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "sao-lourenco",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    },
+    {
+      "market": "extra",
+      "website": null,
+      "status": "pending_public_catalogue",
+      "reason": "No verified public product catalogue for the Sorriso branch; see individual market audit"
+    }
+  ]
+}

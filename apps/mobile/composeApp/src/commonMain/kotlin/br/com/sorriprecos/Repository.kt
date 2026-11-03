@@ -23,7 +23,7 @@ class CatalogUnavailable:Exception("Não foi possível conectar. Confira o ender
 
 class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=platformClient()) {
     suspend inline fun <reified T> request(path:String):Loaded<T> {
-        val key="cache:$baseUrl:$path"
+        val key="cache:v2:$baseUrl:$path"
         try {
             val response=client.get(baseUrl.trimEnd('/')+path)
             if(response.status.value !in 200..299)throw CatalogUnavailable()
@@ -45,9 +45,9 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
         keys.dropLast(60).forEach {store.remove(it);store.remove("time:$it")}
         store.put("cache-keys",keys.takeLast(60).joinToString("\n"))
     }
-    suspend fun search(query:String,demo:Boolean,after:Long=0)=request<Items<Product>>("/v1/products/search?q=${query.encodeURLParameter()}&demo=$demo&after=$after")
-    suspend fun prices(id:Long)=request<Comparison>("/v1/products/$id/prices")
-    suspend fun markets(demo:Boolean)=request<Items<Supermarket>>("/v1/supermarkets?demo=$demo")
+    suspend fun search(query:String,demo:Boolean,after:Long=0,historical:Boolean=false)=request<Items<Product>>("/v1/products/search?q=${query.encodeURLParameter()}&demo=$demo&after=$after&historical=$historical")
+    suspend fun prices(id:Long,historical:Boolean=false)=request<Comparison>("/v1/products/$id/prices?historical=$historical")
+    suspend fun markets(demo:Boolean,historical:Boolean=false)=request<Items<Supermarket>>("/v1/supermarkets?demo=$demo&historical=$historical")
     suspend fun status()=request<CatalogStatus>("/v1/catalog/status")
     fun favorites():List<Product> = try {codec.decodeFromString(store.get("favorites:$baseUrl")?:"[]")}catch(_:Exception){emptyList()}
     fun saveFavorites(items:List<Product>) {store.put("favorites:$baseUrl",codec.encodeToString(items.take(200)))}

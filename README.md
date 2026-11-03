@@ -2,7 +2,7 @@
 
 MVP open source para comparar preços de supermercados de **Sorriso-MT**, com backend Rust/SQLite e aplicativo Kotlin Multiplatform/Compose.
 
-**Estado da entrega:** Android instalado e testado em celular físico por ADB, API Rust/SQLite e importação CSV/JSON funcionais. O catálogo local agora contém **27 produtos reais e 31 observações históricas de sete redes de Sorriso-MT**, extraídas do relatório público Procon-MT de março de 2026. **Não há preço atual confirmado nem feed varejista autorizado ativo.** Dados históricos exibem aviso explícito e não entram como menor oferta atual. Há também 12 produtos DEMO isolados para testes. Código publicado em [AlexandreZanata/SorriPrecos](https://github.com/AlexandreZanata/SorriPrecos).
+**Estado da entrega:** três catálogos públicos locais habilitados — Sorrinorte, Sorriso Supermercados e DelMoro Belo Horizonte — com sessão anônima do próprio frontend e coleta a cada dez minutos. Produtos sem embalagem segura ficam registrados para revisão. O Procon permanece exclusivamente na pesquisa histórica (27 produtos/31 observações de março de 2026). Android usa a API local pelo celular físico conectado via ADB. Cobertura e protocolo: [PUBLIC_CATALOGUES.md](docs/PUBLIC_CATALOGUES.md). Código em [AlexandreZanata/SorriPrecos](https://github.com/AlexandreZanata/SorriPrecos).
 
 ## Executar o backend
 
@@ -11,7 +11,8 @@ Requisitos: Rust stable, Python 3, compilador C para SQLite e acesso às depend�
 ```sh
 cargo build --release --locked
 ./target/release/sorriprecos init
-python3 scripts/load_public_history.py
+./target/release/sorriprecos collect-vip --config config/vipcommerce.json
+python3 scripts/load_public_history.py # opcional, separado do catálogo atual
 ./target/release/sorriprecos serve
 ```
 
@@ -19,7 +20,10 @@ O banco fica em `data/sorriprecos.db` e a API em `http://127.0.0.1:8080`. O coma
 
 ```sh
 curl http://127.0.0.1:8080/health
-curl 'http://127.0.0.1:8080/v1/products/search?q=lacta%20357g'
+curl 'http://127.0.0.1:8080/v1/products/search?q=arroz%205kg'
+curl http://127.0.0.1:8080/v1/collectors
+# Em outro terminal, mantenha o coletor ativo:
+flock -n data/vip-collector.lock ./target/release/sorriprecos collect-vip --config config/vipcommerce.json --watch
 ```
 
 `DATABASE_URL`, `BIND` e `RATE_LIMIT` são configuráveis; alternativamente use `--database-url sqlite:///caminho/catalog.db` **antes** do subcomando. Não exponha HTTP local diretamente à internet; a implantação utiliza Caddy/HTTPS.
@@ -37,17 +41,19 @@ scripts/android-install.sh
 
 O script seleciona um único celular conectado, instala o APK e cria `adb reverse tcp:8080 tcp:8080`. Para selecionar explicitamente um aparelho, passe o serial como argumento. Não inicia emulador. O APK está em `apps/mobile/composeApp/build/outputs/apk/debug/composeApp-debug.apk`.
 
-No app, permaneça no modo real e pesquise **Lacta**. A comparação mostra registros reais históricos, suas filiais e as datas de março de 2026; eles não são ofertas atuais. O modo **Experimentar com dados DEMO** continua disponível separadamente. Em **Conexão**, o endereço local para o teste USB é `http://127.0.0.1:8080`. Mantenha o backend e a conexão USB ativos. Ao desconectar a API, consultas já salvas continuam acessíveis com aviso offline; novas buscas ainda sem cache precisam de conexão.
+No app, use a busca padrão por **Arroz 5kg**, café, leite ou GTIN para os catálogos atuais. **Pesquisa histórica do Procon** abre os registros antigos separadamente; **Voltar aos preços atuais** restaura a busca varejista. DEMO continua opcional. Em **Ajustes → Conexão**, use `http://127.0.0.1:8080`. Mantenha backend, coletor e USB ativos. Consultas salvas continuam legíveis offline, com aviso; novas consultas precisam de conexão.
 
 Teste de interface reproduzível, em aparelho desbloqueado com o app instalado:
 
 ```sh
+python3 scripts/android_live_smoke.py SERIAL_DO_CELULAR
+# Histórico separado:
 python3 scripts/android_real_smoke.py SERIAL_DO_CELULAR
 # Opcional: depois de carregar DEMO, teste também o fluxo sintético:
 # python3 scripts/android_smoke.py SERIAL_DO_CELULAR
 ```
 
-O teste usa somente a interface do SorriPreços e remove temporariamente o encaminhamento USB da porta 8080 para validar offline. Ele restaura o encaminhamento ao terminar; não desliga Wi-Fi/dados móveis. Evidências ficam em `artifacts/android-smoke/`. Relato e limitações: [TESTING.md](docs/TESTING.md).
+Os testes usam somente a interface do SorriPreços e remove temporariamente o encaminhamento USB da porta 8080 para validar offline. Ele restaura o encaminhamento ao terminar; não desliga Wi-Fi/dados móveis. Evidências ficam em `artifacts/android-smoke/`. Relato e limitações: [TESTING.md](docs/TESTING.md).
 
 ## Interface e acessibilidade
 
