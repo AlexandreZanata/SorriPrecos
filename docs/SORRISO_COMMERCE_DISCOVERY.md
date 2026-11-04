@@ -111,8 +111,8 @@ done
 Os quatro IDs públicos retornaram `RetirarNaLoja: true`. O campo indica uma modalidade da unidade e não contém SKU, preço ou disponibilidade do produto. A [busca pública de geladeiras](https://www.martinello.com.br/Busca?busca=Geladeiras&pagina=1) devolveu HTML com preços de e-commerce, sem identidade de loja no resultado. O rodapé identifica 32.951.535/0001-34, de Lucas do Rio Verde. A atribuição das ofertas às unidades de Sorriso segue pendente.
 
 - **Magalu Centro · 47.960.950/1208-87.** Avenida Natalino João Brescansin, 30. A ficha oficial `GET /filiais/1137/sorriso` respondeu HTTP 200 e confirma o endereço. O procedimento oficial de retirada consulta o CEP na página do produto. A documentação da rede descreve também envio posterior à loja escolhida, então a opção de retirada isolada não confirma estoque físico ou preço da filial 1137. [Unidade oficial](https://lojas.magazineluiza.com.br/filiais/1137/sorriso) · [Retira Loja](https://conteudo.magazineluiza.com.br/regulamentos/regulamento-retira-loja.html)
-- **Havan Sorriso · 79.379.491/0150-24.** Rua Idemar Riedi, 7536, CEP 78895-350, no OpenCNPJ. A rede confirma a presença em Sorriso e a página `/retira-facil` retornou HTTP 200. A rede informa que o Retira Fácil depende do estoque da filial escolhida. Falta observar essa unidade no retorno da consulta de um SKU e confirmar a origem do preço. [Presença em Sorriso](https://ri.havan.com.br/noticia/pequena-helena-aproveita-artigos-natalinos-da-havan-para-decorar-sua-casa-em-itanhanga-mt/) · [Retira Fácil](https://www.havan.com.br/retira-facil)
-- **Gazin.** A página inicial retornou HTTP 200 e encaminha ao diretório institucional de filiais. O OpenCNPJ lista 77.941.490/0061-96 (Brescansin, 145), 77.941.490/0258-16 (São Francisco de Assis, 793), 77.941.490/0268-98 (Aripuanã, sem número), 77.941.490/0302-24 (Brescansin, 1499) e 77.941.490/0410-05 (Avenida Brasil, 3013). Cada CNPJ ainda precisa de correspondência com o localizador e com um retorno de preço ou estoque por unidade. [Vitrine](https://www.gazin.com.br/) · [Diretório institucional](https://www.grupogazin.com.br/empresa#filiais)
+- **Havan Sorriso · 79.379.491/0150-24.** Rua Idemar Riedi, 7536, CEP 78895-350, no OpenCNPJ. A rede confirma a presença em Sorriso e a página `/retira-facil` retornou HTTP 200. A rede informa que o Retira Fácil depende do estoque da filial escolhida. A [auditoria da retirada](#retirada-e-estoque-na-americanas-renner-e-havan) documenta a rota pública e os resultados por SKU. [Presença em Sorriso](https://ri.havan.com.br/noticia/pequena-helena-aproveita-artigos-natalinos-da-havan-para-decorar-sua-casa-em-itanhanga-mt/) · [Retira Fácil](https://www.havan.com.br/retira-facil)
+- **Gazin.** A página inicial retornou HTTP 200 e encaminha ao diretório institucional de filiais. O OpenCNPJ lista 77.941.490/0061-96 (Brescansin, 145), 77.941.490/0258-16 (São Francisco de Assis, 793), 77.941.490/0268-98 (Aripuanã, sem número), 77.941.490/0302-24 (Brescansin, 1499) e 77.941.490/0410-05 (Avenida Brasil, 3013). A [auditoria da retirada](#retirada-e-estoque-na-americanas-renner-e-havan) vincula a filial 16 ao endereço de Brescansin, 145. A correspondência das outras quatro unidades e os preços por filial seguem pendentes. [Vitrine](https://www.gazin.com.br/) · [Diretório institucional](https://www.grupogazin.com.br/empresa#filiais)
 - **O Boticário.** O OpenCNPJ lista 33.667.510/0010-67 (Brescansin, 2473), 33.667.510/0011-48 (Belo Horizonte, 94), 33.667.510/0012-29 (Roberto Carlos Braga, 51) e 33.667.510/0019-03 (Noêmia Tonello Dalmolin, 2501). A ajuda oficial documenta consultar o CEP na opção de retirada para ver quais lojas têm o produto. A tentativa direta na página de entrada do fluxo retornou HTTP 403. A correspondência das quatro lojas no retorno da consulta de um SKU segue pendente. [Ajuda oficial](https://www.boticario.com.br/atendimento-online/retirar-na-loja)
 
 ### Localizador da Drogaria São Paulo e farmácias de manipulação
@@ -1317,3 +1317,54 @@ Para **Celebrare Festas** e **Zuriel Semijoias**, o POST com o filtro do respect
 - **Bula, comparador farmacêutico.** Os GETs de `/precos/acido-folico/mt/sorriso` e `/precos/acido-folico/mt/sinop` retornaram HTTP 200. O HTML de cada página mostrou 24 cartões `.op-caixa` e as mesmas 154 linhas de oferta `.op-loja`, na mesma ordem. A amostra de GTIN 7896714201108 traz preços de R$ 8,99 para Pague Menos e R$ 9,12 para Drogaria São Paulo, com rótulo de retirada, mas o cartão e a página individual examinada não publicam o CNPJ ou ID da filial. Preserve esses preços como evidência do comparador por rede, com atribuição local pendente. [Sorriso](https://bula.com.br/precos/acido-folico/mt/sorriso) · [Sinop](https://bula.com.br/precos/acido-folico/mt/sinop) · [Página do produto](https://bula.com.br/drogaria-sao-paulo/p/neo-folico-acido-folico-5mg-20-comprimidos-7896714201108)
 - **Jr_Personalizados no Elo7.** Uma segunda amostra indexada, código `2161A4B`, associa o vendedor a Sorriso e anuncia um arquivo digital a R$ 9,60 no Pix. A consulta direta retornou HTTP 404, como na amostra anterior. CNPJ e catálogo ativo seguem pendentes. [Produto examinado](https://www.elo7.com.br/arquivo-topo-de-bolo-dia-das-maes/dp/2161A4B)
 - **I am Agro.** A camiseta com “Sorriso MT” no título tem preço e JSON-LD público, mas o rodapé do comerciante identifica Campo Grande-MS. Classificação como oferta externa ao recorte. [Produto examinado](https://www.iamagro.com.br/iamagro/product/camiseta-agro-sorriso-mt)
+
+### Retirada e estoque na Americanas, Renner e Havan
+
+**Americanas.** O localizador oficial usa o POST público de leitura em `https://www.americanas.com.br/api/graphql`. O navegador envia `operationName` e `operationHash` na URL e no JSON. Os identificadores de operação estão no JavaScript público do site e podem mudar com a publicação de uma nova versão.
+
+```sh
+ame() {
+  jq -nc --arg op "$1" --arg hash "$2" --argjson vars "$3" \
+    '{operationName:$op,operationHash:$hash,variables:$vars}' |
+    curl -fsS -H 'Content-Type: application/json' --data-binary @- \
+      "https://www.americanas.com.br/api/graphql?operationName=$1&operationHash=$2"
+}
+ame getStoresQuery ff0c09f9dcc567e6f1136d255f16fc4e8d267ad2 '{}' |
+  jq '.data.getStoresQuery.stores | fromjson | .[] |
+      select(.state=="MT") | .pickupPoint[] |
+      select(.address.city=="Sorriso" and .address.state=="MT")'
+ame getPickupDistanceQuery 2c36736478f288f530f13a91937c274dfc151a21 '{"postalCode":"78896959"}'
+ame simulateShippingQuery 645648d98db7d1a9ac43caf61fc7fa715b28ce79 \
+  '{"postalCode":"78896959","items":[{"id":"660482","quantity":1,"seller":"1"}]}'
+```
+
+- **Americanas Park Shopping · 00.776.574/0774-50 · ponto de retirada `l355`.** Avenida Tancredo Neves, 543, coincide com o CNPJ ativo no OpenCNPJ. O CNPJ anterior 33.014.556/0830-32 está baixado. No diretório, `l355` é o único ponto cujo endereço declara Sorriso-MT. Na simulação pública do Cookie Lacta 80 g, SKU `660482`, GTIN 7622210754813, o CEP 78896-959 devolveu `carrier="Retirada (l355)"`, prazo de 13 h e tarifa de R$ 0,00. O JSON-LD do produto trouxe preço online de R$ 6,39. A simulação confirma a opção de retirada do SKU na unidade. Preço de balcão e quantidade física permanecem pendentes. O controle com CEP 78550-226, em Sinop, retornou produto indisponível para o CEP. [Localizador](https://www.americanas.com.br/nossas-lojas) · [Produto](https://www.americanas.com.br/biscoito-cookie-lacta-ao-leite-80g-104908162/p)
+- **Americanas Rua Bené · 00.776.574/0775-31 · ponto de retirada pendente.** Rua Bené, 790, CEP 78896-046, no cadastro ativo de fantasia Filial 1295. O CNPJ anterior 33.014.556/1307-23 está baixado. A consulta de distância retornou `1295` ao lado de `l355`, mas o diretório não publicou endereço para `1295`. Para o CEP da Rua Bené, o SKU `660482` retornou retirada exclusivamente em `l355`, além de uma opção de entrega. Atribuição de oferta e retirada na Rua Bené segue pendente. [Localizador](https://www.americanas.com.br/nossas-lojas)
+- **Renner Park Shopping · 92.754.738/0470-45 · loja 509.** Avenida Tancredo Neves, 543, coincide com o cadastro ativo. A interface carrega a ficha pelo GET abaixo. A página de produto faz a consulta `nearestStock` com uma sessão de visitante criada pelo próprio site, sem login. Sem a sessão, o endpoint devolveu HTTP 409. Com a sessão, a variante branca G `548143496` retornou somente uma loja em Lucas do Rio Verde e a variante `548143488` retornou zero lojas para CEP 78890-000. O JSON-LD da branca G publicou preço online de R$ 59,90. Estoque e preço na loja 509 seguem pendentes para os SKUs examinados. [Localizador](https://www.lojasrenner.com.br/nossas-lojas) · [Produto](https://www.lojasrenner.com.br/p/camiseta-basica-em-algodao-peruano-com-manga-curta-branco/-/A-548143390-br.lr)
+
+```sh
+renner=https://www.lojasrenner.com.br
+curl -fsSG "$renner/cartridges/OurStores/fragments/ourStoresList.jsp" \
+  --data 'city=Sorriso&state=MT' --data-urlencode 'seeOnMap=VER NO MAPA' \
+  --data-urlencode 'traceRoute=TRAÇAR ROTA'
+(
+  jar=$(mktemp)
+  trap 'rm -f -- "$jar"' EXIT
+  session=$(curl -fsSG -c "$jar" \
+    "$renner/rest/model/atg/rest/SessionConfirmationActor/getSessionConfirmationNumberAsString" \
+    --data 'pushSite=rennerBrasilDesktop' | jq -er '.sessionConfirmationNumber') || exit
+  curl -fsSG -b "$jar" "$renner/rest/model/lrsa/api/InventoryActor/nearestStock" \
+    --data-urlencode "_dynSessConf=$session" \
+    --data 'sku=548143496&zipcode=78890000&pushSite=rennerBrasilDesktop'
+)
+```
+
+- **Havan Sorriso · 79.379.491/0150-24.** O OpenCNPJ confirma Idemar Riedi, 7536, CEP 78895-350. A página da caçarola Tramontina `257623-3` publicou R$ 69,99 no catálogo geral. O componente `Havan_ListShippings` usa o POST de leitura abaixo. O SKU retornou `pickupstore_error` nos CEPs 78895-350 e 78890-032 de Sorriso. Os SKUs `257623-2`, `283574-2` e `403228-1` também retornaram `pickupstore_error` no CEP da filial. Preserve o resultado por SKU e CEP. Falta evidência positiva de retirada e preço vinculados à unidade de Sorriso. [Produto](https://www.havan.com.br/cacarola-turim-tramontina-24cm-bege/p) · [Retira Fácil](https://www.havan.com.br/retira-facil)
+
+```sh
+curl -fsS -H 'X-Requested-With: XMLHttpRequest' \
+  --data 'cep=78895350&product=257623-3&qty=1&request_type=all' \
+  'https://www.havan.com.br/listshippings/product/estimate/'
+```
+
+- **Gazin · Avenida Natalino João Brescansin, 145 · 77.941.490/0061-96.** O documento institucional da rede confirma o CNPJ e o endereço. O link comercial abre a aplicação pública com `city=Sorriso-MT&name=Filial+16`. O GET retornou a estrutura do aplicativo. O componente de vendedores declara `x-access-token` na consulta de filiais. O fluxo de preço público por SKU e a vinculação das outras quatro unidades locais permanecem pendentes. [CNPJ e endereço no documento Gazin](https://cdngazincred.blob.core.windows.net/assets/prod/Relacao_de_Correspondentes_Bancarios_Varejo_Gazin_776fe09d67.pdf) · [Vitrine da filial 16](https://www.falecomvendedorgazin.com.br/vendedores?city=Sorriso-MT&name=Filial+16)
