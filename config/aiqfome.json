@@ -716,5 +716,62 @@
       "bebidas"
     ],
     "allow_portions": true
+  },
+  {
+    "supermarket_id": "puro-cafe",
+    "branch_id": "puro-cafe-sorriso",
+    "slug": "puro-cafe",
+    "seller_id": 133774,
+    "cnpj": "62763955000158",
+    "street": "R. Las Vegas, 338 - Jardim Califónia Edifício",
+    "number": "338",
+    "postcode": "78890000",
+    "categories": [
+      "lanches quentes",
+      "sanduiches",
+      "bebidas quentes",
+      "bebidas geladas",
+      "omelete e ovos mexidos",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "oh-caseirinhos-da-nei",
+    "branch_id": "oh-caseirinhos-da-nei-sorriso",
+    "slug": "oh-caseirinhos-da-nei",
+    "seller_id": 132558,
+    "cnpj": "61717384000152",
+    "street": "Rua Genova",
+    "number": "1223",
+    "postcode": "78894059",
+    "categories": [
+      "bombom",
+      "mini bolos",
+      "copos da felicidade",
+      "tortas",
+      "bebidas",
+      "tacas de sobremesa"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "restaurante-tinelli",
+    "branch_id": "restaurante-tinelli-sorriso",
+    "slug": "restaurante-tinelli",
+    "seller_id": 113383,
+    "cnpj": "54167254000128",
+    "street": "Avenida Noêmia Tonello Dalmolin",
+    "number": "1125",
+    "postcode": "78890000",
+    "categories": [
+      "marmitas",
+      "guarnicoes e acompanhamentos",
+      "bebidas",
+      "sucos",
+      "porcao de churrasco",
+      "feijoada"
+    ],
+    "allow_portions": true
   }
 ]

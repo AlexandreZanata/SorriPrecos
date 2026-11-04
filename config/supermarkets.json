@@ -925,5 +925,47 @@
         "source_id": "aiqfome:142693:cnpj:67717784000144"
       }
     ]
+  },
+  {
+    "id": "puro-cafe",
+    "name": "Puro Café",
+    "website": "https://aiqfome.com/MT/sorriso/puro-cafe",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "puro-cafe-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Las Vegas, 338 · Sorriso-MT",
+        "source_id": "aiqfome:133774:cnpj:62763955000158"
+      }
+    ]
+  },
+  {
+    "id": "oh-caseirinhos-da-nei",
+    "name": "Oh! Caseirinhos da Nei",
+    "website": "https://aiqfome.com/MT/sorriso/oh-caseirinhos-da-nei",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "oh-caseirinhos-da-nei-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Gênova, 1223 · Sorriso-MT",
+        "source_id": "aiqfome:132558:cnpj:61717384000152"
+      }
+    ]
+  },
+  {
+    "id": "restaurante-tinelli",
+    "name": "Restaurante Tinelli",
+    "website": "https://aiqfome.com/MT/sorriso/restaurante-tinelli",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "restaurante-tinelli-sorriso",
+        "name": "Sorriso",
+        "address": "Avenida Noêmia Tonello Dalmolin, 1125 · Sorriso-MT",
+        "source_id": "aiqfome:113383:cnpj:54167254000128"
+      }
+    ]
   }
 ]

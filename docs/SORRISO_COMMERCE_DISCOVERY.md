@@ -1865,3 +1865,13 @@ As quatro vitrines retornaram o objeto público de vendedor e dados de Sorriso. 
 - **Valzinha Salgados · 67.717.784/0001-44 · vendedor 142693.** Rua Nova Era, 124. Das 24 variantes selecionadas, 16 foram normalizadas e oito ficaram em revisão por ausência de preço. [Vitrine](https://aiqfome.com/MT/sorriso/valzinha-salgados)
 
 A execução contínua nesta máquina usa uma unidade transitória de usuário, `sorriprecos-retomada-four.service`, e a configuração temporária `/tmp/sorri-retest-four.json`. Reinicie a coleta com a configuração versionada após reinicialização da sessão. O sucesso desta rodada cobre as quatro fontes listadas. As demais entradas pendentes e os demais domínios da auditoria exigem revisão individual.
+
+### Mais três vitrines retomadas após HTTP 429 (04/11/2026)
+
+As páginas públicas foram novamente consultadas, com identidade e endereço confrontados com o OpenCNPJ ativo de Sorriso. Os testes em banco isolado e depois no banco principal tiveram sucesso; todos os itens estavam indisponíveis no momento da coleta. As fontes foram incluídas no mesmo processo temporário de retomada descrito acima e no arquivo de configuração versionado.
+
+- **Puro Café:** vendedor 133774, CNPJ 62.763.955/0001-58, Rua Las Vegas, 338. A vitrine informa CEP genérico 78890-000; o cadastro fiscal informa 78894-180. Após filtrar combos de café da manhã que só especificavam o volume da bebida, foram examinadas 29 variantes e normalizadas 14.
+- **Oh! Caseirinhos da Nei:** vendedor 132558, CNPJ 61.717.384/0001-52, Rua Gênova, 1223, CEP 78894-059. Foram examinadas 39 variantes e normalizadas 20. A categoria de bolo de pote foi excluída porque diversos nomes informam apenas o sabor, como “cenoura”, sem identificar o produto.
+- **Restaurante Tinelli:** vendedor 113383, CNPJ 54.167.254/0001-28, Avenida Noêmia Tonello Dalmolin, 1125. A vitrine informa CEP genérico 78890-000; o cadastro fiscal informa 78893-148. Foram examinadas 134 variantes e normalizadas 51.
+
+**Pamonha Mineira Sorriso:** permanece pendente: a vitrine omite o número do endereço, embora o cadastro fiscal indique 1016. Esse dado não deve ser inventado para satisfazer a validação da filial.

@@ -700,6 +700,27 @@
       "status": "enabled",
       "public_page": "https://aiqfome.com/MT/sorriso/valzinha-salgados",
       "reason": "Primeira coleta principal em 04/11/2026: 24 variantes examinadas, 16 normalizadas. Indisponíveis no momento."
+    },
+    {
+      "market": "oh-caseirinhos-da-nei",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/oh-caseirinhos-da-nei",
+      "reason": "Primeira coleta principal em 04/11/2026: 39 variantes examinadas, 20 normalizadas. Indisponíveis no momento."
+    },
+    {
+      "market": "puro-cafe",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/puro-cafe",
+      "reason": "Primeira coleta principal em 04/11/2026: 29 variantes examinadas, 14 normalizadas. Indisponíveis no momento."
+    },
+    {
+      "market": "restaurante-tinelli",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-tinelli",
+      "reason": "Primeira coleta principal em 04/11/2026: 134 variantes examinadas, 51 normalizadas. Indisponíveis no momento."
     }
   ],
   "alternate_sources": [
