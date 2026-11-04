@@ -65,6 +65,10 @@ enum Command {
         #[arg(long)]
         watch: bool,
     },
+    CollectPharmacyVtex {
+        #[arg(long)]
+        watch: bool,
+    },
     Maintain,
     BenchSeed {
         #[arg(long)]
@@ -154,6 +158,9 @@ async fn main() -> Result<()> {
         Command::CollectAiqfome { config, watch } => aiqfome::run(&pool, &config, watch).await?,
         Command::CollectPharmacy { limit, watch } => {
             sorriprecos::pharmacy::run(&pool, limit, watch).await?
+        }
+        Command::CollectPharmacyVtex { watch } => {
+            sorriprecos::pharmacy::vtex::run(&pool, watch).await?
         }
         Command::Maintain => {
             sqlx::query("DELETE FROM price_history WHERE collected_at<?")

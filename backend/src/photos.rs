@@ -23,6 +23,7 @@ pub(crate) fn trusted_url(value: &str) -> Option<Url> {
     let url = Url::parse(value).ok()?;
     let prefix = match url.host_str()? {
         "www.therapeuticafarmacia.com.br" => "/storage/empresas/01780384000175/produtos/",
+        "paguemenos.vteximg.com.br" | "drogariasp.vteximg.com.br" => "/arquivos/ids/",
         "files.aiqfome.com" => "/itens/",
         "produto-assets-vipcommerce-com-br.br-se1.magaluobjects.com" => "/250x250/",
         "pedido.egaosushi.com.br" => "/api/fotos/",
@@ -34,7 +35,16 @@ pub(crate) fn trusted_url(value: &str) -> Option<Url> {
         && url.port().is_none()
         && url.username().is_empty()
         && url.password().is_none()
-        && url.query().is_none()
+        && (url.query().is_none()
+            || (matches!(
+                url.host_str(),
+                Some("paguemenos.vteximg.com.br" | "drogariasp.vteximg.com.br")
+            ) && url
+                .query()
+                .and_then(|query| query.strip_prefix("v="))
+                .is_some_and(|value| {
+                    !value.is_empty() && value.bytes().all(|byte| byte.is_ascii_digit())
+                })))
         && url.fragment().is_none()
         && url.path().starts_with(prefix)
         && matches!(extension.as_str(), "jpg" | "jpeg" | "png" | "webp"))

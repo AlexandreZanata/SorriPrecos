@@ -13,5 +13,41 @@
         "source_id": "cnpj:01780384000175"
       }
     ]
+  },
+  {
+    "id": "drogaria-sao-paulo",
+    "name": "Drogaria São Paulo",
+    "website": "https://www.drogariasaopaulo.com.br/",
+    "audit_class": "B",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-sao-paulo-brescansin",
+        "name": "Brescansin",
+        "address": "Av. Natalino João Brescansin, 1722 · Sorriso-MT",
+        "source_id": "cnpj:61412110120487"
+      }
+    ]
+  },
+  {
+    "id": "pague-menos",
+    "name": "Pague Menos",
+    "website": "https://www.paguemenos.com.br/",
+    "audit_class": "B",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "pague-menos-brescansin",
+        "name": "Brescansin",
+        "address": "Av. Natalino João Brescansin, 1314 · Sorriso-MT",
+        "source_id": "cnpj:06626253098020"
+      },
+      {
+        "id": "pague-menos-tancredo",
+        "name": "Tancredo",
+        "address": "Av. Tancredo Neves, 2198 · Sorriso-MT",
+        "source_id": "cnpj:06626253140670"
+      }
+    ]
   }
 ]

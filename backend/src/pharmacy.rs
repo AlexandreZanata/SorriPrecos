@@ -1,7 +1,9 @@
 //! Read the local Therapeutica storefront's sitemap and published Product JSON-LD.
+pub mod vtex;
+
 use crate::{
     catalog::{self, ImportRow},
-    normalize, now, vip,
+    normalize, now,
 };
 use anyhow::{Context, Result, ensure};
 use regex::Regex;
@@ -102,7 +104,7 @@ fn parse(html: &str, url: &Url, observed: i64) -> Result<Vec<ImportRow>> {
         Some("https://schema.org/OutOfStock" | "https://schema.org/SoldOut") => Some(false),
         _ => None,
     };
-    let price = vip::cents(&offer["price"])?;
+    let price = crate::vip::cents(&offer["price"])?;
     ensure!(
         price > 100 && !html.to_lowercase().contains("preço sob encomenda"),
         "preço simbólico ou sob orçamento"
