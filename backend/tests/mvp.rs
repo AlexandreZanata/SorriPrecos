@@ -1006,3 +1006,38 @@ async fn verified_pharmacy_stock_without_price_is_searchable_until_expiry() {
     let (_, comparison) = call(app(&pool), &prices_url).await;
     assert_eq!(comparison["items"][0]["status"], "unknown");
 }
+
+#[tokio::test]
+async fn pharmacy_search_matches_preservatives_by_synonym_and_typo() {
+    let (_d, pool) = fixture().await;
+    let mut product = row("demo-a", 1029);
+    product.branch_id = "drogaria-sao-paulo-brescansin".into();
+    product.name = "Preservativo Olla Lubrificado 3 Unidades".into();
+    product.brand = "Olla".into();
+    product.quantity = 3;
+    product.unit = "un".into();
+    product.category = "Saúde sexual".into();
+    catalog::import(
+        &pool,
+        "drogaria-sao-paulo",
+        &[product],
+        Some("fixture pharmacy"),
+    )
+    .await
+    .unwrap();
+    for term in [
+        "camisinha",
+        "preservativo",
+        "camisonha",
+        "proservativo",
+        "camisinha%20olla",
+    ] {
+        let (_, data) = call(
+            app(&pool),
+            &format!("/v1/products/search?q={term}&sector=pharmacy"),
+        )
+        .await;
+        assert_eq!(data["items"].as_array().unwrap().len(), 1, "{term}");
+        assert_eq!(data["items"][0]["min_price_cents"], 1029);
+    }
+}

@@ -11,8 +11,14 @@ use sqlx::SqlitePool;
 use std::{sync::LazyLock, time::Duration};
 
 const INTERVAL: Duration = Duration::from_secs(600);
-const DSP_SKUS: &[&str] = &["49697", "895083", "886513"];
-const PM_SKUS: &[&str] = &["52572", "6958", "164998", "164188", "171834"];
+const DSP_SKUS: &[&str] = &[
+    "49697", "895083", "886513", // Higiene bucal
+    "85332", "18171", "326534", "170526", "618896", "148032", "764965", // Preservativos
+];
+const PM_SKUS: &[&str] = &[
+    "52572", "6958", "164998", "164188", "171834", // Higiene bucal
+    "2954", "97716", "101407", "51115", "47852", // Preservativos
+];
 
 struct Branch {
     market: &'static str,
@@ -102,6 +108,8 @@ fn local_price(body: &Value, branch: &Branch, sku: &str) -> Option<i64> {
 fn row(body: &Value, branch: &Branch, sku: &str, price: i64) -> Result<ImportRow> {
     static WEIGHT: LazyLock<Regex> =
         LazyLock::new(|| Regex::new(r"(?i)\b(\d+(?:[.,]\d+)?)\s*g\s*$").unwrap());
+    static UNIT_COUNT: LazyLock<Regex> =
+        LazyLock::new(|| Regex::new(r"\b(\d+)\s*(?:un|uni|unidades?)$").unwrap());
     let product = body
         .as_array()
         .context("catálogo inválido")?
@@ -121,10 +129,22 @@ fn row(body: &Value, branch: &Branch, sku: &str, price: i64) -> Result<ImportRow
     let name = item["name"].as_str().context("SKU sem nome")?;
     let normalized = normalize::text(name);
     ensure!(
-        normalized.starts_with("creme dental colgate ") && !normalized.contains("kit"),
-        "produto fora da seleção de higiene"
+        !normalized.split_whitespace().any(|word| word == "kit"),
+        "kit fora da seleção"
     );
-    let quantity = normalize::scaled(&WEIGHT.captures(name).context("peso ausente")?[1], 1)?;
+    let (quantity, unit, presentation, category) = if normalized
+        .starts_with("creme dental colgate ")
+    {
+        let quantity = normalize::scaled(&WEIGHT.captures(name).context("peso ausente")?[1], 1)?;
+        (quantity, "g", "Tubo", "Higiene bucal")
+    } else if normalized.starts_with("preservativo ") || normalized.starts_with("camisinha ") {
+        let count = UNIT_COUNT
+            .captures(&normalized)
+            .context("quantidade de preservativos ausente")?;
+        (count[1].parse()?, "un", "Pacote", "Saúde sexual")
+    } else {
+        anyhow::bail!("produto fora da seleção de farmácia");
+    };
     let source = Url::parse(product["link"].as_str().context("SKU sem URL")?)?;
     ensure!(
         source.scheme() == "https"
@@ -150,9 +170,9 @@ fn row(body: &Value, branch: &Branch, sku: &str, price: i64) -> Result<ImportRow
         name: name.into(),
         brand: product["brand"].as_str().context("marca ausente")?.into(),
         quantity,
-        unit: "g".into(),
-        presentation: "Tubo".into(),
-        category: "Higiene bucal".into(),
+        unit: unit.into(),
+        presentation: presentation.into(),
+        category: category.into(),
         gtin,
         price_cents: Some(price),
         promotional_price_cents: None,
@@ -264,6 +284,21 @@ pub async fn run(pool: &SqlitePool, watch: bool) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn preserves_the_quantity_on_the_condom_package() {
+        let branch = &BRANCHES[0];
+        let mut body = json!([{
+            "link": "https://www.drogariasaopaulo.com.br/preservativo/p",
+            "brand": "Olla",
+            "items": [{"itemId":"85332","name":"Preservativo Olla Lubrificado 3 Unidades","ean":"7896222716279"}]
+        }]);
+        let result = row(&body, branch, "85332", 1029).unwrap();
+        assert_eq!((result.quantity, result.unit.as_str()), (3, "un"));
+        assert_eq!(result.category, "Saúde sexual");
+        body[0]["items"][0]["name"] = json!("Preservativo Olla Lubrificado");
+        assert!(row(&body, branch, "85332", 1029).is_err());
+    }
 
     #[test]
     fn online_price_requires_the_matching_seller_and_sorriso_pickup() {

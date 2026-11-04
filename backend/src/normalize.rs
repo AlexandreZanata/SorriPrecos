@@ -141,6 +141,14 @@ pub(crate) fn query_words(words: &str) -> String {
         &["acucar", "assucar"],
         &["picanha gril", "picanha grill"],
         &["catchup", "ketchup"],
+        &[
+            "camisinha",
+            "camisinhas",
+            "preservativo",
+            "preservativos",
+            "camisonha",
+            "proservativo",
+        ],
     ];
     let normalized = text(words);
     let mut tokens = normalized.split_whitespace().take(8).peekable();

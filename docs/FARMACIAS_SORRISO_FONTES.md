@@ -1,13 +1,15 @@
 # Catálogos digitais de farmácias em Sorriso
 
-Revalidação de 4 de novembro de 2026. A amostra é de produtos de higiene e comprova somente o contexto de venda online observado. Cada filial precisa devolver o vendedor, o produto, a disponibilidade e a retirada no endereço local.
+Revalidação de 4 de novembro de 2026. A amostra cobre higiene bucal e saúde sexual no contexto de venda online observado. Cada filial precisa devolver o vendedor, o produto, a disponibilidade e a retirada no endereço local.
 
 - **Therapeutica Curitiba**, CNPJ 01.780.384/0001-75, Avenida Curitiba, 2734. Já cadastrada no app, com dados de sua própria loja virtual. A conexão HTTPS do coletor ainda falha na validação do certificado em algumas consultas. [Vitrine e matriz](https://www.therapeuticafarmacia.com.br/lojas/8)
 - **Drogaria São Paulo Brescansin**, CNPJ 61.412.110/1204-87, Avenida Natalino João Brescansin, 1722. Vendedor `drogariaspsorriso` e retirada `drogariaspsorriso_2436`. Três SKUs aceitos, incluindo Colgate Máxima Proteção Anticáries 90 g, SKU 49697, R$ 5,59. [Ficha de produto](https://www.drogariasaopaulo.com.br/creme-dental-colgate-90g-protecao-anticarie-/p)
 - **Pague Menos Brescansin**, CNPJ 06.626.253/0980-20, Avenida Natalino João Brescansin, 1314. Vendedor `paguemenos00980`. Três SKUs aceitos, incluindo Colgate Natural Extracts 90 g, SKU 52572, R$ 12,99. [Ficha de produto](https://www.paguemenos.com.br/creme-dental-colgate-natural-exracts-defesa-reforcada-90g/p)
 - **Pague Menos Tancredo**, CNPJ 06.626.253/1406-70, Avenida Tancredo Neves, 2198. Vendedor `paguemenos01406`. Três SKUs aceitos, incluindo o SKU 52572 a R$ 12,99. [Retirada da rede](https://www.paguemenos.com.br/clique-e-retire)
 
-O coletor `collect-pharmacy-vtex --watch` consulta uma seleção inicial de SKUs de higiene a cada dez minutos após a rodada. Usa o catálogo público para descrição, GTIN e foto e a simulação pública `POST /api/checkout/pub/orderForms/simulation` para preço e disponibilidade. A simulação passa o vendedor local explicitamente, consulta cada SKU isolado e só importa o valor de `sellingPrice` com retirada local associada ao item. Cada observação vence após 30 minutos. [Fluxo de retirada VTEX](https://developers.vtex.com/docs/guides/setting-up-white-label-seller-as-pickup-point)
+O coletor `collect-pharmacy-vtex --watch` consulta uma seleção de SKUs a cada dez minutos após a rodada. Usa o catálogo público para descrição, GTIN e foto e a simulação pública `POST /api/checkout/pub/orderForms/simulation` para preço e disponibilidade. A simulação passa o vendedor local explicitamente, consulta cada SKU isolado e só importa o valor de `sellingPrice` com retirada local associada ao item. Cada observação vence após 30 minutos. [Fluxo de retirada VTEX](https://developers.vtex.com/docs/guides/setting-up-white-label-seller-as-pickup-point)
+
+A seleção de preservativos inclui pacotes com contagem explícita no nome do SKU. A amostra de retirada confirmou sete ofertas na Drogaria São Paulo Brescansin e cinco em cada unidade Pague Menos. Exemplos observados em Sorriso foram Olla Lubrificado, 3 unidades, a R$ 10,29 na Drogaria São Paulo e Blowtex Tradicional Lubrificado, 3 unidades, a R$ 4,99 nas duas Pague Menos. As buscas por `camisinha` e `preservativo` usam os mesmos sinônimos. [Olla na Drogaria São Paulo](https://www.drogariasaopaulo.com.br/preservativo-olla-extra-lubrificado-c-3-unidades/p) · [Blowtex na Pague Menos](https://www.paguemenos.com.br/preservativo-blowtex-lubrificante-com-3-unidades/p)
 
 ## Retirada sem preço por filial
 
