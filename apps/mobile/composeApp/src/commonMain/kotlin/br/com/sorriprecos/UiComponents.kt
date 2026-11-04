@@ -63,8 +63,9 @@ import androidx.compose.ui.unit.sp
 
 @Composable internal fun ProductCard(p: Product, favorite: Boolean, onClick: () -> Unit, onFavorite: () -> Unit, offline: Boolean) {
     val current = p.lastCollectedAt?.let { platformNow()-it <= 172800 } == true && p.minPriceCents != null
-    val historical = !current && p.historicalBranchCount > 0
-    val value = if (current) p.minPriceCents else if (historical) p.referencePriceCents else null
+    val unconfirmed = !current && p.hasUnconfirmedPrice()
+    val historical = !current && !unconfirmed && p.historicalBranchCount > 0
+    val value = if (current) p.minPriceCents else if (unconfirmed) p.unconfirmedPriceCents else if (historical) p.referencePriceCents else null
     Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 1.dp,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -75,13 +76,13 @@ import androidx.compose.ui.unit.sp
                 Text("Embalagem: ${p.pack}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Surface(color = if (current) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(11.dp), modifier = Modifier.fillMaxWidth().padding(top = 7.dp)) {
                     Column(Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
-                        Text(when { p.isDemo -> "MENOR PREÇO DEMO"; historical -> "REGISTRO HISTÓRICO · DESATUALIZADO"; offline -> "REFERÊNCIA SALVA"; else -> "MENOR PREÇO CONHECIDO" }, fontSize = 8.sp, lineHeight = 11.sp, color = if (current) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.SemiBold)
+                        Text(when { p.isDemo -> "MENOR PREÇO DEMO"; historical -> "REGISTRO HISTÓRICO · DESATUALIZADO"; unconfirmed -> "ENCARTE · ESTOQUE NÃO CONFIRMADO"; offline -> "REFERÊNCIA SALVA"; else -> "MENOR PREÇO CONHECIDO" }, fontSize = 8.sp, lineHeight = 11.sp, color = if (current) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.SemiBold)
                         Text(money(value), fontSize = if (value!=null) 23.sp else 12.sp, fontWeight = FontWeight.ExtraBold, color = if (current) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface)
                     }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 5.dp)) {
                     AppIcon(Glyph.Cart, Modifier.size(12.dp), MaterialTheme.colorScheme.onSurfaceVariant); Spacer(Modifier.width(4.dp))
-                    Text(if (current) "${p.branchCount} filiais com preço" else if (historical) "${p.historicalBranchCount} registros antigos" else "Sem preço recente", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(if (current) "${p.branchCount} filiais com preço" else if (unconfirmed) "Atacadão · estoque não confirmado" else if (historical) "${p.historicalBranchCount} registros antigos" else "Sem preço recente", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {

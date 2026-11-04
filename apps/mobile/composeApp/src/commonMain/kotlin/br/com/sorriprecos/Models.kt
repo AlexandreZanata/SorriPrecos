@@ -8,6 +8,8 @@ import kotlinx.serialization.SerialName
     val id:Long,val name:String,val brand:String,val quantity:Long,val unit:String,val presentation:String,val category:String,
     val gtin:String?=null,@SerialName("is_demo") val isDemo:Boolean=false,@SerialName("is_historical") val isHistorical:Boolean=false,
     @SerialName("min_price_cents") val minPriceCents:Long?=null,
+    @SerialName("unconfirmed_price_cents") val unconfirmedPriceCents:Long?=null,
+    @SerialName("unconfirmed_valid_until") val unconfirmedValidUntil:Long?=null,
     @SerialName("last_collected_at") val lastCollectedAt:Long?=null,
     @SerialName("branch_count") val branchCount:Int=0,
     @SerialName("reference_price_cents") val referencePriceCents:Long?=null,
@@ -53,8 +55,12 @@ import kotlinx.serialization.SerialName
 )
 @Serializable data class Comparison(val product:Product,val items:List<Offer>,@SerialName("coverage_note") val coverageNote:String="")
 
+internal fun Product.hasUnconfirmedPrice(at: Long = platformNow()): Boolean =
+    !isHistorical && unconfirmedPriceCents != null && unconfirmedValidUntil?.let { it >= at } == true &&
+        lastCollectedAt?.let { it >= at - 172800 } == true
+
 internal fun Product.isDiscoverable(at: Long = platformNow()): Boolean =
-    isHistorical || (minPriceCents != null && branchCount > 0 &&
+    isHistorical || hasUnconfirmedPrice(at) || (minPriceCents != null && branchCount > 0 &&
         lastCollectedAt?.let { it >= at - 172800 } == true)
 
 fun money(cents:Long?):String {

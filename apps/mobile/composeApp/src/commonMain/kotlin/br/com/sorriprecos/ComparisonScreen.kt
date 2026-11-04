@@ -46,8 +46,9 @@ import kotlinx.coroutines.launch
     val product = loaded?.data?.product ?: selected
     val offers = loaded?.data?.items.orEmpty().filter { offer ->
         if (product.isHistorical) offer.collectedAt != null && offer.priceCents != null
-        else offer.isCurrent() && offer.effectivePriceCents != null
+        else (offer.isCurrent() && offer.effectivePriceCents != null) || offer.hasUnconfirmedStock()
     }
+    val canAddToCart = offers.any { it.isCurrent() && it.effectivePriceCents != null }
     val best = offers.filter { it.isCurrent() }.mapNotNull { it.effectivePriceCents }.minOrNull()
     val historical = product.isHistorical
     Box(Modifier.fillMaxSize()) {
@@ -66,9 +67,9 @@ import kotlinx.coroutines.launch
                     TextButton(onClick = onFavorite, contentPadding = PaddingValues(horizontal = 0.dp)) { AppIcon(Glyph.Heart, Modifier.size(16.dp), MaterialTheme.colorScheme.primary, filled = favorite); Spacer(Modifier.width(5.dp)); Text(if (favorite) "Salvo nos favoritos" else "Salvar nos favoritos", fontSize = 12.sp) }
                     TextButton(onClick = refreshOffer) { AppIcon(Glyph.Refresh, Modifier.size(15.dp), MaterialTheme.colorScheme.primary); Spacer(Modifier.width(5.dp)); Text("Atualizar", fontSize = 12.sp) }
                 }
-                if (onAdd != null && (offers.isNotEmpty() || cartQuantity > 0)) {
+                if (onAdd != null && (canAddToCart || cartQuantity > 0)) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        if (offers.isNotEmpty()) Button(onClick = onAdd, enabled = cartQuantity < CART_MAX_QUANTITY) {
+                        if (canAddToCart) Button(onClick = onAdd, enabled = cartQuantity < CART_MAX_QUANTITY) {
                             AppIcon(Glyph.Cart, Modifier.size(17.dp), MaterialTheme.colorScheme.onPrimary)
                             Spacer(Modifier.width(6.dp))
                             Text("Adicionar ao carrinho")
@@ -93,7 +94,7 @@ import kotlinx.coroutines.launch
             } else {
                 item {
                     Text("Preços por mercado", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                    Text(if (historical) "Registros históricos · não são ofertas atuais" else "Do menor para o maior preço conhecido", fontSize = 12.sp, lineHeight = 17.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 4.dp))
+                    Text(if (historical) "Registros históricos · não são ofertas atuais" else "Preços confirmados primeiro · estoque não confirmado ao final", fontSize = 12.sp, lineHeight = 17.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 4.dp))
                     if (historical) Text("Toque na filial para ver endereço e origem.", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 3.dp))
                 }
                 items(if(showAll) offers else offers.take(5), key = { it.branchId }) { o ->
@@ -126,7 +127,7 @@ import kotlinx.coroutines.launch
 ) {
     var expanded by remember(offer.branchId) { mutableStateOf(false) }
     val colors = MaterialTheme.colorScheme
-    val value = if (recent) offer.effectivePriceCents else if (offer.status in listOf("stale", "recent")) offer.priceCents else null
+    val value = if (recent) offer.effectivePriceCents else if (offer.hasUnconfirmedStock() || offer.status in listOf("stale", "recent")) offer.priceCents else null
     val shape = RoundedCornerShape(15.dp)
     Box(Modifier.fillMaxWidth()) {
         Surface(
@@ -155,6 +156,7 @@ import kotlinx.coroutines.launch
                         }
                         val status = when {
                             recent -> age(offer.collectedAt).replaceFirst("Há ", "Verificado há ")
+                            offer.hasUnconfirmedStock() -> "Estoque não confirmado · encarte"
                             offer.status == "unavailable" -> "Indisponibilidade informada"
                             offer.status == "stale" || offer.status == "recent" ->
                                 "Histórico · ${offer.collectedAt?.let { formatDate(it).substringBefore(" às") } ?: "Sem data"}"
@@ -202,6 +204,7 @@ import kotlinx.coroutines.launch
                                 source == null -> "Sem fonte publicada"
                                 source.contains("procon.mt.gov.br") -> "Procon-MT"
                                 source.contains("aiqfome.com/") -> "Vitrine no aiqfome"
+                                source.contains("api-middleware-flyer-services/") -> "Encarte oficial"
                                 else -> "Site do supermercado"
                             }
                             OfferDetail(Glyph.Link, "Fonte", sourceLabel)

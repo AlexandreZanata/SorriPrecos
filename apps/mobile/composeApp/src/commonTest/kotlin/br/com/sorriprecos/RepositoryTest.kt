@@ -94,4 +94,36 @@ class RepositoryTest {
         assertEquals(2,calls)
         second.client.close()
     }
+    @Test fun unconfirmedFlyerExpiresAndNeverEntersCartTotals() {
+        val now = platformNow()
+        val product = Product(5, "Arroz", "Marca", 5000, "g", "pacote", "Mercearia",
+            unconfirmedPriceCents = 1850, unconfirmedValidUntil = now + 60, lastCollectedAt = now)
+        assertTrue(product.isDiscoverable(now))
+        assertFalse(product.isDiscoverable(now + 61))
+        val offer = Offer("atacadao-sorriso", "Sorriso", "Atacadão", "Sorriso", "unconfirmed_stock",
+            priceCents = 1850, collectedAt = now, validUntil = now + 60)
+        assertTrue(offer.hasUnconfirmedStock(now))
+        assertFalse(offer.hasUnconfirmedStock(now + 61))
+        assertFalse(offer.isCurrent(now))
+        assertTrue(quoteCart(listOf(CartLine(product)), mapOf(5L to listOf(offer)), now).isEmpty())
+    }
+
+    @Test fun staleSearchRefreshesAndKeepsOfflineResults() = runTest {
+        val disk = MemoryStore()
+        val old = Product(5, "Arroz", "Marca", 5000, "g", "pacote", "Mercearia",
+            minPriceCents = 2200, branchCount = 1, lastCollectedAt = platformNow())
+        val newer = Product(6, "Arroz", "Marca", 5000, "g", "pacote", "Mercearia",
+            unconfirmedPriceCents = 1850, unconfirmedValidUntil = platformNow() + 3600, lastCollectedAt = platformNow())
+        val initial = Repository(disk, "https://example.test", HttpClient(MockEngine { respond(codec.encodeToString(Items(listOf(old)))) }))
+        initial.search("arroz", false); initial.client.close()
+        val searchKey = disk.keys("search:v1:").single()
+        val page = codec.decodeFromString<SearchPage>(disk.get(searchKey)!!)
+        disk.put(searchKey, codec.encodeToString(page.copy(savedAt = platformNow() - PRODUCT_SYNC_INTERVAL)))
+        val offline = Repository(disk, "https://example.test", HttpClient(MockEngine { error("offline") }))
+        assertEquals(listOf(old), offline.search("arroz", false).data.items)
+        offline.client.close()
+        val online = Repository(disk, "https://example.test", HttpClient(MockEngine { respond(codec.encodeToString(Items(listOf(old, newer)))) }))
+        assertEquals(listOf(old, newer), online.search("arroz", false).data.items)
+        online.client.close()
+    }
 }

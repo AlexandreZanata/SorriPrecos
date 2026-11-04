@@ -35,6 +35,10 @@ internal fun Offer.isCurrent(at: Long = platformNow()): Boolean =
     status == "recent" && collectedAt?.let { it >= at - 172800 } == true &&
         (validUntil == null || validUntil >= at)
 
+internal fun Offer.hasUnconfirmedStock(at: Long = platformNow()): Boolean =
+    status == "unconfirmed_stock" && priceCents != null &&
+        collectedAt?.let { it >= at - 172800 } == true && validUntil?.let { it >= at } == true
+
 internal fun quoteCart(lines: List<CartLine>, offers: Map<Long, List<Offer>>, at: Long): List<CartQuote> {
     val byProduct = offers.mapValues { (_, prices) -> prices.associateBy(Offer::branchId) }
     return offers.values.flatten().distinctBy(Offer::branchId).mapNotNull { branch ->

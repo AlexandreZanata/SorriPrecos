@@ -92,7 +92,7 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
             val page = disk.get(key)?.let { codec.decodeFromString<SearchPage>(it) }
             if (page != null) {
                 val stored = page.ids.mapNotNull { record(it, historical)?.product }.filter { it.isDiscoverable() }
-                if (stored.isNotEmpty() || (page.ids.isEmpty() && platformNow() - page.savedAt in 0 until PRODUCT_SYNC_INTERVAL)) {
+                if (platformNow() - page.savedAt in 0 until PRODUCT_SYNC_INTERVAL && (stored.isNotEmpty() || page.ids.isEmpty())) {
                     return@withContext Loaded(Items(stored, page.nextAfter), offline = syncFailed.value, savedAt = page.savedAt)
                 }
             }
@@ -101,14 +101,24 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
             val loaded = try {
                 legacy?.let { Loaded(it, offline = true, savedAt = 0) } ?: request<Items<Product>>(path)
             } catch (e: CatalogUnavailable) {
-                if (page != null) return@withContext Loaded(Items(emptyList(), page.nextAfter), offline = true, savedAt = page.savedAt)
+                if (page != null) {
+                    val saved = page.ids.mapNotNull { record(it, historical)?.product }.filter { it.isDiscoverable() }
+                    return@withContext Loaded(Items(saved, page.nextAfter), offline = true, savedAt = page.savedAt)
+                }
                 throw e
             }
             syncLock.withLock {
                 val at = if (loaded.offline) 0 else platformNow()
                 for (product in loaded.data.items) {
-                    if (record(product.id, historical) == null) {
+                    val previous = record(product.id, historical)
+                    if (previous == null) {
                         saveRecord(product.id, historical, ProductRecord(product = product, version = loaded.data.versions[product.id.toString()], checkedAt = at))
+                    } else if (!loaded.offline) {
+                        saveRecord(product.id, historical, previous.copy(
+                            product = product, comparison = previous.comparison?.copy(product = product),
+                            version = if (previous.comparison == null) loaded.data.versions[product.id.toString()] else previous.version,
+                            checkedAt = if (previous.comparison == null) at else previous.checkedAt, removed = false
+                        ))
                     }
                 }
                 disk.put(key, codec.encodeToString(SearchPage(loaded.data.items.map(Product::id), loaded.data.nextAfter, at)))

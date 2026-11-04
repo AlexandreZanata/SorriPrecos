@@ -299,13 +299,13 @@ async fn comparison_data(
     historical: bool,
     at: i64,
 ) -> anyhow::Result<Value> {
-    let rows=sqlx::query("SELECT b.id branch_id,b.name branch_name,b.address,s.id supermarket_id,s.name supermarket_name,o.price_cents,o.promotional_price_cents,o.offer_type,o.conditions,o.available,o.source_url,o.collected_at,o.valid_until FROM branches b JOIN supermarkets s ON s.id=b.supermarket_id JOIN offers o ON o.branch_id=b.id AND o.product_id=? AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) WHERE b.active=1 AND s.is_demo=? ORDER BY s.name,b.id").bind(p.id).bind(if historical {"public_report"} else {"retail"}).bind(p.is_demo).fetch_all(pool).await?;
+    let rows=sqlx::query("SELECT b.id branch_id,b.name branch_name,b.address,s.id supermarket_id,s.name supermarket_name,o.price_cents,o.promotional_price_cents,o.offer_type,o.conditions,o.available,o.source_url,o.collected_at,o.valid_until,(SELECT source_id FROM source_products WHERE id=o.source_product_id) source_sku FROM branches b JOIN supermarkets s ON s.id=b.supermarket_id JOIN offers o ON o.branch_id=b.id AND o.product_id=? AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) WHERE b.active=1 AND s.is_demo=? ORDER BY s.name,b.id").bind(p.id).bind(if historical {"public_report"} else {"retail"}).bind(p.is_demo).fetch_all(pool).await?;
     let mut items:Vec<Value>=rows.iter().map(|r| {
         let collected=r.get::<Option<i64>,_>("collected_at");let available=r.get::<Option<bool>,_>("available");
         let price=r.get::<Option<i64>,_>("price_cents");let promo=r.get::<Option<i64>,_>("promotional_price_cents");
         let kind=r.get::<Option<String>,_>("offer_type");let conditions=r.get::<Option<String>,_>("conditions");
         let until=r.get::<Option<i64>,_>("valid_until");
-        let state=if collected.is_none() {"unknown"} else if available==Some(false) {"unavailable"} else if price.is_none() || until.is_some_and(|t|t<at) {"unknown"} else if collected.is_some_and(|t|t<at-172800) {"stale"} else if available.is_none() {"unknown"} else {"recent"};
+        let state=if collected.is_none() {"unknown"} else if available==Some(false) {"unavailable"} else if price.is_none() || until.is_some_and(|t|t<at) {"unknown"} else if collected.is_some_and(|t|t<at-172800) {"stale"} else if available.is_none() && r.get::<String,_>("supermarket_id")=="atacadao" && r.get::<String,_>("source_sku").starts_with("flyer-") && until.is_some() {"unconfirmed_stock"} else if available.is_none() {"unknown"} else {"recent"};
         let effective=if state=="recent" {if matches!(kind.as_deref(),Some("regular"|"promotion")) && conditions.as_deref().unwrap_or("").is_empty() {promo.or(price)} else {price}} else {None};
         json!({"branch_id":r.get::<String,_>("branch_id"),"branch_name":r.get::<String,_>("branch_name"),"address":r.get::<String,_>("address"),"supermarket_id":r.get::<String,_>("supermarket_id"),"supermarket_name":r.get::<String,_>("supermarket_name"),"price_cents":price,"promotional_price_cents":promo,"effective_price_cents":effective,"offer_type":kind,"conditions":conditions,"available":available,"source_url":r.get::<Option<String>,_>("source_url"),"collected_at":collected,"valid_until":until,"status":state,"is_demo":p.is_demo,"city":"Sorriso","state":"MT"})
     }).collect();
@@ -354,7 +354,11 @@ async fn sync_products(State(s): State<AppState>, Json(request): Json<SyncReques
             updates.push(json!({"id":entry.id,"historical":entry.historical,"removed":true}));
             continue;
         };
-        if !entry.historical && product.min_price_cents.is_none() && !entry.comparison {
+        if !entry.historical
+            && product.min_price_cents.is_none()
+            && product.unconfirmed_price_cents.is_none()
+            && !entry.comparison
+        {
             updates.push(json!({"id":entry.id,"historical":entry.historical,"removed":true}));
             continue;
         }

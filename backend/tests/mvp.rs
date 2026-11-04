@@ -881,3 +881,58 @@ async fn pharmacy_and_market_searches_have_independent_prices() {
     assert_eq!(pharmacy["items"][0]["min_price_cents"], 3199);
     assert_ne!(market["items"][0]["id"], pharmacy["items"][0]["id"]);
 }
+
+#[tokio::test]
+async fn official_flyer_prices_are_searchable_but_not_ranked_as_available() {
+    let (_d, pool) = fixture().await;
+    let mut flyer = row("demo-a", 1850);
+    flyer.branch_id = "atacadao-sorriso".into();
+    flyer.source_id = "flyer-test-1-1".into();
+    flyer.name = "Arroz exclusivo encarte".into();
+    flyer.available = None;
+    flyer.valid_until = Some(now() + 3600);
+    flyer.offer_type = "club".into();
+    flyer.conditions = Some("Oferta no app".into());
+    flyer.promotional_price_cents = Some(1750);
+    catalog::import(&pool, "atacadao", &[flyer.clone()], Some("encarte público"))
+        .await
+        .unwrap();
+    let (_, search) = call(app(&pool), "/v1/products/search?q=arroz%20exclusivo").await;
+    let product = &search["items"][0];
+    assert!(product["min_price_cents"].is_null());
+    assert_eq!(product["unconfirmed_price_cents"], 1850);
+    assert_eq!(product["branch_count"], 0);
+    let id = product["id"].as_i64().unwrap();
+    let (_, comparison) = call(app(&pool), &format!("/v1/products/{id}/prices")).await;
+    let offer = &comparison["items"][0];
+    assert_eq!(offer["status"], "unconfirmed_stock");
+    assert_eq!(offer["price_cents"], 1850);
+    assert_eq!(offer["promotional_price_cents"], 1750);
+    assert!(offer["available"].is_null());
+    assert!(offer["effective_price_cents"].is_null());
+    let res = app(&pool)
+        .oneshot(
+            Request::post("/v1/products/sync")
+                .header("content-type", "application/json")
+                .body(Body::from(
+                    json!({"products":[{"id":id,"historical":false,"comparison":false}]})
+                        .to_string(),
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    let body = res.into_body().collect().await.unwrap().to_bytes();
+    let value: Value = serde_json::from_slice(&body).unwrap();
+    assert_eq!(
+        value["products"][0]["data"]["product"]["unconfirmed_price_cents"],
+        1850
+    );
+    sqlx::query("UPDATE offers SET valid_until=? WHERE supermarket_id='atacadao'")
+        .bind(now() - 1)
+        .execute(&pool)
+        .await
+        .unwrap();
+    let (_, expired) = call(app(&pool), "/v1/products/search?q=arroz%20exclusivo").await;
+    assert!(expired["items"].as_array().unwrap().is_empty());
+}
