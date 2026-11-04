@@ -59,8 +59,10 @@ import kotlinx.coroutines.launch
                     ProductArtwork(product)
                     Column(Modifier.weight(1f)) {
                         Text(product.name, fontSize = 20.sp, lineHeight = 24.sp, fontWeight = FontWeight.Bold)
-                        Text("Marca: ${product.brand}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 7.dp))
-                        Text("Embalagem: ${product.pack}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Column(Modifier.padding(top = 7.dp)) {
+                            product.knownBrand?.let { Text("Marca: $it", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                            Text("Embalagem: ${product.pack}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                     }
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
@@ -85,7 +87,17 @@ import kotlinx.coroutines.launch
             if (loading) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
             if (error != null) item { ErrorCard(error!!, refreshOffer) }
             if (details) {
-                item { EmptyCard("A mesma embalagem, sempre", "${product.name}\nMarca: ${product.brand}\nConteúdo: ${product.pack}\nApresentação: ${product.presentation}\nGTIN: ${product.gtin ?: "Não informado"}\n${if(product.isDemo)"Produto sintético de demonstração." else "Correspondência conservadora por GTIN ou nome, marca e embalagem."}") }
+                item {
+                    EmptyCard("A mesma embalagem, sempre", buildString {
+                        appendLine(product.name)
+                        product.knownBrand?.let { appendLine("Marca: $it") }
+                        appendLine("Conteúdo: ${product.pack}")
+                        appendLine("Apresentação: ${product.presentation}")
+                        appendLine("GTIN: ${product.gtin ?: "Não informado"}")
+                        append(if (product.isDemo) "Produto sintético de demonstração."
+                            else "Correspondência conservadora por GTIN ou nome, marca e embalagem.")
+                    })
+                }
                 item { Text("Referências de origem", fontSize = 18.sp, fontWeight = FontWeight.Bold) }
                 items(offers.filter { it.sourceUrl != null }, key = { it.branchId }) { o ->
                     TextButton(onClick = { openSource(o.sourceUrl!!) }) { Text("${o.supermarketName} · ${o.branchName}", Modifier.weight(1f, fill = false)); Spacer(Modifier.width(5.dp)); AppIcon(Glyph.External, Modifier.size(16.dp), MaterialTheme.colorScheme.primary) }

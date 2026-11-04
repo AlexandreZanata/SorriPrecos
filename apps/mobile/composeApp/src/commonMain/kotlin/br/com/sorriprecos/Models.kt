@@ -17,7 +17,17 @@ import kotlinx.serialization.SerialName
     @SerialName("historical_branch_count") val historicalBranchCount:Int=0,
     @SerialName("photo_path") val photoPath:String?=null,
     @SerialName("photo_revision") val photoRevision:Long=0
-) {val pack:String get()=if (quantity%1000L==0L && unit in listOf("g","ml")) "${quantity/1000} ${if(unit=="g") "kg" else "L"}" else "$quantity $unit"}
+) {
+    val pack:String get()=if (quantity%1000L==0L && unit in listOf("g","ml")) "${quantity/1000} ${if(unit=="g") "kg" else "L"}" else "$quantity $unit"
+    internal val knownBrand: String?
+        get() {
+            val label = brand.trim()
+            return when (label.lowercase()) {
+                "", "não informada", "nao informada" -> null
+                else -> label
+            }
+        }
+}
 @Serializable data class Supermarket(
     val id:String,val name:String,val website:String?=null,
     @SerialName("integration_status") val integrationStatus:String,

@@ -73,8 +73,10 @@ import androidx.compose.ui.unit.sp
             ProductArtwork(p)
             Column(Modifier.weight(1f)) {
                 Text(p.name, fontSize = 16.sp, lineHeight = 19.sp, fontWeight = FontWeight.Bold, maxLines = 3, overflow = TextOverflow.Ellipsis)
-                Text("Marca: ${p.brand}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 4.dp))
-                Text("Embalagem: ${p.pack}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Column(Modifier.padding(top = 4.dp)) {
+                    p.knownBrand?.let { Text("Marca: $it", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    Text("Embalagem: ${p.pack}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
                 Surface(color = if (current) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(11.dp), modifier = Modifier.fillMaxWidth().padding(top = 7.dp)) {
                     Column(Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
                         Text(when { p.isDemo -> "MENOR PREÇO DEMO"; historical -> "REGISTRO HISTÓRICO · DESATUALIZADO"; unconfirmed -> "ENCARTE · ESTOQUE NÃO CONFIRMADO"; stockOnly -> "ESTOQUE CONFIRMADO PARA RETIRADA"; offline -> "REFERÊNCIA SALVA"; else -> "MENOR PREÇO CONHECIDO" }, fontSize = 8.sp, lineHeight = 11.sp, color = if (current) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.SemiBold)
