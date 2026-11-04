@@ -38,7 +38,7 @@ Origem fixa: `https://services.vipcommerce.com.br`; prefixo `/api-admin/v1`.
 6. Sob `/org/{org}/filial/{filial}/centro_distribuicao/{cd}/loja`, `GET /classificacoes_mercadologicas/departamentos/arvore`.
 7. No mesmo prefixo, `GET /classificacoes_mercadologicas/departamentos/{departamento}/produtos?page=N&limit=100`.
 
-A árvore e o paginador delimitam a coleta completa de cada departamento. O coletor verifica página, número de páginas e total de itens, deduplica o mesmo SKU presente em departamentos diferentes e registra falha se os totais mudarem durante a paginação. Não limita a coleta às ofertas ou a uma consulta por “arroz”. Links de origem usam a rota publicada `/produto/{id}/{slug}`.
+A árvore e o paginador delimitam cada departamento. O coletor verifica página e totais, salva o progresso a cada página e mantém os dados de uma varredura parcial. Se os totais mudarem durante a paginação, a varredura segue sem retirar itens ausentes. Os links de origem usam a rota publicada `/produto/{id}/{slug}`.
 
 Fontes primárias: [Sorrinorte](https://www.sorrinorte.com.br/), [Sorriso Supermercados](https://www.sorrisosuper.com.br/), [DelMoro](https://www.delmorosupermercados.com.br/) e seus módulos públicos `chunk-IBICK36J.js`/`chunk-DP7IR7KI.js` observados nesta data. Não foi localizado um contrato público OpenAPI utilizável para esse catálogo. Esta documentação descreve o protocolo efetivamente verificado no frontend; não é documentação oficial nem garantia de estabilidade da fornecedora. APIs de integração ERP com credenciais comerciais são outro produto e não foram utilizadas.
 
@@ -56,7 +56,7 @@ flock -n data/vip-collector.lock ./target/release/sorriprecos collect-vip --conf
 
 O agendador verifica vencimentos a cada 15 s, com intervalo de 600 s por fonte desde o início da tentativa. Há uma concessão exclusiva no SQLite por fonte e `flock` para a instância de serviço. As redes são coletadas sequencialmente: não há busca disparada por consumidor nem sobreposição. Em caso de atraso, o próximo ciclo aguarda a execução anterior. Isso é **polling a cada dez minutos**, não atualização instantânea garantida. Requer o computador/serviço ligado e com rede.
 
-Pausa mínima configurada de 300 ms entre requisições, página de até 100 itens, timeout de 25 s, resposta de até 8 MiB e no máximo três tentativas em falhas transitórias. HTTP 429 respeita `Retry-After`; adiamentos maiores que 30 s encerram a tentativa. HTTP 401/403 encerra sem procurar credenciais de cliente. O orçamento de nove minutos por fonte é verificado entre páginas; uma requisição em andamento ainda pode consumir seu timeout. Sessões não são enviadas a outro host e redirects não são seguidos. TLS permanece validado.
+O coletor VipCommerce usa a pausa configurada de 300 ms, páginas de até 100 itens, timeout de 25 s e limite de resposta de 8 MiB. Cada lote processa até 32 páginas por rede. HTTP 429 e 503 gravam uma pausa por origem de pelo menos 600 segundos ou o prazo maior do `Retry-After`. HTTP 401/403 encerra a tentativa. Sessões não são enviadas a outro host e a validação TLS permanece ativa. [Orçamentos e retomada](CATALOGUE_COLLECTION.md)
 
 Todos os itens públicos recebidos são persistidos em `source_catalog_items`, com SKU, filial, JSON original, observação e motivo de revisão. Somente os normalizados com segurança entram em comparação. Embalagem ausente/ambígua, multipack sem regra, quantidade fracionária não representável ou conflito de GTIN ficam pendentes; não se inventa tamanho ou marca. Marca ausente é “Não informada”. Preço decimal é convertido exatamente em centavos. Venda por peso conserva a porção indicada pela plataforma, sem confundir preço por kg com preço da porção.
 
@@ -103,7 +103,7 @@ A nova revisão cruzou o diretório municipal, cadastros locais e as vitrines ac
 
 ### Coleta aiqfome
 
-O comando abaixo consulta o HTML público do Açougue Portal e do Empório Dom Manoel a cada 600 segundos por vendedor. Use sem `--watch` para executar uma tentativa. O comando `collect-vip --watch` atende às fontes VipCommerce em processo separado.
+O comando abaixo consulta as vitrines do Açougue Portal e do Empório Dom Manoel. Cada vendedor tem intervalo mínimo de 600 segundos e compartilha o orçamento de chamadas com as demais fontes locais. Use sem `--watch` para executar um lote. O VipCommerce roda em processo separado.
 
 ```sh
 ./target/release/sorriprecos collect-aiqfome --watch
@@ -127,7 +127,7 @@ python3 scripts/discover_aiqfome.py
 ./target/release/sorriprecos collect-local-food --watch
 ```
 
-O comando `collect-local-food` é um alias de `collect-aiqfome`. Ele usa a mesma configuração e programa uma tentativa a cada 600 segundos por estabelecimento. A auditoria por fonte aparece em `/v1/collectors`. As três vitrines VipCommerce continuam em `collect-vip`.
+O comando `collect-local-food` é um alias de `collect-aiqfome`. O agendador salva a última fonte visitada, limita cada lote a 12 estabelecimentos e espera pelo menos 120 segundos entre lotes. Cada vendedor tem intervalo mínimo de 600 segundos. O prazo de pausa por provedor é persistido no SQLite. A auditoria aparece em `/v1/collectors`. [Orçamentos e retomada](CATALOGUE_COLLECTION.md)
 
 - **aiqfome.** O ingestor lê o catálogo estruturado no HTML e valida cidade, estado, endereço, CEP, CNPJ e ID. A Casa do Salame publicou 73 variantes com outro ID de vendedor. O coletor separou essas entradas e processou o restante do catálogo local. [A Casa do Salame](https://aiqfome.com/MT/sorriso/a-casa-do-salame)
 - **Egao Sushi.** O endereço de Blumenau 3675 vem do GET `/api/config`. O GET `/api/cardapio` fornece itens e opções com preço. O coletor conserva cada opção e a disponibilidade publicada. [Vitrine de pedidos](https://pedido.egaosushi.com.br/) · [API de cardápio](https://pedido.egaosushi.com.br/api/cardapio)
