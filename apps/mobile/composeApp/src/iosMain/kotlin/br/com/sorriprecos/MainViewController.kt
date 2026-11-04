@@ -26,4 +26,4 @@ actual fun formatDate(seconds:Long):String {
     return formatter.stringFromDate(NSDate(timeIntervalSince1970=seconds.toDouble()))
 }
 
-@Composable actual fun PlatformAppearance(highContrast:Boolean) { /* System bars follow the host UIViewController. */ }
+@Composable actual fun PlatformAppearance(highContrast:Boolean, greenHeader:Boolean) { /* System bars follow the host UIViewController. */ }

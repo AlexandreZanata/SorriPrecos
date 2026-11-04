@@ -37,17 +37,6 @@ import androidx.compose.ui.unit.sp
     }
 }
 
-@Composable internal fun HomeSearch(onClick: () -> Unit) {
-    Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
-        Row(Modifier.padding(16.dp).heightIn(min = 30.dp), verticalAlignment = Alignment.CenterVertically) {
-            AppIcon(Glyph.Search, Modifier.size(25.dp)); Spacer(Modifier.width(14.dp))
-            Text("Buscar arroz, café, leite…", fontSize = 13.sp, lineHeight = 18.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-            AppIcon(Glyph.Chevron, Modifier.size(18.dp), MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-    }
-}
-
 @Composable internal fun MarketRow(m: Supermarket, onClick: () -> Unit) {
     Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(14.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {

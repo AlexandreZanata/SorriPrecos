@@ -39,12 +39,12 @@ actual fun platformNow()=System.currentTimeMillis()/1000
 @Composable actual fun NavigationBackHandler(enabled:Boolean,onBack:()->Unit) {BackHandler(enabled,onBack)}
 actual fun formatDate(seconds:Long)=SimpleDateFormat("dd/MM/yyyy 'às' HH:mm",Locale.forLanguageTag("pt-BR")).format(Date(seconds*1000))
 
-@Composable actual fun PlatformAppearance(highContrast:Boolean) {
+@Composable actual fun PlatformAppearance(highContrast:Boolean, greenHeader:Boolean) {
     val view=LocalView.current
     val window=(view.context as? Activity)?.window
     SideEffect { window?.let {
         val controller=WindowCompat.getInsetsController(it,view)
-        controller.isAppearanceLightStatusBars=!highContrast
+        controller.isAppearanceLightStatusBars=!highContrast && !greenHeader
         controller.isAppearanceLightNavigationBars=!highContrast
     } }
 }

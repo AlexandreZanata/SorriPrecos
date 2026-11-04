@@ -1,5 +1,6 @@
 package br.com.sorriprecos
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
@@ -42,6 +44,11 @@ import kotlinx.coroutines.launch
     var category by remember { mutableStateOf<QuickCategory?>(null) }
     var query by remember { mutableStateOf("") }
     var selected by remember { mutableStateOf<Product?>(null) }
+    val homeVisible = screen == "home" && selected == null
+    var homeHighlights by remember(repo, demo, historical) { mutableStateOf<List<HomeHighlight>>(emptyList()) }
+    LaunchedEffect(repo, demo, historical, homeVisible, synced) {
+        if (homeVisible && !historical) homeHighlights = repo.homeHighlights(demo)
+    }
     var cart by remember(repo, demo) { mutableStateOf(repo.cart(demo)) }
     var favorites by remember(repo) { mutableStateOf(repo.favorites()) }
     var markets by remember { mutableStateOf<List<Supermarket>>(emptyList()) }
@@ -142,9 +149,12 @@ import kotlinx.coroutines.launch
         LocalPhotoOrigin provides baseUrl
     ) {
         MaterialTheme(colorScheme = if (contrast) AppContrast else AppLight) {
-            PlatformAppearance(contrast)
+            PlatformAppearance(contrast, homeVisible)
             Scaffold(
                 containerColor = MaterialTheme.colorScheme.background,
+                contentWindowInsets = if (homeVisible)
+                    WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+                else ScaffoldDefaults.contentWindowInsets,
                 snackbarHost = { SnackbarHost(snack) },
                 topBar = {
                     if (selected != null || screen != "home") AppToolbar(
@@ -156,9 +166,12 @@ import kotlinx.coroutines.launch
                         onText = { setLarge(it) }, onContrast = { setContrast(!contrast) }
                     )
                 },
-                bottomBar = { if (selected == null) BottomNavigation(screen, ::navigate) }
+                bottomBar = { if (selected == null) BottomNavigation(screen, cart.size, ::navigate) }
             ) { padding ->
                 Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
+                    if (homeVisible) Spacer(
+                        Modifier.fillMaxWidth().background(Color(0xFF07572B)).windowInsetsTopHeight(WindowInsets.statusBars)
+                    )
                     if (screen != "home" || selected != null) Box(Modifier.padding(horizontal = 18.dp, vertical = 5.dp)) { DataDisclosure(demo, catalog, selected?.isHistorical ?: (historical && screen != "cart" && !pharmacy)) }
                     if (selected != null) {
                         ComparisonScreen(repo, selected!!, favorites.any { it.id == selected!!.id },
@@ -168,9 +181,12 @@ import kotlinx.coroutines.launch
                                 { setQuantity(product, (cart.find { it.product.id == product.id }?.quantity ?: 0) + 1) }
                             }, onCart = { navigate("cart") })
                     } else {
-                        if (offline || searchOffline) Notice("Offline · Mostrando dados salvos. Atualize antes de comprar.")
+                        if (screen != "home" && (offline || searchOffline)) Notice("Offline · Mostrando dados salvos. Atualize antes de comprar.")
                         when (screen) {
-                            "home" -> HomeScreen(demo, ::search, ::explore, ::openCategory)
+                            "home" -> HomeScreen(demo, historical, offline, markets, homeHighlights,
+                                favorites.map { it.id }.toSet(), ::search, ::explore, ::openCategory,
+                                onProduct = { selected = it }, onFavorite = ::favorite,
+                                onSources = { navigate("sources") }, onMarket = { marketDialog = it })
                             "search" -> LazyColumn(contentPadding = PaddingValues(18.dp, 10.dp, 18.dp, 20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                                 item {
                                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -267,7 +283,7 @@ import kotlinx.coroutines.launch
     )
 }
 
-@Composable private fun BottomNavigation(screen: String, onNavigate: (String) -> Unit) {
+@Composable private fun BottomNavigation(screen: String, cartCount: Int, onNavigate: (String) -> Unit) {
     NavigationBar(containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 2.dp) {
         val tabs = listOf(
             Triple("home", Glyph.Home, "Início"), Triple("search", Glyph.Search, "Buscar"),
@@ -278,7 +294,16 @@ import kotlinx.coroutines.launch
             val selected = screen == id || (id == "settings" && screen == "sources")
             NavigationBarItem(
                 selected = selected, onClick = { onNavigate(id) },
-                icon = { AppIcon(icon, tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant) },
+                icon = {
+                    BadgedBox(badge = {
+                        if (id == "cart" && cartCount > 0) Badge(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.semantics { contentDescription = "$cartCount produtos no carrinho" }
+                        ) { Text(cartCount.toString()) }
+                    }) {
+                        AppIcon(icon, tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant, filled = selected)
+                    }
+                },
                 label = { Text(label, maxLines = 1, fontSize = 10.sp) },
                 colors = NavigationBarItemDefaults.colors(indicatorColor = MaterialTheme.colorScheme.primaryContainer)
             )
