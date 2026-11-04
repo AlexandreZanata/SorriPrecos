@@ -672,6 +672,34 @@
       "status": "pending_category_review",
       "public_page": "https://aiqfome.com/MT/sorriso/restaurante-e-churrascaria-galpao-crioulo",
       "reason": "Vitrine de refeições e bebidas precisa de seleção e validação dos produtos e suas condições."
+    },
+    {
+      "market": "luana-tamires-confeitaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/luana-tamires-confeitaria",
+      "reason": "Primeira coleta principal em 04/11/2026: 21 variantes examinadas, 21 normalizadas. Indisponíveis no momento."
+    },
+    {
+      "market": "nutrys-produtos-naturais",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/nutrys-produtos-naturais",
+      "reason": "Primeira coleta principal em 04/11/2026: 192 variantes examinadas, 165 normalizadas. Indisponíveis no momento."
+    },
+    {
+      "market": "perimetral-dos-assados",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/perimetral-dos-assados",
+      "reason": "Primeira coleta principal em 04/11/2026: 16 variantes examinadas, uma normalizada. Indisponível no momento."
+    },
+    {
+      "market": "valzinha-salgados",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/valzinha-salgados",
+      "reason": "Primeira coleta principal em 04/11/2026: 24 variantes examinadas, 16 normalizadas. Indisponíveis no momento."
     }
   ],
   "alternate_sources": [

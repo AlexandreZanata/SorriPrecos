@@ -637,5 +637,84 @@
       "complementos",
       "bebidas"
     ]
+  },
+  {
+    "supermarket_id": "nutrys-produtos-naturais",
+    "branch_id": "nutrys-produtos-naturais-sorriso",
+    "slug": "nutrys-produtos-naturais",
+    "seller_id": 141596,
+    "cnpj": "66927065000195",
+    "street": "Av. Tancredo Neves",
+    "number": "2302",
+    "postcode": "78890143",
+    "categories": [
+      "acucares e adocantes",
+      "frutas desidratadas",
+      "temperos",
+      "castanhas sementes graos e flocos",
+      "farinhas farelos e fibras",
+      "chips biscoitos",
+      "granolas",
+      "pimentas",
+      "sal",
+      "sucrilhos",
+      "arroz",
+      "barras de cereal",
+      "biscoitos",
+      "chocolates",
+      "ervas para terere",
+      "vinagres"
+    ]
+  },
+  {
+    "supermarket_id": "luana-tamires-confeitaria",
+    "branch_id": "luana-tamires-confeitaria-sorriso",
+    "slug": "luana-tamires-confeitaria",
+    "seller_id": 131090,
+    "cnpj": "61647935000159",
+    "street": "Rua Pedra Preciosa",
+    "number": "1275",
+    "postcode": "78895130",
+    "categories": [
+      "copos da felicidade",
+      "mini bolo vulcao",
+      "fatias delicia",
+      "geladinho gourmet",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "perimetral-dos-assados",
+    "branch_id": "perimetral-dos-assados-sorriso",
+    "slug": "perimetral-dos-assados",
+    "seller_id": 144608,
+    "cnpj": "37977791000114",
+    "street": "Perimetral Sudoeste, Sorriso - MT",
+    "number": "3616",
+    "postcode": "78893030",
+    "categories": [
+      "marmitas",
+      "frangos",
+      "costelas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "valzinha-salgados",
+    "branch_id": "valzinha-salgados-sorriso",
+    "slug": "valzinha-salgados",
+    "seller_id": 142693,
+    "cnpj": "67717784000144",
+    "street": "RUA NOVA ERA",
+    "number": "124",
+    "postcode": "78897030",
+    "categories": [
+      "marmitas de mini salgados",
+      "pasteis grandes e enroladinho",
+      "cento de salgados",
+      "bebidas"
+    ],
+    "allow_portions": true
   }
 ]

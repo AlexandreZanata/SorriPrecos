@@ -869,5 +869,61 @@
         "source_id": "aiqfome:118383:cnpj:55597556000107"
       }
     ]
+  },
+  {
+    "id": "nutrys-produtos-naturais",
+    "name": "Nutrys Produtos Naturais",
+    "website": "https://aiqfome.com/MT/sorriso/nutrys-produtos-naturais",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "nutrys-produtos-naturais-sorriso",
+        "name": "Sorriso",
+        "address": "Av. Tancredo Neves, 2302 · Sorriso-MT",
+        "source_id": "aiqfome:141596:cnpj:66927065000195"
+      }
+    ]
+  },
+  {
+    "id": "luana-tamires-confeitaria",
+    "name": "Luana Tamires Confeitaria",
+    "website": "https://aiqfome.com/MT/sorriso/luana-tamires-confeitaria",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "luana-tamires-confeitaria-sorriso",
+        "name": "Sorriso",
+        "address": "Rua Pedra Preciosa, 1275 · Sorriso-MT",
+        "source_id": "aiqfome:131090:cnpj:61647935000159"
+      }
+    ]
+  },
+  {
+    "id": "perimetral-dos-assados",
+    "name": "Perimetral dos Assados",
+    "website": "https://aiqfome.com/MT/sorriso/perimetral-dos-assados",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "perimetral-dos-assados-sorriso",
+        "name": "Sorriso",
+        "address": "Perimetral Sudoeste, Sorriso - MT, 3616 · Sorriso-MT",
+        "source_id": "aiqfome:144608:cnpj:37977791000114"
+      }
+    ]
+  },
+  {
+    "id": "valzinha-salgados",
+    "name": "Valzinha Salgados",
+    "website": "https://aiqfome.com/MT/sorriso/valzinha-salgados",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "valzinha-salgados-sorriso",
+        "name": "Sorriso",
+        "address": "RUA NOVA ERA, 124 · Sorriso-MT",
+        "source_id": "aiqfome:142693:cnpj:67717784000144"
+      }
+    ]
   }
 ]
