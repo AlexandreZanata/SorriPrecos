@@ -258,13 +258,17 @@ async fn photo(State(s): State<AppState>, Path(id): Path<i64>) -> Response {
         Ok(Some(webp)) => (
             [
                 ("content-type", "image/webp"),
-                ("cache-control", "public, max-age=86400"),
+                ("cache-control", "public, max-age=600"),
             ],
             webp,
         )
             .into_response(),
-        Ok(None) => StatusCode::NOT_FOUND.into_response(),
-        Err(_) => StatusCode::SERVICE_UNAVAILABLE.into_response(),
+        Ok(None) => (StatusCode::NOT_FOUND, [(header::CACHE_CONTROL, "no-store")]).into_response(),
+        Err(_) => (
+            StatusCode::SERVICE_UNAVAILABLE,
+            [(header::CACHE_CONTROL, "no-store")],
+        )
+            .into_response(),
     }
 }
 

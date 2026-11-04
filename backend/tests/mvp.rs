@@ -779,7 +779,7 @@ async fn product_retains_first_public_photo_across_offers() {
     .await
     .unwrap();
 
-    let mut later = initial;
+    let mut later = initial.clone();
     later.branch_id = "delmoro-rota".into();
     later.photo_source_url = Some("https://files.aiqfome.com/itens/store/second.jpg".into());
     catalog::import(&pool, "delmoro", &[later], Some("fixture authorization"))
@@ -797,6 +797,38 @@ async fn product_retains_first_public_photo_across_offers() {
         .await
         .unwrap();
     assert_eq!(source, first);
+
+    let id = product.id;
+    sqlx::query("INSERT INTO product_photo_cache(product_id,webp) VALUES(?,X'01')")
+        .bind(id)
+        .execute(&pool)
+        .await
+        .unwrap();
+    sqlx::query("INSERT INTO product_photo_retry VALUES(?,1,?)")
+        .bind(id)
+        .bind(now() + 60)
+        .execute(&pool)
+        .await
+        .unwrap();
+    initial.photo_source_url = Some("https://files.aiqfome.com/itens/store/replaced.jpg".into());
+    initial.collected_at += 1;
+    catalog::import(&pool, "sorriso", &[initial], Some("fixture authorization"))
+        .await
+        .unwrap();
+
+    let updated = catalog::product(&pool, id).await.unwrap().unwrap();
+    assert_eq!(updated.photo_revision, product.photo_revision + 1);
+    assert_eq!(updated.photo_path, product.photo_path);
+    let (cached, retry): (i64, i64) = sqlx::query_as(
+        "SELECT (SELECT COUNT(*) FROM product_photo_cache WHERE product_id=?),
+                (SELECT COUNT(*) FROM product_photo_retry WHERE product_id=?)",
+    )
+    .bind(id)
+    .bind(id)
+    .fetch_one(&pool)
+    .await
+    .unwrap();
+    assert_eq!((cached, retry), (0, 0));
 }
 
 #[tokio::test]

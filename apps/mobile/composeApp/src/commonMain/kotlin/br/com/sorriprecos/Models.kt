@@ -14,7 +14,8 @@ import kotlinx.serialization.SerialName
     @SerialName("branch_count") val branchCount:Int=0,
     @SerialName("reference_price_cents") val referencePriceCents:Long?=null,
     @SerialName("historical_branch_count") val historicalBranchCount:Int=0,
-    @SerialName("photo_path") val photoPath:String?=null
+    @SerialName("photo_path") val photoPath:String?=null,
+    @SerialName("photo_revision") val photoRevision:Long=0
 ) {val pack:String get()=if (quantity%1000L==0L && unit in listOf("g","ml")) "${quantity/1000} ${if(unit=="g") "kg" else "L"}" else "$quantity $unit"}
 @Serializable data class Supermarket(
     val id:String,val name:String,val website:String?=null,

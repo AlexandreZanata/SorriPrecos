@@ -3,9 +3,10 @@ use image::{ImageFormat, ImageReader};
 use reqwest::Url;
 use sqlx::SqlitePool;
 use std::{io::Cursor, sync::LazyLock, time::Duration};
-use tokio::sync::Semaphore;
+use tokio::sync::{Mutex, Semaphore};
 
 const MAX_DOWNLOAD: usize = 5 * 1024 * 1024;
+static PRODUCT_LOCKS: [Mutex<()>; 64] = [const { Mutex::const_new(()) }; 64];
 static SLOTS: Semaphore = Semaphore::const_new(4);
 static CLIENT: LazyLock<reqwest::Client> = LazyLock::new(|| {
     reqwest::Client::builder()
@@ -63,13 +64,20 @@ fn thumbnail(bytes: Vec<u8>) -> Result<Vec<u8>> {
 }
 
 pub(crate) async fn load(pool: &SqlitePool, id: i64) -> Result<Option<Vec<u8>>> {
-    let row = sqlx::query_as::<_, (Option<String>, Option<Vec<u8>>)>(
-        "SELECT p.photo_source_url,c.webp FROM products p LEFT JOIN product_photo_cache c ON c.product_id=p.id WHERE p.id=?",
+    let _product = tokio::time::timeout(
+        Duration::from_secs(10),
+        PRODUCT_LOCKS[id as usize % PRODUCT_LOCKS.len()].lock(),
+    )
+    .await?;
+    let row = sqlx::query_as::<_, (Option<String>, i64, Option<Vec<u8>>, Option<i64>)>(
+        "SELECT p.photo_source_url,p.photo_revision,c.webp,r.retry_at FROM products p
+         LEFT JOIN product_photo_cache c ON c.product_id=p.id
+         LEFT JOIN product_photo_retry r ON r.product_id=p.id WHERE p.id=?",
     )
     .bind(id)
     .fetch_optional(pool)
     .await?;
-    let Some((source, cached)) = row else {
+    let Some((source, revision, cached, retry_at)) = row else {
         return Ok(None);
     };
     if cached.is_some() {
@@ -78,7 +86,58 @@ pub(crate) async fn load(pool: &SqlitePool, id: i64) -> Result<Option<Vec<u8>>> 
     let Some(url) = source.as_deref().and_then(trusted_url) else {
         return Ok(None);
     };
+    ensure!(
+        retry_at.is_none_or(|at| at <= crate::now()),
+        "foto aguardando nova tentativa"
+    );
     let _permit = tokio::time::timeout(Duration::from_secs(10), SLOTS.acquire()).await??;
+    let webp = match fetch(url).await {
+        Ok(webp) => webp,
+        Err(error) => {
+            // Condition both writes on the revision in case an import replaced the source.
+            sqlx::query(
+                "INSERT INTO product_photo_retry(product_id,failures,retry_at)
+                 SELECT id,1,?+60 FROM products WHERE id=? AND photo_revision=?
+                 ON CONFLICT(product_id) DO UPDATE SET failures=MIN(failures+1,6),
+                 retry_at=?+MIN(3600,60*(1<<failures))",
+            )
+            .bind(crate::now())
+            .bind(id)
+            .bind(revision)
+            .bind(crate::now())
+            .execute(pool)
+            .await?;
+            return Err(error);
+        }
+    };
+    let mut tx = pool.begin_with("BEGIN IMMEDIATE").await?;
+    let inserted = sqlx::query(
+        "INSERT OR IGNORE INTO product_photo_cache(product_id,webp)
+         SELECT id,? FROM products WHERE id=? AND photo_revision=?",
+    )
+    .bind(&webp)
+    .bind(id)
+    .bind(revision)
+    .execute(&mut *tx)
+    .await?;
+    if inserted.rows_affected() == 0 {
+        // A concurrent import invalidated this fetch or another process filled the cache.
+        let current = sqlx::query_scalar("SELECT webp FROM product_photo_cache WHERE product_id=?")
+            .bind(id)
+            .fetch_optional(&mut *tx)
+            .await?;
+        tx.commit().await?;
+        return Ok(current);
+    }
+    sqlx::query("DELETE FROM product_photo_retry WHERE product_id=?")
+        .bind(id)
+        .execute(&mut *tx)
+        .await?;
+    tx.commit().await?;
+    Ok(Some(webp))
+}
+
+async fn fetch(url: Url) -> Result<Vec<u8>> {
     let mut response = CLIENT.get(url).send().await?.error_for_status()?;
     ensure!(response.status().is_success(), "resposta de foto inválida");
     ensure!(
@@ -93,13 +152,7 @@ pub(crate) async fn load(pool: &SqlitePool, id: i64) -> Result<Option<Vec<u8>>> 
         );
         bytes.extend_from_slice(&chunk);
     }
-    let webp = tokio::task::spawn_blocking(move || thumbnail(bytes)).await??;
-    sqlx::query("INSERT OR IGNORE INTO product_photo_cache(product_id,webp) VALUES(?,?)")
-        .bind(id)
-        .bind(&webp)
-        .execute(pool)
-        .await?;
-    Ok(Some(webp))
+    tokio::task::spawn_blocking(move || thumbnail(bytes)).await?
 }
 
 #[cfg(test)]

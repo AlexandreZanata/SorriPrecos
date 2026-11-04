@@ -54,6 +54,7 @@ import kotlinx.coroutines.launch
     var offline by remember { mutableStateOf(false) }
     var searchOffline by remember { mutableStateOf(false) }
     var refresh by remember { mutableStateOf(0) }
+    var lastSearchRefresh by remember(repo) { mutableStateOf(0) }
     var connectionDialog by remember { mutableStateOf(false) }
     var marketDialog by remember { mutableStateOf<Supermarket?>(null) }
     var paginationJob by remember { mutableStateOf<Job?>(null) }
@@ -98,7 +99,9 @@ import kotlinx.coroutines.launch
         searching = true; error = null
         try {
             delay(350)
-            val loaded = repo.search(query.trim(), demo, historical = historical && !pharmacy, pharmacy = pharmacy)
+            val force = refresh != lastSearchRefresh
+            val loaded = repo.search(query.trim(), demo, historical = historical && !pharmacy, pharmacy = pharmacy, force = force)
+            lastSearchRefresh = refresh
             results = loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline
         } catch (e: CancellationException) { throw e }
         catch (e: Exception) { error = e.message }

@@ -123,7 +123,15 @@ fn parse(html: &str, url: &Url, observed: i64) -> Result<Vec<ImportRow>> {
         conditions: None,
         available,
         source_url: Some(url.to_string()),
-        photo_source_url: product["image"][0].as_str().map(str::to_owned),
+        photo_source_url: match &product["image"] {
+            Value::Array(images) => images
+                .iter()
+                .filter_map(Value::as_str)
+                .find_map(crate::photos::trusted_url),
+            Value::String(image) => crate::photos::trusted_url(image),
+            _ => None,
+        }
+        .map(|url| url.to_string()),
         collected_at: observed,
         valid_until: Some(observed + 4 * 3600),
         source_city: Some("Sorriso".into()),

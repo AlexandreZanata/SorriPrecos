@@ -71,41 +71,52 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
 
     private fun key(id: Long, historical: Boolean) = "$prefix$historical:$id"
     private fun record(id: Long, historical: Boolean): ProductRecord? =
-        disk.get(key(id, historical))?.let { codec.decodeFromString<ProductRecord>(it) }
+        disk.get(key(id, historical))?.let { decodeCached<ProductRecord>(it) }
+
+    private inline fun <reified T> decodeCached(value: String): T? =
+        try { codec.decodeFromString<T>(value) } catch (_: IllegalArgumentException) { null }
 
     private fun saveRecord(id: Long, historical: Boolean, record: ProductRecord) =
         disk.put(key(id, historical), codec.encodeToString(record))
 
     private fun legacyComparison(id: Long, historical: Boolean): ProductRecord? {
         val legacy = "cache:v2:$baseUrl:/v1/products/$id/prices?historical=$historical"
-        val comparison = store.get(legacy)?.let { codec.decodeFromString<Comparison>(it) } ?: return null
+        val comparison = store.get(legacy)?.let { decodeCached<Comparison>(it) } ?: return null
         val product = record(id, historical)?.product ?: comparison.product
         return ProductRecord(product, comparison.copy(product = product), checkedAt = 0)
             .also { saveRecord(id, historical, it) }
     }
 
-    suspend fun search(query: String, demo: Boolean, after: Long = 0, historical: Boolean = false, pharmacy: Boolean = false): Loaded<Items<Product>> =
+    suspend fun search(query: String, demo: Boolean, after: Long = 0, historical: Boolean = false, pharmacy: Boolean = false, force: Boolean = false): Loaded<Items<Product>> =
         withContext(Dispatchers.Default) {
             val path = "/v1/products/search?q=${query.encodeURLParameter()}&demo=$demo&after=$after&historical=$historical" +
                 if (pharmacy) "&sector=pharmacy" else ""
             val key = "search:v1:$baseUrl:$path"
-            val page = disk.get(key)?.let { codec.decodeFromString<SearchPage>(it) }
+            val page = disk.get(key)?.let { decodeCached<SearchPage>(it) }
             if (page != null) {
-                val stored = page.ids.mapNotNull { record(it, historical)?.product }.filter { it.isDiscoverable() }
-                if (platformNow() - page.savedAt in 0 until PRODUCT_SYNC_INTERVAL && (stored.isNotEmpty() || page.ids.isEmpty())) {
+                val records = page.ids.map { record(it, historical) }
+                val stored = records.mapNotNull { it?.product }.filter { it.isDiscoverable() }
+                if (!force && platformNow() - page.savedAt in 0 until PRODUCT_SYNC_INTERVAL &&
+                    records.all { it?.product != null || it?.removed == true } &&
+                    (stored.isNotEmpty() || page.ids.isEmpty())) {
                     return@withContext Loaded(Items(stored, page.nextAfter), offline = syncFailed.value, savedAt = page.savedAt)
                 }
             }
             val legacyKey = "cache:v2:$baseUrl:$path"
-            val legacy = if (page == null) store.get(legacyKey)?.let { codec.decodeFromString<Items<Product>>(it) } else null
+            val legacy = if (page == null) store.get(legacyKey)?.let { decodeCached<Items<Product>>(it) } else null
             val loaded = try {
-                legacy?.let { Loaded(it, offline = true, savedAt = 0) } ?: request<Items<Product>>(path)
+                request<Items<Product>>(path)
             } catch (e: CatalogUnavailable) {
                 if (page != null) {
                     val saved = page.ids.mapNotNull { record(it, historical)?.product }.filter { it.isDiscoverable() }
                     return@withContext Loaded(Items(saved, page.nextAfter), offline = true, savedAt = page.savedAt)
                 }
+                legacy?.let { return@withContext Loaded(it.copy(items = it.items.filter { p -> p.isDiscoverable() }), offline = true, savedAt = 0) }
                 throw e
+            }
+            if (loaded.offline && page != null) {
+                val saved = page.ids.mapNotNull { record(it, historical)?.product }.filter { it.isDiscoverable() }
+                return@withContext Loaded(Items(saved, page.nextAfter), offline = true, savedAt = page.savedAt)
             }
             syncLock.withLock {
                 val at = if (loaded.offline) 0 else platformNow()
@@ -155,7 +166,7 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
                 var failed = false
                 for (batch in missing.chunked(PRODUCT_SYNC_BATCH)) {
                     try {
-                        syncBatch(batch)
+                        if (!syncBatch(batch)) failed = true
                     } catch (e: CancellationException) {
                         throw e
                     } catch (_: Exception) {
@@ -171,7 +182,7 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
             val at = platformNow()
             if (!force && lastFailedAttempt?.let { at - it in 0 until PRODUCT_SYNC_INTERVAL } == true) return@withLock
             val due = disk.keys(prefix).mapNotNull { key ->
-                val row = disk.get(key)?.let { codec.decodeFromString<ProductRecord>(it) } ?: return@mapNotNull null
+                val row = disk.get(key)?.let { decodeCached<ProductRecord>(it) } ?: return@mapNotNull null
                 val id = key.substringAfterLast(':').toLongOrNull() ?: return@mapNotNull null
                 if ((onlyId != null && id != onlyId) || (!force && at - row.checkedAt in 0 until PRODUCT_SYNC_INTERVAL)) return@mapNotNull null
                 val historical = key.removePrefix(prefix).substringBefore(':') == "true"
@@ -180,12 +191,13 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
             if (due.isEmpty()) return@withLock
             var wrote = false
             try {
+                var incomplete = false
                 for (batch in due.chunked(PRODUCT_SYNC_BATCH)) {
-                    syncBatch(batch)
+                    if (!syncBatch(batch)) incomplete = true
                     wrote = true
                 }
-                lastFailedAttempt = null
-                syncFailed.value = false
+                lastFailedAttempt = if (incomplete) at else null
+                syncFailed.value = incomplete
             } catch (e: CancellationException) {
                 throw e
             } catch (_: Exception) {
@@ -197,7 +209,7 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
         }
     }
 
-    private suspend fun syncBatch(batch: List<SyncProduct>) {
+    private suspend fun syncBatch(batch: List<SyncProduct>): Boolean {
         val response = client.post(baseUrl.trimEnd('/') + "/v1/products/sync") {
             contentType(ContentType.Application.Json)
             setBody(codec.encodeToString(SyncRequest(batch)))
@@ -205,20 +217,29 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
         if (response.status.value !in 200..299) throw CatalogUnavailable()
         val updates = codec.decodeFromString<SyncResponse>(response.bodyAsText()).products
         val at = platformNow()
+        val pending = batch.associateBy { it.id to it.historical }.toMutableMap()
         for (update in updates) {
+            val key = update.id to update.historical
+            val requested = pending[key] ?: continue
             val prior = record(update.id, update.historical)
             val data = update.data
             val next = when {
                 update.removed -> ProductRecord(checkedAt = at, removed = true)
-                data != null -> ProductRecord(
+                data != null && data.product.id == requested.id &&
+                    data.product.isHistorical == requested.historical &&
+                    (!requested.comparison || data.items != null) -> ProductRecord(
                     product = data.product, comparison = data.items?.let { Comparison(data.product, it, data.coverageNote) },
                     version = update.version, checkedAt = at
                 )
-                prior != null && update.freshness != null -> prior.withFreshness(update.freshness, at)
+                prior?.product != null && update.freshness != null && requested.version != null &&
+                    update.version == requested.version && (!requested.comparison || prior.comparison != null) ->
+                    prior.withFreshness(update.freshness, at)
                 else -> continue
             }
             saveRecord(update.id, update.historical, next)
+            pending.remove(key)
         }
+        return pending.isEmpty()
     }
 
     suspend fun markets(demo:Boolean,historical:Boolean=false)=request<Items<Supermarket>>("/v1/supermarkets?demo=$demo&historical=$historical")

@@ -126,4 +126,23 @@ class RepositoryTest {
         assertEquals(listOf(old, newer), online.search("arroz", false).data.items)
         online.client.close()
     }
+    @Test fun refreshRepairsMissingProductsAndCanBypassAFreshSearch() = runTest {
+        val store = MemoryStore()
+        val first = Product(1, "Arroz", "Marca", 5000, "g", "pacote", "Mercearia",
+            minPriceCents = 2200, branchCount = 1, lastCollectedAt = platformNow())
+        val second = first.copy(id = 2)
+        var requests = 0
+        val repo = Repository(store, "https://example.test", HttpClient(MockEngine {
+            requests++
+            respond(codec.encodeToString(Items(listOf(first.copy(photoRevision = requests.toLong()), second))))
+        }))
+        assertEquals(2, repo.search("arroz", false).data.items.size)
+        store.remove(store.keys("products:v1:").single { it.endsWith(":2") })
+        assertEquals(2, repo.search("arroz", false).data.items.size)
+        assertEquals(2, requests)
+        val refreshed = repo.search("arroz", false, force = true).data.items
+        assertEquals(3L, refreshed.first().photoRevision)
+        assertEquals(3, requests)
+        repo.client.close()
+    }
 }

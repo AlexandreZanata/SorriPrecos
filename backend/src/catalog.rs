@@ -335,21 +335,6 @@ pub(crate) async fn import_in_transaction(
             sp.get::<i64, _>("product_id") == pid && sp.get::<String, _>("source_kind") == kind,
             "código de origem mudou de produto; revisão manual necessária"
         );
-        if kind == "retail"
-            && !demo
-            && let Some(photo) = r
-                .photo_source_url
-                .as_deref()
-                .and_then(crate::photos::trusted_url)
-        {
-            sqlx::query(
-                "UPDATE products SET photo_source_url=? WHERE id=? AND photo_source_url IS NULL",
-            )
-            .bind(photo.as_str())
-            .bind(pid)
-            .execute(&mut **tx)
-            .await?;
-        }
         let sid: i64 = sp.get("id");
         let previous=sqlx::query("SELECT id,price_cents,promotional_price_cents,collected_at FROM offers WHERE source_product_id=? AND branch_id=?").bind(sid).bind(&r.branch_id).fetch_optional(&mut **tx).await?;
         if previous
@@ -362,6 +347,27 @@ pub(crate) async fn import_in_transaction(
             p.get::<Option<i64>, _>("price_cents") != r.price_cents
                 || p.get::<Option<i64>, _>("promotional_price_cents") != r.promotional_price_cents
         });
+        if kind == "retail"
+            && !demo
+            && let Some(photo) = r
+                .photo_source_url
+                .as_deref()
+                .and_then(crate::photos::trusted_url)
+        {
+            sqlx::query(
+                "UPDATE products SET photo_source_url=?,photo_owner_id=? WHERE id=? AND
+                 (photo_source_url IS NULL OR (photo_owner_id IS NULL AND photo_source_url=?) OR
+                 (photo_owner_id=? AND photo_source_url<>?))",
+            )
+            .bind(photo.as_str())
+            .bind(sid)
+            .bind(pid)
+            .bind(photo.as_str())
+            .bind(sid)
+            .bind(photo.as_str())
+            .execute(&mut **tx)
+            .await?;
+        }
         let oid:i64=sqlx::query_scalar("INSERT INTO offers(source_product_id,product_id,supermarket_id,branch_id,price_cents,promotional_price_cents,offer_type,conditions,available,source_url,collected_at,valid_until) VALUES(?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(source_product_id,branch_id) DO UPDATE SET price_cents=excluded.price_cents,promotional_price_cents=excluded.promotional_price_cents,offer_type=excluded.offer_type,conditions=excluded.conditions,available=excluded.available,source_url=excluded.source_url,collected_at=excluded.collected_at,valid_until=excluded.valid_until RETURNING id")
             .bind(sid).bind(pid).bind(source).bind(&r.branch_id).bind(r.price_cents).bind(r.promotional_price_cents).bind(&r.offer_type).bind(&r.conditions).bind(r.available).bind(&r.source_url).bind(r.collected_at).bind(r.valid_until).fetch_one(&mut **tx).await?;
         if changed {
@@ -393,9 +399,10 @@ pub struct Product {
     pub reference_price_cents: Option<i64>,
     pub historical_branch_count: i64,
     pub photo_path: Option<String>,
+    pub photo_revision: i64,
 }
 
-pub const PRODUCT_FIELDS: &str = "p.id,p.gtin,p.name,p.brand,p.quantity,p.unit,p.presentation,p.category,p.is_demo, CASE WHEN p.photo_source_url IS NOT NULL THEN '/v1/products/' || p.id || '/photo' END AS photo_path, MIN(CASE WHEN o.available=1 AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN CASE WHEN o.offer_type IN ('regular','promotion') AND COALESCE(o.conditions,'')='' THEN COALESCE(o.promotional_price_cents,o.price_cents) ELSE o.price_cents END END) AS min_price_cents,MIN(CASE WHEN o.supermarket_id='atacadao' AND o.available IS NULL AND o.price_cents IS NOT NULL AND o.valid_until>=CAST(strftime('%s','now') AS INTEGER) AND o.collected_at>=CAST(strftime('%s','now') AS INTEGER)-172800 AND EXISTS(SELECT 1 FROM source_products u WHERE u.id=o.source_product_id AND u.source_kind='retail' AND u.source_id LIKE 'flyer-%') THEN o.price_cents END) AS unconfirmed_price_cents,MIN(CASE WHEN o.supermarket_id='atacadao' AND o.available IS NULL AND o.price_cents IS NOT NULL AND o.valid_until>=CAST(strftime('%s','now') AS INTEGER) AND o.collected_at>=CAST(strftime('%s','now') AS INTEGER)-172800 AND EXISTS(SELECT 1 FROM source_products u WHERE u.id=o.source_product_id AND u.source_kind='retail' AND u.source_id LIKE 'flyer-%') THEN o.valid_until END) AS unconfirmed_valid_until,MAX(o.collected_at) AS last_collected_at, COUNT(DISTINCT CASE WHEN o.available=1 AND o.price_cents IS NOT NULL AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN o.branch_id END) AS branch_count, MIN(CASE WHEN o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.price_cents END) AS reference_price_cents, COUNT(DISTINCT CASE WHEN o.price_cents IS NOT NULL AND o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.branch_id END) AS historical_branch_count";
+pub const PRODUCT_FIELDS: &str = "p.id,p.gtin,p.name,p.brand,p.quantity,p.unit,p.presentation,p.category,p.is_demo, CASE WHEN p.photo_source_url IS NOT NULL THEN '/v1/products/' || p.id || '/photo' END AS photo_path,p.photo_revision, MIN(CASE WHEN o.available=1 AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN CASE WHEN o.offer_type IN ('regular','promotion') AND COALESCE(o.conditions,'')='' THEN COALESCE(o.promotional_price_cents,o.price_cents) ELSE o.price_cents END END) AS min_price_cents,MIN(CASE WHEN o.supermarket_id='atacadao' AND o.available IS NULL AND o.price_cents IS NOT NULL AND o.valid_until>=CAST(strftime('%s','now') AS INTEGER) AND o.collected_at>=CAST(strftime('%s','now') AS INTEGER)-172800 AND EXISTS(SELECT 1 FROM source_products u WHERE u.id=o.source_product_id AND u.source_kind='retail' AND u.source_id LIKE 'flyer-%') THEN o.price_cents END) AS unconfirmed_price_cents,MIN(CASE WHEN o.supermarket_id='atacadao' AND o.available IS NULL AND o.price_cents IS NOT NULL AND o.valid_until>=CAST(strftime('%s','now') AS INTEGER) AND o.collected_at>=CAST(strftime('%s','now') AS INTEGER)-172800 AND EXISTS(SELECT 1 FROM source_products u WHERE u.id=o.source_product_id AND u.source_kind='retail' AND u.source_id LIKE 'flyer-%') THEN o.valid_until END) AS unconfirmed_valid_until,MAX(o.collected_at) AS last_collected_at, COUNT(DISTINCT CASE WHEN o.available=1 AND o.price_cents IS NOT NULL AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN o.branch_id END) AS branch_count, MIN(CASE WHEN o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.price_cents END) AS reference_price_cents, COUNT(DISTINCT CASE WHEN o.price_cents IS NOT NULL AND o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.branch_id END) AS historical_branch_count";
 
 pub async fn search(
     pool: &SqlitePool,
