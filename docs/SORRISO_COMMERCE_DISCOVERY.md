@@ -1875,3 +1875,7 @@ As páginas públicas foram novamente consultadas, com identidade e endereço co
 - **Restaurante Tinelli:** vendedor 113383, CNPJ 54.167.254/0001-28, Avenida Noêmia Tonello Dalmolin, 1125. A vitrine informa CEP genérico 78890-000; o cadastro fiscal informa 78893-148. Foram examinadas 134 variantes e normalizadas 51.
 
 **Pamonha Mineira Sorriso:** permanece pendente: a vitrine omite o número do endereço, embora o cadastro fiscal indique 1016. Esse dado não deve ser inventado para satisfazer a validação da filial.
+
+### Atacadão: encarte oficial estruturado (04/11/2026)
+
+A página HTTPS da filial de Sorriso passou a responder com um encarte vigente e identificador local. O leitor documentado em [Encarte público do Atacadão](ATACADAO_OFFICIAL_FLYERS.md) importou 90 itens conservadores para o banco principal com estoque desconhecido, preço geral e condições de aplicativo/cartão separadas. A busca e o ranking atuais não exibem esses itens enquanto o estoque não for confirmado. O canal Clube Mais Machado também foi revisitado, mas apresentou login obrigatório no caminho de tabloide.

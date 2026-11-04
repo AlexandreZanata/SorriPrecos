@@ -83,9 +83,10 @@
     },
     {
       "market": "atacadao",
-      "status": "pending_sorriso_context",
-      "reason": "Página institucional da unidade existe. A vitrine indexada exibe CEP 02170-901. A consulta direta do ingestor falhou na validação TLS.",
-      "checked_url": "https://www.atacadao.com.br/loja/sorriso"
+      "status": "enabled_unconfirmed_stock",
+      "reason": "Encarte oficial da filial de Sorriso (storeId 899) recuperado por HTTPS; leitor dos metadados estruturados registra preço geral e condições, com estoque desconhecido. Produtos não entram no ranking de ofertas disponíveis.",
+      "checked_url": "https://www.atacadao.com.br/loja/sorriso",
+      "flyer_documentation": "docs/ATACADAO_OFFICIAL_FLYERS.md"
     },
     {
       "market": "amazonas",

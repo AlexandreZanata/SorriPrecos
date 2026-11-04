@@ -1,0 +1,15 @@
+[Unit]
+Description=SorriPrecos - encartes publicos do Atacadao Sorriso
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/PESSOAL-PROJETOS-ALEXANDRE/SorriPrecos
+Environment=DATABASE_URL=sqlite://data/sorriprecos.db
+ExecStart=/usr/bin/python3 scripts/collect_atacadao_flyers.py --binary artifacts/sorriprecos-atacadao --watch
+Restart=on-failure
+RestartSec=30
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target
