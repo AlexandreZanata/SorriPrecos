@@ -78,7 +78,7 @@ pub(crate) async fn load(pool: &SqlitePool, id: i64) -> Result<Option<Vec<u8>>> 
     let Some(url) = source.as_deref().and_then(trusted_url) else {
         return Ok(None);
     };
-    let _permit = SLOTS.try_acquire()?;
+    let _permit = tokio::time::timeout(Duration::from_secs(10), SLOTS.acquire()).await??;
     let mut response = CLIENT.get(url).send().await?.error_for_status()?;
     ensure!(response.status().is_success(), "resposta de foto inválida");
     ensure!(

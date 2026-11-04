@@ -10,6 +10,10 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
@@ -107,12 +111,20 @@ internal enum class Glyph {
 internal val LocalPhotoOrigin = staticCompositionLocalOf { "" }
 
 @Composable internal fun ProductArtwork(product: Product, modifier: Modifier = Modifier.padding(end = 10.dp).size(width = 76.dp, height = 93.dp).clip(RoundedCornerShape(10.dp))) {
-    val path = product.photoPath ?: return
-    if (path != "/v1/products/${product.id}/photo") return
-    AsyncImage(
-        model = LocalPhotoOrigin.current.trimEnd('/') + path,
-        contentDescription = "Foto de ${product.name}",
-        contentScale = ContentScale.Fit,
-        modifier = modifier
-    )
+    val path = product.photoPath?.takeIf { it == "/v1/products/${product.id}/photo" }
+    var failed by remember(product.id, path) { mutableStateOf(path == null) }
+    Box(modifier, contentAlignment = Alignment.Center) {
+        if (failed || path == null) {
+            Text("Foto indisponível", fontSize = 10.sp, lineHeight = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        } else {
+            AsyncImage(
+                model = LocalPhotoOrigin.current.trimEnd('/') + path,
+                contentDescription = "Foto de ${product.name}",
+                contentScale = ContentScale.Fit,
+                onError = { failed = true },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    }
 }
