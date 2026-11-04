@@ -1282,6 +1282,31 @@ Em 2026-11-03, os três GETs públicos de produto retornaram HTTP 200 sem login,
 
 As URLs de consumidor em `www.magazineluiza.com.br` responderam HTTP 403 na consulta direta. Duas páginas do Magazine Você encaminharam a leitura para uma verificação do visitante. Os resultados acima usam as páginas públicas do Magalu Empresas.
 
+#### Paginação pública e outros vendedores
+
+O estado da [vitrine da Império Joias](https://www.magaluempresas.com.br/lojista/imperiojoiasltda) publica a rota de leitura em `props.pageProps.dataResponse.searchProducts.fetchOptions.url`. O frontend usa o POST abaixo para paginar, sem login, cookie enviado ou token. O parâmetro `?page=N` na URL da loja retornou sempre a primeira página do HTML. No JSON do POST, confira `current_page`, `total_pages`, os SKUs únicos e o vendedor, CNPJ e cidade em cada oferta.
+
+```sh
+seller=imperiojoiasltda
+page=2
+jq -nc --arg seller "$seller" --argjson page "$page" '{
+  term: "",
+  filters: [{type: "seller", values: [$seller]}],
+  seller_id: $seller,
+  page: $page,
+  rows: 30,
+  sortOrientation: "desc",
+  sortType: "score"
+}' | curl -fsS -H 'Content-Type: application/json' --data-binary @- \
+  'https://www.magaluempresas.com.br/api/products/search'
+```
+
+- **Império Joias · 37.437.410/0001-04 · vendedor `imperiojoiasltda`.** Avenida Tancredo Neves, 1863, sala B, em ambas as fontes. CEP 78890-000 no marketplace e 78890-032 no cadastro ativo. O POST retornou 20, 30, 30 e 11 SKUs distintos nas quatro páginas. O HTML inicial trouxe 30 SKUs, dos quais dez estavam ausentes do POST. A união das duas leituras confirmou 101 SKUs distintos, todos com preço positivo, disponibilidade online e o mesmo CNPJ de Sorriso. O relógio Orient Neo Sports `jcga7jd86k`, encontrado na terceira página, publicou R$ 570,00 e R$ 541,50 no Pix também no GET do produto. [Catálogo](https://www.magaluempresas.com.br/lojista/imperiojoiasltda) · [Produto](https://www.magaluempresas.com.br/relogio-masculino-orient-analogico-neo-sports-mbss1270-s2sx/p/jcga7jd86k/re/rgma)
+- **Essenze Dermocosméticos · 13.513.107/0001-85 · vendedor `essenzedermocosmeticos`.** O CNPJ ativo coincide. Rua das Videiras, 775, CEP 78890-000 no marketplace e nº 805, CEP 78896-024, no cadastro. A unidade de retirada segue pendente. O catálogo HTML e o POST público trouxeram 15 SKUs em uma página, com preço positivo, disponibilidade online e o CNPJ local. O protetor solar `hd89hb2e29` publicou R$ 219,90 no GET do produto. Classifique a vitrine como cosméticos e aparelhos de estética. [Catálogo](https://www.magaluempresas.com.br/lojista/essenzedermocosmeticos) · [Produto](https://www.magaluempresas.com.br/cosmoblock-uv-protect-fps70-control-fluid-18hs-cosmobeauty/p/hd89hb2e29/pf/pfla)
+- **Jess Lingerie · 36.575.230/0001-26 · vendedor `jesslingerie`.** Rua Tangará, 790, CEP 78890-000, coincide com o cadastro ativo. O marketplace informa box 35. O conjunto `kj9k83dh13` retornou HTTP 200, R$ 59,90 e disponibilidade online no Magalu Empresas. Preserve o SKU por cor e tamanho. A rota do lojista redirecionou para `/product-not-found` e o POST devolveu zero itens. O catálogo completo segue pendente. [Produto](https://www.magaluempresas.com.br/conjunto-liso-calcinha-e-sutia-jess-lingerie/p/kj9k83dh13/md/cjlg) · [Rota do lojista](https://www.magaluempresas.com.br/lojista/jesslingerie)
+
+Para **Celebrare Festas** e **Zuriel Semijoias**, o POST com o filtro do respectivo vendedor também devolveu zero itens, embora os GETs individuais documentados acima tenham ofertas. Mantenha a consulta por produto como evidência e a cobertura completa como pendente.
+
 ### Vitrines arquivadas, preços regionais e loja em pré-lançamento
 
 - **Vitrine Sorriso.** A cópia indexada do diretório lista três lojas. A leitura direta da raiz, do diretório, de cada loja e da amostra de produto devolveu HTTP 200 com o mesmo HTML de estacionamento da Hostinger. A evidência indexada serve para identificar as vitrines históricas. Confirme o domínio ativo e o CNPJ antes de atribuir preços. [Diretório examinado](https://www.vitrinesorriso.com/lojas)
