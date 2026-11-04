@@ -11,7 +11,7 @@ use reqwest::{
     Client, Method,
     header::{AUTHORIZATION, HeaderMap, HeaderValue},
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use sqlx::SqlitePool;
 use std::{
@@ -116,6 +116,7 @@ pub struct Http {
     requests: i64,
     delay: Duration,
     token: Option<HeaderValue>,
+    retry_at: Option<i64>,
 }
 impl Http {
     fn new(c: &Config) -> Result<Self> {
@@ -135,6 +136,7 @@ impl Http {
             requests: 0,
             delay: Duration::from_millis(c.delay_ms),
             token: None,
+            retry_at: None,
         })
     }
     async fn bytes(&mut self, url: &str, body: Option<Value>, use_token: bool) -> Result<Vec<u8>> {
@@ -178,7 +180,20 @@ impl Http {
                 }
                 Err(_) => bail!("origem sem resposta dentro do prazo"),
             };
-            if response.status().as_u16() == 429 || response.status().is_server_error() {
+            let status = response.status();
+            if status.as_u16() == 429 || status.as_u16() == 503 {
+                let value = response
+                    .headers()
+                    .get("Retry-After")
+                    .and_then(|v| v.to_str().ok());
+                let seconds = crate::adapters::retry_delay(value, 0)
+                    .max(Duration::from_secs(600))
+                    .as_secs();
+                self.retry_at =
+                    Some(now().saturating_add(i64::try_from(seconds).unwrap_or(i64::MAX)));
+                bail!("origem solicitou adiamento; HTTP {status}");
+            }
+            if status.is_server_error() {
                 let delay = crate::adapters::retry_delay(
                     response
                         .headers()
@@ -541,8 +556,63 @@ fn category_map(tree: &[Value], prefix: &str, map: &mut HashMap<i64, String>) {
     }
 }
 
+const PAGES_PER_ROUND: usize = 32;
+
+#[derive(Deserialize, Serialize)]
+struct Checkpoint {
+    run: i64,
+    departments: Vec<i64>,
+    department: usize,
+    page: usize,
+    pages: usize,
+    expected: usize,
+    count: usize,
+    #[serde(default = "consistent")]
+    consistent: bool,
+}
+
+fn consistent() -> bool {
+    true
+}
+
+impl Checkpoint {
+    fn new(run: i64, departments: Vec<i64>) -> Self {
+        Self {
+            run,
+            departments,
+            department: 0,
+            page: 1,
+            pages: 0,
+            expected: 0,
+            count: 0,
+            consistent: true,
+        }
+    }
+
+    fn advance(&mut self, entries: usize) {
+        self.count += entries;
+        if self.page >= self.pages {
+            self.consistent &= self.count == self.expected;
+            self.department += 1;
+            self.page = 1;
+            self.count = 0;
+        } else {
+            self.page += 1;
+        }
+    }
+}
+
+async fn save_checkpoint(pool: &SqlitePool, branch: &str, checkpoint: &Checkpoint) -> Result<()> {
+    sqlx::query("INSERT INTO vip_catalogue_scan(branch_id,checkpoint) VALUES(?,?) ON CONFLICT(branch_id) DO UPDATE SET checkpoint=excluded.checkpoint")
+        .bind(branch).bind(serde_json::to_string(checkpoint)?).execute(pool).await?;
+    Ok(())
+}
+
 pub async fn collect(pool: &SqlitePool, c: &Config) -> Result<()> {
     c.validate()?;
+    if crate::adapters::origin_paused(pool, ORIGIN).await? {
+        return Ok(());
+    }
     sqlx::query("INSERT INTO catalogue_collectors(supermarket_id,adapter,interval_seconds) VALUES(?,'vipcommerce',?) ON CONFLICT(supermarket_id) DO UPDATE SET interval_seconds=excluded.interval_seconds").bind(&c.supermarket_id).bind(c.interval_seconds as i64).execute(pool).await?;
     let claim=sqlx::query("UPDATE catalogue_collectors SET status='running',last_started_at=?,last_error=NULL WHERE supermarket_id=? AND (last_started_at IS NULL OR last_started_at<=?) AND (status!='running' OR last_started_at<?)").bind(now()).bind(&c.supermarket_id).bind(now()-c.interval_seconds as i64).bind(now()-1800).execute(pool).await?;
     if claim.rows_affected() == 0 {
@@ -553,6 +623,7 @@ pub async fn collect(pool: &SqlitePool, c: &Config) -> Result<()> {
     let mut raw_count = 0i64;
     let mut normalized_count = 0i64;
     let mut rejected_cities = 0i64;
+    let mut all_complete = true;
     let started = Instant::now();
     let result:Result<()>=async {
         let identity=http.json(&format!("/api-admin/v1/organizacoes/filiais/dominio/{}",c.domain),false).await?;
@@ -578,50 +649,87 @@ pub async fn collect(pool: &SqlitePool, c: &Config) -> Result<()> {
             let tree=http.json(&format!("{root}/classificacoes_mercadologicas/departamentos/arvore"),true).await?;
             let departments=tree["data"].as_array().context("departamentos inválidos")?;ensure!(!departments.is_empty(),"catálogo sem departamentos");
             let mut categories=HashMap::new();category_map(departments,"",&mut categories);
-            let mut seen=HashSet::new();let mut total_pages=0usize;
-            for d in departments {
-                let dep=d["classificacao_mercadologica_id"].as_i64().context("departamento sem ID")?;
-                let mut pages=1usize;let mut count=0usize;let mut expected=0usize;
-                for page in 1..=c.max_pages {
-                    ensure!(started.elapsed()<Duration::from_secs(540),"catálogo excedeu nove minutos; continuar na próxima execução sem sobreposição");
-                    total_pages+=1;ensure!(total_pages<=c.max_pages,"limite total de páginas atingido");
-                    let body=http.json(&format!("{root}/classificacoes_mercadologicas/departamentos/{dep}/produtos?page={page}&limit={}",c.page_size),true).await?;
-                    let paging=&body["paginator"];let reported=paging["total_items"].as_u64().context("paginação sem total")? as usize;
-                    let declared=paging["total_pages"].as_u64().context("paginação sem páginas")? as usize;
-                    ensure!(paging["page"]==page as u64 && declared<=c.max_pages,"paginação inválida");
-                    if page==1 {pages=declared;expected=reported;} else {ensure!(expected==reported && pages==declared,"catálogo mudou durante a paginação; nova coleta necessária");}
-                    let entries=body["data"].as_array().or_else(||body["data"]["produtos"].as_array()).context("página sem produtos")?;
-                    count+=entries.len();let observed=now();let mut normalized=Vec::new();
-                    for p in entries {
-                        let id=p["produto_id"].as_i64().context("item sem ID")?;if !seen.insert(id){continue;}
-                        let category=p["classificacao_mercadologica_id"].as_i64().and_then(|id|categories.get(&id)).map(String::as_str).unwrap_or("Supermercado");
-                        let parsed=normalize_product(p,b,&c.website,category,observed);
-                        let (ok,reason)=match &parsed {Ok(_)=>(true,None),Err(e)=>(false,Some(e.to_string()))};
-                        sqlx::query("INSERT INTO source_catalog_items(supermarket_id,branch_id,source_id,raw_json,observed_at,run_id,normalized,reason) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(supermarket_id,branch_id,source_id) DO UPDATE SET raw_json=excluded.raw_json,observed_at=excluded.observed_at,run_id=excluded.run_id,normalized=excluded.normalized,reason=excluded.reason").bind(&c.supermarket_id).bind(&b.branch_id).bind(format!("vip-{id}")).bind(serde_json::to_string(p)?).bind(observed).bind(run).bind(ok).bind(reason).execute(pool).await?;
-                        raw_count+=1;if let Ok(row)=parsed {normalized.push(row);}
-                    }
-                    if !normalized.is_empty() {
-                        if catalog::import(pool,&c.supermarket_id,&normalized,Some(BASIS)).await.is_ok() {normalized_count+=normalized.len() as i64;}
-                        else {for row in normalized {match catalog::import(pool,&c.supermarket_id,std::slice::from_ref(&row),Some(BASIS)).await {
-                            Ok(_)=>normalized_count+=1,
-                            Err(e)=>{sqlx::query("UPDATE source_catalog_items SET normalized=0,reason=? WHERE supermarket_id=? AND branch_id=? AND source_id=?").bind(e.to_string()).bind(&c.supermarket_id).bind(&b.branch_id).bind(&row.source_id).execute(pool).await?;}
-                        }}}
-                    }
-                    tracing::info!(source=%c.supermarket_id,department=dep,page,pages,raw=raw_count,normalized=normalized_count,"public_catalog_page");
-                    if page>=pages {break;}
+            let mut ids = departments.iter().map(|d| d["classificacao_mercadologica_id"].as_i64().context("departamento sem ID"))
+                .collect::<Result<Vec<_>>>()?;
+            ids.sort_unstable();
+            ids.dedup();
+            let saved: Option<String> = sqlx::query_scalar("SELECT checkpoint FROM vip_catalogue_scan WHERE branch_id=?")
+                .bind(&b.branch_id).fetch_optional(pool).await?;
+            let mut checkpoint = saved.as_deref().map(serde_json::from_str::<Checkpoint>).transpose()?
+                .filter(|state| state.departments == ids)
+                .unwrap_or_else(|| Checkpoint::new(run, ids));
+            for _ in 0..(PAGES_PER_ROUND / c.branches.len()).max(1) {
+                if started.elapsed() >= Duration::from_secs(480) { break; }
+                let Some(&dep) = checkpoint.departments.get(checkpoint.department) else { break };
+                let page = checkpoint.page;
+                let body=http.json(&format!("{root}/classificacoes_mercadologicas/departamentos/{dep}/produtos?page={page}&limit={}",c.page_size),true).await?;
+                let paging=&body["paginator"];
+                let reported=paging["total_items"].as_u64().context("paginação sem total")? as usize;
+                let declared=paging["total_pages"].as_u64().context("paginação sem páginas")? as usize;
+                ensure!(paging["page"]==page as u64 && declared<=c.max_pages,"paginação inválida");
+                if page > 1 && (checkpoint.expected != reported || checkpoint.pages != declared) {
+                    // Keep walking a moving catalogue, but do not use this sweep to retire offers.
+                    checkpoint.consistent = false;
                 }
-                ensure!(count==expected,"departamento incompleto; dados anteriores preservados");
+                checkpoint.pages = declared;
+                checkpoint.expected = reported;
+                let entries=body["data"].as_array().or_else(||body["data"]["produtos"].as_array()).context("página sem produtos")?;
+                checkpoint.advance(entries.len());
+                let observed=now();
+                let mut normalized=Vec::new();
+                let mut seen=HashSet::new();
+                for p in entries {
+                    let id=p["produto_id"].as_i64().context("item sem ID")?;
+                    if !seen.insert(id) { continue; }
+                    let category=p["classificacao_mercadologica_id"].as_i64().and_then(|id|categories.get(&id)).map(String::as_str).unwrap_or("Supermercado");
+                    let parsed=normalize_product(p,b,&c.website,category,observed);
+                    let (ok,reason)=match &parsed {Ok(_)=>(true,None),Err(e)=>(false,Some(e.to_string()))};
+                    sqlx::query("INSERT INTO source_catalog_items(supermarket_id,branch_id,source_id,raw_json,observed_at,run_id,normalized,reason) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(supermarket_id,branch_id,source_id) DO UPDATE SET raw_json=excluded.raw_json,observed_at=excluded.observed_at,run_id=excluded.run_id,normalized=excluded.normalized,reason=excluded.reason")
+                        .bind(&c.supermarket_id).bind(&b.branch_id).bind(format!("vip-{id}")).bind(serde_json::to_string(p)?).bind(observed).bind(checkpoint.run).bind(ok).bind(reason).execute(pool).await?;
+                    raw_count+=1;
+                    if let Ok(row)=parsed {normalized.push(row);}
+                }
+                if !normalized.is_empty() {
+                    if catalog::import(pool,&c.supermarket_id,&normalized,Some(BASIS)).await.is_ok() {normalized_count+=normalized.len() as i64;}
+                    else {for row in normalized {match catalog::import(pool,&c.supermarket_id,std::slice::from_ref(&row),Some(BASIS)).await {
+                        Ok(_)=>normalized_count+=1,
+                        Err(e)=>{sqlx::query("UPDATE source_catalog_items SET normalized=0,reason=? WHERE supermarket_id=? AND branch_id=? AND source_id=?").bind(e.to_string()).bind(&c.supermarket_id).bind(&b.branch_id).bind(&row.source_id).execute(pool).await?;}
+                    }}}
+                }
+                save_checkpoint(pool, &b.branch_id, &checkpoint).await?;
+                tracing::info!(source=%c.supermarket_id,department=dep,page,pages=declared,raw=raw_count,normalized=normalized_count,"public_catalog_page");
             }
-            // Missing or unnormalizable rows never imply stock=false, but cannot remain current eligible offers.
-            sqlx::query("UPDATE offers SET available=NULL WHERE supermarket_id=? AND branch_id=? AND source_product_id IN(SELECT id FROM source_products WHERE supermarket_id=? AND source_kind='retail' AND source_id LIKE 'vip-%' AND NOT EXISTS(SELECT 1 FROM source_catalog_items i WHERE i.supermarket_id=source_products.supermarket_id AND i.branch_id=? AND i.source_id=source_products.source_id AND i.run_id=? AND i.normalized=1))").bind(&c.supermarket_id).bind(&b.branch_id).bind(&c.supermarket_id).bind(&b.branch_id).bind(run).execute(pool).await?;
+            if checkpoint.department < checkpoint.departments.len() {
+                all_complete = false;
+                continue;
+            }
+            let valid: bool = sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM source_catalog_items WHERE supermarket_id=? AND branch_id=? AND run_id=? AND normalized=1)")
+                .bind(&c.supermarket_id).bind(&b.branch_id).bind(checkpoint.run).fetch_one(pool).await?;
+            ensure!(valid, "varredura sem produtos normalizados");
+            let mut tx = pool.begin_with("BEGIN IMMEDIATE").await?;
+            // A complete, consistent sweep is required to retire missing items.
+            if checkpoint.consistent {
+                sqlx::query("UPDATE offers SET available=NULL WHERE supermarket_id=? AND branch_id=? AND source_product_id IN(SELECT id FROM source_products WHERE supermarket_id=? AND source_kind='retail' AND source_id LIKE 'vip-%' AND NOT EXISTS(SELECT 1 FROM source_catalog_items i WHERE i.supermarket_id=source_products.supermarket_id AND i.branch_id=? AND i.source_id=source_products.source_id AND i.run_id=? AND i.normalized=1))").bind(&c.supermarket_id).bind(&b.branch_id).bind(&c.supermarket_id).bind(&b.branch_id).bind(checkpoint.run).execute(&mut *tx).await?;
+            } else {
+                all_complete = false;
+            }
+            sqlx::query("DELETE FROM vip_catalogue_scan WHERE branch_id=?").bind(&b.branch_id).execute(&mut *tx).await?;
+            tx.commit().await?;
         }
-        ensure!(raw_count>0 && normalized_count>0,"nenhum produto normalizado");
         sqlx::query("UPDATE supermarkets SET integration_status='authorized' WHERE id=?").bind(&c.supermarket_id).execute(pool).await?;
         Ok(())
     }.await;
+    if let Some(retry_at) = http.retry_at {
+        crate::adapters::defer_origin(pool, ORIGIN, retry_at).await?;
+    }
+    let status = match (result.is_ok(), all_complete) {
+        (false, _) => "failed",
+        (true, false) => "partial",
+        (true, true) => "success",
+    };
     let error = result.as_ref().err().map(ToString::to_string);
-    sqlx::query("UPDATE collection_runs SET status=?,finished_at=?,imported=?,requests=?,error=? WHERE id=?").bind(if result.is_ok(){"success"}else{"failed"}).bind(now()).bind(normalized_count).bind(http.requests).bind(&error).bind(run).execute(pool).await?;
-    sqlx::query("UPDATE catalogue_collectors SET status=?,last_finished_at=?,last_error=?,requests=?,raw_items=?,normalized_items=?,scope_rejected=?,last_success_at=CASE WHEN ? THEN ? ELSE last_success_at END WHERE supermarket_id=?").bind(if result.is_ok(){"success"}else{"failed"}).bind(now()).bind(&error).bind(http.requests).bind(raw_count).bind(normalized_count).bind(rejected_cities).bind(result.is_ok()).bind(now()).bind(&c.supermarket_id).execute(pool).await?;
+    sqlx::query("UPDATE collection_runs SET status=?,finished_at=?,imported=?,requests=?,error=? WHERE id=?").bind(status).bind(now()).bind(normalized_count).bind(http.requests).bind(&error).bind(run).execute(pool).await?;
+    sqlx::query("UPDATE catalogue_collectors SET status=?,last_finished_at=?,last_error=?,requests=?,raw_items=?,normalized_items=?,scope_rejected=?,last_success_at=CASE WHEN ? THEN ? ELSE last_success_at END WHERE supermarket_id=?").bind(status).bind(now()).bind(&error).bind(http.requests).bind(raw_count).bind(normalized_count).bind(rejected_cities).bind(result.is_ok()).bind(now()).bind(&c.supermarket_id).execute(pool).await?;
     result
 }
 pub async fn run(pool: &SqlitePool, path: &Path, watch: bool) -> Result<()> {
@@ -650,6 +758,20 @@ pub async fn run(pool: &SqlitePool, path: &Path, watch: bool) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn incomplete_department_advances_but_cannot_retire_offers() {
+        let mut checkpoint = Checkpoint::new(1, vec![1, 2]);
+        checkpoint.pages = 2;
+        checkpoint.expected = 150;
+        checkpoint.advance(100);
+        assert_eq!((checkpoint.department, checkpoint.page), (0, 2));
+        let saved = serde_json::to_string(&checkpoint).unwrap();
+        let mut checkpoint: Checkpoint = serde_json::from_str(&saved).unwrap();
+        checkpoint.advance(40);
+        assert_eq!((checkpoint.department, checkpoint.page), (1, 1));
+        assert!(!checkpoint.consistent);
+    }
+
     fn branch() -> Branch {
         Branch {
             distribution_id: Some(1),

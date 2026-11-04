@@ -202,7 +202,10 @@ async fn scan(pool: &SqlitePool, client: &reqwest::Client, limit: usize) -> Resu
         return Ok(Duration::from_secs((retry - now()).max(1) as u64));
     }
     let manifest = client.get(format!("{ORIGIN}/sitemap.xml")).send().await?;
-    if manifest.status() == StatusCode::TOO_MANY_REQUESTS {
+    if matches!(
+        manifest.status(),
+        StatusCode::TOO_MANY_REQUESTS | StatusCode::SERVICE_UNAVAILABLE
+    ) {
         let delay = retry_after(&manifest);
         sqlx::query("INSERT INTO pharmacy_scan(supermarket_id,next_page,retry_at) VALUES(?,0,?) ON CONFLICT(supermarket_id) DO UPDATE SET retry_at=excluded.retry_at")
             .bind(SOURCE).bind(now() + delay.as_secs() as i64).execute(pool).await?;
@@ -224,11 +227,14 @@ async fn scan(pool: &SqlitePool, client: &reqwest::Client, limit: usize) -> Resu
     let mut rows = Vec::new();
     let mut requests = 1;
     for url in pages.iter().skip(start).take(limit) {
-        tokio::time::sleep(Duration::from_millis(500)).await;
+        tokio::time::sleep(Duration::from_secs(1)).await;
         requests += 1;
         let response = client.get(url.clone()).send().await;
         if let Ok(response) = &response
-            && response.status() == StatusCode::TOO_MANY_REQUESTS
+            && matches!(
+                response.status(),
+                StatusCode::TOO_MANY_REQUESTS | StatusCode::SERVICE_UNAVAILABLE
+            )
         {
             delay = retry_after(response);
             retry = Some(now() + delay.as_secs() as i64);

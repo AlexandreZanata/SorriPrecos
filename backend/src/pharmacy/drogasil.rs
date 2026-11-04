@@ -127,6 +127,9 @@ fn rows(reply: &Value, observed: i64) -> Result<Vec<ImportRow>> {
 }
 
 pub(super) async fn collect(pool: &SqlitePool) -> Result<usize> {
+    if crate::adapters::origin_paused(pool, ORIGIN).await? {
+        return Ok(0);
+    }
     let request = json!({
         "operationName": "GET_STOCK", "query": STOCK_QUERY,
         "variables": {"zipcode":"78890168","products":[{"sku":SKU.to_string(),"quantity":1}],"logotype":"RD","maxQuantityBranchSearch":"3"}
@@ -139,6 +142,8 @@ pub(super) async fn collect(pool: &SqlitePool) -> Result<usize> {
             "--silent",
             "--show-error",
             "--fail",
+            "--write-out",
+            "\n%{http_code}\n%header{retry-after}",
             "--max-time",
             "12",
             "--max-filesize",
@@ -157,12 +162,24 @@ pub(super) async fn collect(pool: &SqlitePool) -> Result<usize> {
         .output()
         .await
         .context("não foi possível executar curl para consultar a Drogasil")?;
+    let output = std::str::from_utf8(&response.stdout)?;
+    let mut parts = output.rsplitn(3, '\n');
+    let retry = parts.next();
+    let status = parts.next().unwrap_or_default();
+    let body = parts
+        .next()
+        .context("consulta Drogasil sem resposta HTTP")?;
+    if matches!(status, "429" | "503") {
+        let delay = crate::adapters::retry_delay(retry, 0).as_secs().max(600);
+        let retry_at = now().saturating_add(i64::try_from(delay).unwrap_or(i64::MAX));
+        crate::adapters::defer_origin(pool, ORIGIN, retry_at).await?;
+    }
     anyhow::ensure!(
         response.status.success(),
         "consulta de estoque Drogasil: {}",
         String::from_utf8_lossy(&response.stderr).trim()
     );
-    let stock: Value = serde_json::from_slice(&response.stdout)?;
+    let stock: Value = serde_json::from_str(body)?;
     let rows = rows(&stock, now())?;
     if rows.is_empty() {
         return Ok(0);

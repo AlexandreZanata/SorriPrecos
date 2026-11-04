@@ -1,24 +1,17 @@
-//! Small, verified pharmacy catalogue. Only the public simulation proves a local offer.
+//! VTEX storefront catalogue and branch-specific checkout validation.
+mod scan;
 use crate::{
     catalog::{self, ImportRow},
     normalize, now, photos,
 };
 use anyhow::{Context, Result, ensure};
 use regex::Regex;
-use reqwest::{Client, StatusCode, Url};
-use serde_json::{Value, json};
+use reqwest::{Client, Url};
+use serde_json::Value;
 use sqlx::SqlitePool;
 use std::{sync::LazyLock, time::Duration};
 
 const INTERVAL: Duration = Duration::from_secs(600);
-const DSP_SKUS: &[&str] = &[
-    "49697", "895083", "886513", // Higiene bucal
-    "85332", "18171", "326534", "170526", "618896", "148032", "764965", // Preservativos
-];
-const PM_SKUS: &[&str] = &[
-    "52572", "6958", "164998", "164188", "171834", // Higiene bucal
-    "2954", "97716", "101407", "51115", "47852", // Preservativos
-];
 
 struct Branch {
     market: &'static str,
@@ -28,7 +21,6 @@ struct Branch {
     street: &'static str,
     number: &'static str,
     cep: &'static str,
-    skus: &'static [&'static str],
 }
 
 const BRANCHES: &[Branch] = &[
@@ -40,7 +32,6 @@ const BRANCHES: &[Branch] = &[
         street: "natalino joao brescansin",
         number: "1722",
         cep: "78890-179",
-        skus: DSP_SKUS,
     },
     Branch {
         market: "pague-menos",
@@ -50,7 +41,6 @@ const BRANCHES: &[Branch] = &[
         street: "natalino joao brescansin",
         number: "1314",
         cep: "78890-134",
-        skus: PM_SKUS,
     },
     Branch {
         market: "pague-menos",
@@ -60,18 +50,35 @@ const BRANCHES: &[Branch] = &[
         street: "tancredo neves",
         number: "2198",
         cep: "78890-143",
-        skus: PM_SKUS,
     },
 ];
 
-fn local_price(body: &Value, branch: &Branch, sku: &str) -> Option<i64> {
+fn simulated_item<'a>(
+    body: &'a Value,
+    branch: &Branch,
+    sku: &str,
+    index: usize,
+) -> Option<&'a Value> {
     let items = body["items"].as_array()?;
-    let [item] = items.as_slice() else {
-        return None;
-    };
-    if item["id"] != sku
-        || item["availability"] != "available"
-        || item["sellerChain"].as_array()?.last()?.as_str()? != branch.seller
+    let item = items.iter().find(|item| {
+        item["id"] == sku
+            && (item["requestIndex"] == index
+                || (items.len() == 1 && index == 0 && item["requestIndex"].is_null()))
+    })?;
+    (item["sellerChain"].as_array()?.last()?.as_str()? == branch.seller).then_some(item)
+}
+
+fn local_price(body: &Value, branch: &Branch, sku: &str, index: usize) -> Option<i64> {
+    let item = simulated_item(body, branch, sku, index)?;
+    if item["availability"] != "available"
+        || item["quantity"]
+            .as_i64()
+            .is_some_and(|quantity| quantity != 1)
+        || (body["items"].as_array()?.len() > 1
+            && (item["priceTags"]
+                .as_array()
+                .is_none_or(|tags| !tags.is_empty())
+                || item["price"] != item["sellingPrice"]))
     {
         return None;
     }
@@ -79,7 +86,7 @@ fn local_price(body: &Value, branch: &Branch, sku: &str) -> Option<i64> {
     let slas = body["logisticsInfo"]
         .as_array()?
         .iter()
-        .filter(|line| line["itemIndex"] == 0)
+        .filter(|line| line["itemIndex"] == index)
         .flat_map(|line| line["slas"].as_array().into_iter().flatten());
     let points = body["pickupPoints"].as_array()?;
     let matched = slas
@@ -106,10 +113,6 @@ fn local_price(body: &Value, branch: &Branch, sku: &str) -> Option<i64> {
 }
 
 fn row(body: &Value, branch: &Branch, sku: &str, price: i64) -> Result<ImportRow> {
-    static WEIGHT: LazyLock<Regex> =
-        LazyLock::new(|| Regex::new(r"(?i)\b(\d+(?:[.,]\d+)?)\s*g\s*$").unwrap());
-    static UNIT_COUNT: LazyLock<Regex> =
-        LazyLock::new(|| Regex::new(r"\b(\d+)\s*(?:un|uni|unidades?)$").unwrap());
     let product = body
         .as_array()
         .context("catálogo inválido")?
@@ -128,22 +131,23 @@ fn row(body: &Value, branch: &Branch, sku: &str, price: i64) -> Result<ImportRow
         .unwrap();
     let name = item["name"].as_str().context("SKU sem nome")?;
     let normalized = normalize::text(name);
-    ensure!(
-        !normalized.split_whitespace().any(|word| word == "kit"),
-        "kit fora da seleção"
-    );
-    let (quantity, unit, presentation, category) = if normalized
-        .starts_with("creme dental colgate ")
-    {
-        let quantity = normalize::scaled(&WEIGHT.captures(name).context("peso ausente")?[1], 1)?;
-        (quantity, "g", "Tubo", "Higiene bucal")
+    let (quantity, unit) = package(name, &normalized)?;
+    let (presentation, category) = if normalized.starts_with("creme dental colgate ") {
+        ("Tubo", "Higiene bucal")
     } else if normalized.starts_with("preservativo ") || normalized.starts_with("camisinha ") {
-        let count = UNIT_COUNT
-            .captures(&normalized)
-            .context("quantidade de preservativos ausente")?;
-        (count[1].parse()?, "un", "Pacote", "Saúde sexual")
+        ("Pacote", "Saúde sexual")
     } else {
-        anyhow::bail!("produto fora da seleção de farmácia");
+        (
+            "Embalagem",
+            product["categories"][0]
+                .as_str()
+                .and_then(|path| {
+                    path.split('/')
+                        .filter(|name| !name.trim().is_empty())
+                        .next_back()
+                })
+                .unwrap_or("Farmácia"),
+        )
     };
     let source = Url::parse(product["link"].as_str().context("SKU sem URL")?)?;
     ensure!(
@@ -172,7 +176,7 @@ fn row(body: &Value, branch: &Branch, sku: &str, price: i64) -> Result<ImportRow
         quantity,
         unit: unit.into(),
         presentation: presentation.into(),
-        category: category.into(),
+        category: category.chars().take(80).collect(),
         gtin,
         price_cents: Some(price),
         promotional_price_cents: None,
@@ -190,25 +194,34 @@ fn row(body: &Value, branch: &Branch, sku: &str, price: i64) -> Result<ImportRow
     Ok(result)
 }
 
-async fn observe(client: &Client, branch: &Branch, sku: &str) -> Result<Option<ImportRow>> {
-    let base = format!("https://{}", branch.host);
-    let request = json!({"items":[{"id":sku,"quantity":1,"seller":branch.seller}],"country":"BRA","postalCode":branch.cep});
-    let response = client
-        .post(format!("{base}/api/checkout/pub/orderForms/simulation"))
-        .json(&request)
-        .send()
-        .await?;
-    let simulation: Value = serde_json::from_str(&super::read(response).await?)?;
-    let Some(price) = local_price(&simulation, branch, sku) else {
-        return Ok(None);
+fn package(name: &str, normalized: &str) -> Result<(i64, &'static str)> {
+    static UNITS: LazyLock<Regex> = LazyLock::new(|| {
+        Regex::new(r"\b(\d+)\s*(?:un|uni|unidades?|comprimidos?|capsulas?|saches?|doses?|ampolas?|frascos?|supositorios?)$").unwrap()
+    });
+    static MEASURE: LazyLock<Regex> =
+        LazyLock::new(|| Regex::new(r"(?i)\b(\d+(?:[.,]\d+)?)\s*(kg|g|ml|l)\s*$").unwrap());
+    static MULTIPACK: LazyLock<Regex> =
+        LazyLock::new(|| Regex::new(r"(?i)\b\d+\s*[x×]\s*\d+").unwrap());
+    ensure!(
+        !normalized
+            .split_whitespace()
+            .any(|word| matches!(word, "kit" | "gratis" | "combo"))
+            && !MULTIPACK.is_match(name),
+        "embalagem composta exige revisão"
+    );
+    if let Some(count) = UNITS.captures(normalized) {
+        return Ok((count[1].parse()?, "un"));
+    }
+    let measure = MEASURE
+        .captures(name)
+        .context("medida ou contagem explícita ausente")?;
+    let (factor, unit) = match measure[2].to_ascii_lowercase().as_str() {
+        "kg" => (1000, "g"),
+        "l" => (1000, "ml"),
+        "ml" => (1, "ml"),
+        _ => (1, "g"),
     };
-    let response = client
-        .get(format!("{base}/api/catalog_system/pub/products/search"))
-        .query(&[("fq", format!("skuId:{sku}"))])
-        .send()
-        .await?;
-    let metadata: Value = serde_json::from_str(&super::read(response).await?)?;
-    Ok(Some(row(&metadata, branch, sku, price)?))
+    Ok((normalize::scaled(&measure[1], factor)?, unit))
 }
 
 pub async fn run(pool: &SqlitePool, watch: bool) -> Result<()> {
@@ -218,60 +231,23 @@ pub async fn run(pool: &SqlitePool, watch: bool) -> Result<()> {
         .user_agent("SorriPrecos/0.1")
         .build()?;
     loop {
-        let mut limited_host = None;
-        let mut total = 0;
-        for branch in BRANCHES {
-            if limited_host == Some(branch.host) {
-                continue;
+        let mut failed = false;
+        for market in ["drogaria-sao-paulo", "pague-menos"] {
+            if let Err(error) = scan::collect(pool, &client, market).await {
+                failed = true;
+                tracing::warn!(market, %error, "pharmacy_vtex_scan_failed");
+                sqlx::query("INSERT INTO catalogue_collectors(supermarket_id,adapter,interval_seconds,status,last_finished_at,last_error) VALUES(?,'pharmacy-vtex',600,'failed',?,?) ON CONFLICT(supermarket_id) DO UPDATE SET status='failed',last_finished_at=excluded.last_finished_at,last_error=excluded.last_error")
+                    .bind(market).bind(now()).bind(error.to_string()).execute(pool).await?;
             }
-            let mut rows = Vec::new();
-            for sku in branch.skus {
-                tokio::time::sleep(Duration::from_millis(750)).await;
-                match observe(&client, branch, sku).await {
-                    Ok(Some(row)) => rows.push(row),
-                    Ok(None) => {}
-                    Err(error) => {
-                        tracing::warn!(branch = branch.id, sku, %error, "pharmacy_vtex_observation_failed");
-                        if error
-                            .downcast_ref::<reqwest::Error>()
-                            .and_then(|e| e.status())
-                            == Some(StatusCode::TOO_MANY_REQUESTS)
-                        {
-                            limited_host = Some(branch.host);
-                            break;
-                        }
-                    }
-                }
-            }
-            if !rows.is_empty() {
-                total += catalog::import(
-                    pool,
-                    branch.market,
-                    &rows,
-                    Some(
-                        "PUBLIC_STOREFRONT: simulação de retirada com vendedor e filial Sorriso-MT",
-                    ),
-                )
-                .await?;
-            }
-            tracing::info!(
-                branch = branch.id,
-                verified = rows.len(),
-                "pharmacy_vtex_branch_complete"
-            );
         }
         match super::drogasil::collect(pool).await {
             Ok(verified) => {
-                total += verified;
                 tracing::info!(verified, "pharmacy_drogasil_stock_complete");
             }
             Err(error) => tracing::warn!(%error, "pharmacy_drogasil_stock_failed"),
         }
         if !watch {
-            ensure!(
-                total > 0,
-                "nenhuma oferta VTEX local confirmada nesta rodada"
-            );
+            ensure!(!failed, "uma ou mais consultas VTEX falharam");
             return Ok(());
         }
         tokio::select! {
@@ -284,6 +260,7 @@ pub async fn run(pool: &SqlitePool, watch: bool) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde_json::json;
 
     #[test]
     fn preserves_the_quantity_on_the_condom_package() {
@@ -301,6 +278,24 @@ mod tests {
     }
 
     #[test]
+    fn batch_prices_require_item_specific_pickup_and_no_basket_discount() {
+        let branch = &BRANCHES[0];
+        let mut reply = json!({
+            "items": [
+                {"id":"85332","requestIndex":0,"quantity":1,"availability":"available","sellerChain":["drogariaspsorriso"],"price":1029,"sellingPrice":1029,"priceTags":[]},
+                {"id":"18171","requestIndex":1,"quantity":1,"availability":"available","sellerChain":["drogariaspsorriso"],"price":599,"sellingPrice":499,"priceTags":[{"value":-100}]}
+            ],
+            "logisticsInfo": [{"itemIndex":0,"slas":[{"deliveryChannel":"pickup-in-point","pickupPointId":"drogariaspsorriso_2436"}]},
+                              {"itemIndex":1,"slas":[{"deliveryChannel":"pickup-in-point","pickupPointId":"drogariaspsorriso_2436"}]}],
+            "pickupPoints": [{"id":"drogariaspsorriso_2436","address":{"city":"Sorriso","state":"MT","street":"Avenida Natalino João Brescansin","number":"1722"}}]
+        });
+        assert_eq!(local_price(&reply, branch, "85332", 0), Some(1029));
+        assert_eq!(local_price(&reply, branch, "18171", 1), None);
+        reply["logisticsInfo"][0]["itemIndex"] = json!(1);
+        assert_eq!(local_price(&reply, branch, "85332", 0), None);
+    }
+
+    #[test]
     fn online_price_requires_the_matching_seller_and_sorriso_pickup() {
         let branch = &BRANCHES[0];
         let mut reply = json!({
@@ -308,12 +303,12 @@ mod tests {
             "logisticsInfo": [{"itemIndex":0,"slas":[{"deliveryChannel":"pickup-in-point","pickupPointId":"drogariaspsorriso_2436","price":0}]}],
             "pickupPoints":[{"id":"drogariaspsorriso_2436","address":{"city":"Sorriso","state":"MT","street":"Avenida Natalino João Brescansin","number":"1722"}}]
         });
-        assert_eq!(local_price(&reply, branch, "49697"), Some(559));
-        assert_eq!(local_price(&reply, branch, "99999"), None);
+        assert_eq!(local_price(&reply, branch, "49697", 0), Some(559));
+        assert_eq!(local_price(&reply, branch, "99999", 0), None);
         reply["items"][0]["sellerChain"] = json!(["1", "drogariaspcuiaba"]);
-        assert_eq!(local_price(&reply, branch, "49697"), None);
+        assert_eq!(local_price(&reply, branch, "49697", 0), None);
         reply["items"][0]["sellerChain"] = json!(["drogariaspsorriso"]);
         reply["pickupPoints"][0]["address"]["city"] = json!("Sinop");
-        assert_eq!(local_price(&reply, branch, "49697"), None);
+        assert_eq!(local_price(&reply, branch, "49697", 0), None);
     }
 }

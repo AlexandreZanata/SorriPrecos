@@ -15,6 +15,8 @@ import tempfile
 import time
 import urllib.parse
 import urllib.request
+from email.utils import parsedate_to_datetime
+from urllib.error import HTTPError
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -26,6 +28,8 @@ BRANCH = 'atacadao-sorriso'
 MAX_HTML = 3_000_000
 MAX_PDF = 25_000_000
 TZ = ZoneInfo('America/Cuiaba')
+INTERVAL = 600
+PDF_RECHECK = 6 * 3600
 
 
 class SameHostRedirect(urllib.request.HTTPRedirectHandler):
@@ -157,40 +161,67 @@ def rows_from_metadata(meta, flyer, end, observed):
     return rows
 
 
-def collect(database_url, binary):
+def collect(database_url, binary, checked=None):
     today = dt.datetime.now(TZ).date()
     flyers = store_flyers(fetch(STORE_URL, MAX_HTML).decode('utf-8'), today)
+    if checked is None:
+        checked = {}
+    keys = {(flyer['urlFinalDocument'], start, end) for flyer, start, end in flyers}
+    for key in checked.keys() - keys:
+        del checked[key]
     if not flyers:
         print('Nenhum encarte vigente validado para Sorriso.', flush=True); return
     for flyer, start, end in flyers:
+        key = (flyer['urlFinalDocument'], start, end)
+        if time.monotonic() - checked.get(key, -PDF_RECHECK) < PDF_RECHECK:
+            continue
         with tempfile.TemporaryDirectory(prefix='sorri-flyer-') as temp:
             pdf = Path(temp) / 'flyer.pdf'; pdf.write_bytes(fetch(flyer['urlFinalDocument'], MAX_PDF))
             plain = subprocess.run(['pdftotext', str(pdf), '-'], capture_output=True, text=True, check=True, timeout=40).stdout
             if not valid_pdf_text(plain, start, end):
+                checked[key] = time.monotonic()
                 print('Formato ou contexto não reconhecido; ignorado:', flyer['id'], flush=True); continue
             try: metadata = flyer_metadata(pdf)
             except (ValueError, KeyError, json.JSONDecodeError):
+                checked[key] = time.monotonic()
                 print('Sem dados estruturados reconhecidos:', flyer['id'], flush=True); continue
             rows = rows_from_metadata(metadata, flyer, end, int(time.time()))
             if not rows:
+                checked[key] = time.monotonic()
                 print('Nenhum produto seguro:', flyer['id'], flush=True); continue
             batch = Path(temp) / 'rows.json'; batch.write_text(json.dumps(rows, ensure_ascii=False))
             subprocess.run([binary, '--database-url', database_url, 'import', '--source', 'atacadao',
                             '--file', str(batch), '--authorization', 'PUBLIC_STOREFRONT: encarte oficial da filial Sorriso'], check=True, timeout=60)
+            checked[key] = time.monotonic()
             print(f"{flyer['id']}: {len(rows)} registros; estoque desconhecido; validade {end}", flush=True)
+
+
+def retry_after(value):
+    try:
+        seconds = int(value)
+    except (TypeError, ValueError):
+        try:
+            seconds = parsedate_to_datetime(value).timestamp() - time.time()
+        except (TypeError, ValueError, OverflowError):
+            seconds = 0
+    return max(INTERVAL, seconds)
 
 
 def main():
     p = argparse.ArgumentParser(); p.add_argument('--database-url', default=os.environ.get('DATABASE_URL', 'sqlite://data/sorriprecos.db'))
     p.add_argument('--binary', default='artifacts/sorriprecos-retomada-four'); p.add_argument('--watch', action='store_true')
     args = p.parse_args()
+    checked = {}
     while True:
-        try: collect(args.database_url, args.binary)
+        delay = INTERVAL
+        try: collect(args.database_url, args.binary, checked)
         except Exception as exc:
+            if isinstance(exc, HTTPError) and exc.code in (429, 503):
+                delay = retry_after(exc.headers.get('Retry-After'))
             print(f'Coleta Atacadão falhou: {type(exc).__name__}: {exc}', flush=True)
             if not args.watch: raise
         if not args.watch: break
-        time.sleep(600)
+        time.sleep(delay)
 
 
 if __name__ == '__main__': main()

@@ -1,10 +1,12 @@
 //! Read the same public, embedded catalogue that the aiqfome storefront renders.
+mod schedule;
 use crate::{
     catalog::{self, ImportRow},
     normalize, now, vip,
 };
 use anyhow::{Context, Result, ensure};
 use regex::Regex;
+use schedule::RateLimited;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::SqlitePool;
@@ -318,7 +320,21 @@ fn normalize_menu(
 }
 
 async fn fetch_body(client: &reqwest::Client, url: &str) -> Result<Vec<u8>> {
-    let mut response = client.get(url).send().await?.error_for_status()?;
+    tokio::time::sleep(Duration::from_secs(1)).await;
+    let response = client.get(url).send().await?;
+    if matches!(
+        response.status(),
+        reqwest::StatusCode::TOO_MANY_REQUESTS | reqwest::StatusCode::SERVICE_UNAVAILABLE
+    ) {
+        let retry_after = response
+            .headers()
+            .get(reqwest::header::RETRY_AFTER)
+            .and_then(|value| value.to_str().ok());
+        let delay =
+            crate::adapters::retry_delay(retry_after, 0).max(Duration::from_secs(INTERVAL as u64));
+        return Err(RateLimited(delay).into());
+    }
+    let mut response = response.error_for_status()?;
     let mut body = Vec::new();
     while let Some(chunk) = response.chunk().await? {
         ensure!(
@@ -596,41 +612,7 @@ async fn collect(pool: &SqlitePool, client: &reqwest::Client, source: &Source) -
 }
 
 pub async fn run(pool: &SqlitePool, path: &Path, watch: bool) -> Result<()> {
-    let sources: Vec<Source> = serde_json::from_slice(&tokio::fs::read(path).await?)?;
-    let mut ids = HashSet::new();
-    ensure!(
-        sources
-            .iter()
-            .all(|source| ids.insert(&source.supermarket_id)),
-        "vendedor duplicado"
-    );
-    let client = reqwest::Client::builder()
-        .timeout(Duration::from_secs(25))
-        .redirect(reqwest::redirect::Policy::none())
-        .user_agent("SorriPrecos/0.1 (public-storefront-catalog)")
-        .build()?;
-    let shutdown = tokio::signal::ctrl_c();
-    tokio::pin!(shutdown);
-    loop {
-        let mut failed = false;
-        for source in &sources {
-            if let Err(error) = collect(pool, &client, source).await {
-                failed = true;
-                tracing::error!(source=%source.supermarket_id, %error, "public_catalog_failed");
-            }
-        }
-        if !watch {
-            ensure!(
-                !failed,
-                "coleta de comércios locais incompleta; consulte /v1/collectors"
-            );
-            return Ok(());
-        }
-        tokio::select! {
-            _ = &mut shutdown => return Ok(()),
-            _ = tokio::time::sleep(Duration::from_secs(15)) => {}
-        }
-    }
+    schedule::run(pool, path, watch).await
 }
 
 #[cfg(test)]

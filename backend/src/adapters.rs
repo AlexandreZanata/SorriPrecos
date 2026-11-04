@@ -94,6 +94,22 @@ pub fn retry_delay(value: Option<&str>, attempt: u32) -> Duration {
     Duration::from_secs(2u64.pow(attempt.min(6)))
 }
 
+pub(crate) async fn origin_paused(pool: &SqlitePool, origin: &str) -> Result<bool> {
+    Ok(sqlx::query_scalar(
+        "SELECT EXISTS(SELECT 1 FROM storefront_cooldown WHERE origin=? AND retry_at>?)",
+    )
+    .bind(origin)
+    .bind(now())
+    .fetch_one(pool)
+    .await?)
+}
+
+pub(crate) async fn defer_origin(pool: &SqlitePool, origin: &str, retry_at: i64) -> Result<()> {
+    sqlx::query("INSERT INTO storefront_cooldown(origin,retry_at) VALUES(?,?) ON CONFLICT(origin) DO UPDATE SET retry_at=MAX(retry_at,excluded.retry_at)")
+        .bind(origin).bind(retry_at).execute(pool).await?;
+    Ok(())
+}
+
 #[derive(Deserialize)]
 struct Page {
     items: Vec<ImportRow>,
@@ -108,6 +124,10 @@ impl SourceAdapter for AuthorizedFeedAdapter {
     }
     async fn collect(&self, pool: &SqlitePool) -> Result<usize> {
         let initial = Url::parse(self.config.url.as_deref().unwrap())?;
+        let origin = initial.origin().ascii_serialization();
+        if origin_paused(pool, &origin).await? {
+            return Ok(0);
+        }
         let cursor = sqlx::query(
             "SELECT etag,last_modified,last_success FROM source_cursors WHERE supermarket_id=?",
         )
@@ -138,7 +158,13 @@ impl SourceAdapter for AuthorizedFeedAdapter {
                     }
                     requests+=1;
                     match req.send().await {
-                        Ok(r) if r.status()==StatusCode::TOO_MANY_REQUESTS || r.status().is_server_error()=> {
+                        Ok(r) if matches!(r.status(), StatusCode::TOO_MANY_REQUESTS | StatusCode::SERVICE_UNAVAILABLE) => {
+                            let delay=retry_delay(r.headers().get(header::RETRY_AFTER).and_then(|v|v.to_str().ok()),0).max(Duration::from_secs(600));
+                            let retry_at=now().saturating_add(i64::try_from(delay.as_secs()).unwrap_or(i64::MAX));
+                            defer_origin(pool, &origin, retry_at).await?;
+                            anyhow::bail!("origem em pausa até a próxima janela: {}",r.status());
+                        },
+                        Ok(r) if r.status().is_server_error()=> {
                             ensure!(attempt<2,"origem indisponível: {}",r.status());
                             let delay=retry_delay(r.headers().get(header::RETRY_AFTER).and_then(|v|v.to_str().ok()),attempt);
                             ensure!(delay<=Duration::from_secs(120),"Retry-After longo; adiar para próxima execução");
