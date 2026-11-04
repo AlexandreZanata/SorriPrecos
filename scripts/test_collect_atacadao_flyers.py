@@ -1,7 +1,10 @@
 import datetime as dt
+import hashlib
 import json
 import unittest
-from collect_atacadao_flyers import package, store_flyers, rows_from_metadata, valid_pdf_text
+from collect_atacadao_flyers import (
+    MIRROR_BOA, TZ, package, reviewed_copy_rows, rows_from_metadata, store_flyers, valid_pdf_text,
+)
 
 
 class FlyerTests(unittest.TestCase):
@@ -35,5 +38,31 @@ class FlyerTests(unittest.TestCase):
         self.assertEqual((row['price_cents'],row['promotional_price_cents'],row['offer_type']), (1850,1750,'club'))
         self.assertIsNone(row['available']);self.assertIn('R$ 14,90',row['conditions'])
         f.pop('PTER');self.assertEqual(rows_from_metadata(meta,self.flyer,self.end,1793770000),[])
+
+    def test_reviewed_copy_requires_current_date_local_address_and_same_image(self):
+        url = 'https://cdn.brcatalogos.com.br/o/public-test/1.jpg'
+        page = f'<meta property="og:image" content="{url}"/> Rua Idemar Riedi, 8150'.encode()
+        image = b'reviewed flyer image'
+        observed = dt.datetime(2026, 11, 4, 9, tzinfo=TZ)
+        manifest = {
+            'date': '2026-11-04', 'image_sha256': hashlib.sha256(image).hexdigest(),
+            'items': [{'id': 'acucar', 'quantity': 2000, 'price_cents': 439,
+                       'name': 'Açúcar Doce Dia Cristal', 'brand': 'Doce Dia'}],
+        }
+        responses = {MIRROR_BOA: page, url: image}
+        def download(link, _limit):
+            return responses[link]
+
+        row, = reviewed_copy_rows(manifest, observed, download)
+        self.assertEqual((row['branch_id'], row['price_cents']), ('atacadao-sorriso', 439))
+        self.assertIsNone(row['available'])
+        with self.assertRaisesRegex(ValueError, 'fora da validade'):
+            reviewed_copy_rows(manifest, observed + dt.timedelta(days=1), download)
+        responses[url] = b'replaced image'
+        with self.assertRaisesRegex(ValueError, 'arte do folheto mudou'):
+            reviewed_copy_rows(manifest, observed, download)
+        responses[MIRROR_BOA] = page.replace(b'Idemar Riedi', b'outra filial')
+        with self.assertRaisesRegex(ValueError, 'unidade local'):
+            reviewed_copy_rows(manifest, observed, download)
 
 if __name__ == '__main__': unittest.main()

@@ -7,6 +7,8 @@ branch/validity evidence, and ambiguous packages.
 """
 import argparse
 import datetime as dt
+import hashlib
+import html
 import json
 import os
 import re
@@ -25,6 +27,7 @@ from zoneinfo import ZoneInfo
 STORE_URL = 'https://www.atacadao.com.br/loja/sorriso'
 PDF_HOST = 'apigw.cloud.carrefour.com.br'
 PDF_PATH = '/api-middleware-flyer-services/api/v2/Flyer/'
+MIRROR_BOA = 'https://brcatalogos.com.br/atacadao/boa-do-dia-mt'
 BRANCH = 'atacadao-sorriso'
 MAX_HTML = 3_000_000
 MAX_PDF = 25_000_000
@@ -169,6 +172,51 @@ def rows_from_metadata(meta, flyer, end, observed):
     return rows
 
 
+def reviewed_copy_rows(manifest, observed, download=fetch):
+    day = dt.date.fromisoformat(manifest['date'])
+    if day != observed.date():
+        raise ValueError('folheto diário fora da validade em Sorriso')
+    page = download(MIRROR_BOA, MAX_HTML).decode('utf-8')
+    cover = re.search(r'<meta property="og:image" content="([^"]+)"', page)
+    if 'Rua Idemar Riedi, 8150' not in page or not cover:
+        raise ValueError('folheto diário sem referência à unidade local')
+    asset = urllib.parse.urlsplit(html.unescape(cover[1]))
+    if (asset.scheme != 'https' or asset.netloc != 'cdn.brcatalogos.com.br'
+            or not re.fullmatch(r'/o/[A-Za-z0-9_-]+/1\.jpg', asset.path) or asset.fragment):
+        raise ValueError('imagem do folheto fora do endereço previsto')
+    if hashlib.sha256(download(asset.geturl(), 8_000_000)).hexdigest() != manifest['image_sha256']:
+        raise ValueError('arte do folheto mudou e exige nova revisão')
+    seen = set()
+    rows = []
+    for item in manifest['items']:
+        key, quantity, price = item['id'], item['quantity'], item['price_cents']
+        if (not re.fullmatch(r'[a-z0-9-]+', key) or key in seen
+                or type(quantity) is not int or not 0 < quantity <= 1_000_000
+                or type(price) is not int or not 0 < price < 1_000_000):
+            raise ValueError('item inválido ou duplicado no folheto')
+        seen.add(key)
+        rows.append({
+            'source_id': f'flyer-boa-mt-{day}-{key}', 'branch_id': BRANCH,
+            'name': item['name'], 'brand': item['brand'], 'quantity': quantity, 'unit': 'g',
+            'presentation': 'Pacote', 'category': 'Ofertas de encarte', 'price_cents': price,
+            'offer_type': 'regular', 'conditions': 'Preço anunciado no folheto diário. Estoque não confirmado.',
+            'available': None, 'source_url': MIRROR_BOA, 'collected_at': int(observed.timestamp()),
+            'valid_until': int(dt.datetime.combine(day, dt.time.max, TZ).timestamp()),
+            'source_city': 'Sorriso', 'source_state': 'MT',
+        })
+    if not rows:
+        raise ValueError('folheto sem itens revisados')
+    return rows
+
+
+def import_rows(database_url, binary, rows, authorization):
+    with tempfile.TemporaryDirectory(prefix='sorri-atacadao-import-') as temp:
+        batch = Path(temp) / 'rows.json'
+        batch.write_text(json.dumps(rows, ensure_ascii=False), encoding='utf-8')
+        subprocess.run([binary, '--database-url', database_url, 'import', '--source', 'atacadao',
+                        '--file', str(batch), '--authorization', authorization], check=True, timeout=60)
+
+
 def collect(database_url, binary, checked=None):
     today = dt.datetime.now(TZ).date()
     flyers = store_flyers(fetch(STORE_URL, MAX_HTML).decode('utf-8'), today)
@@ -197,9 +245,7 @@ def collect(database_url, binary, checked=None):
             if not rows:
                 checked[key] = time.monotonic()
                 print('Nenhum produto seguro:', flyer['id'], flush=True); continue
-            batch = Path(temp) / 'rows.json'; batch.write_text(json.dumps(rows, ensure_ascii=False))
-            subprocess.run([binary, '--database-url', database_url, 'import', '--source', 'atacadao',
-                            '--file', str(batch), '--authorization', 'PUBLIC_STOREFRONT: encarte oficial da filial Sorriso'], check=True, timeout=60)
+            import_rows(database_url, binary, rows, 'PUBLIC_STOREFRONT: encarte oficial da filial Sorriso')
             checked[key] = time.monotonic()
             print(f"{flyer['id']}: {len(rows)} registros; estoque desconhecido; validade {end}", flush=True)
 
@@ -217,8 +263,18 @@ def retry_after(value):
 
 def main():
     p = argparse.ArgumentParser(); p.add_argument('--database-url', default=os.environ.get('DATABASE_URL', 'sqlite://data/sorriprecos.db'))
-    p.add_argument('--binary', default='artifacts/sorriprecos-retomada-four'); p.add_argument('--watch', action='store_true')
+    p.add_argument('--binary', default='artifacts/sorriprecos-retomada-four')
+    mode = p.add_mutually_exclusive_group()
+    mode.add_argument('--watch', action='store_true')
+    mode.add_argument('--reviewed-copy', type=Path, help='importa uma cópia do folheto diário revisada')
     args = p.parse_args()
+    if args.reviewed_copy:
+        manifest = json.loads(args.reviewed_copy.read_text(encoding='utf-8'))
+        rows = reviewed_copy_rows(manifest, dt.datetime.now(TZ))
+        import_rows(args.database_url, args.binary, rows,
+                    'PUBLIC_STOREFRONT: arte Atacadão Sorriso revisada na cópia BR Catálogos')
+        print(f'{len(rows)} registros do folheto diário com estoque desconhecido', flush=True)
+        return
     checked = {}
     while True:
         delay = INTERVAL

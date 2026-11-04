@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-04",
+  "image_sha256": "086026a0e0f52b0ae663c04e26d2293c1299daa6f964a01137bfed90fa698fd1",
+  "items": [
+    {"id": "acucar-doce-dia", "name": "Açúcar Doce Dia Cristal", "brand": "Doce Dia", "quantity": 2000, "price_cents": 439},
+    {"id": "lava-roupas-brilhante", "name": "Lava Roupas em Pó Brilhante Limpeza Total Blindagem das Cores", "brand": "Brilhante", "quantity": 1600, "price_cents": 1690},
+    {"id": "linguica-excelencia", "name": "Linguiça Toscana Excelência Congelada", "brand": "Excelência", "quantity": 5000, "price_cents": 6990},
+    {"id": "cereal-bulnez", "name": "Cereal Matinal Bulnez Corn Flakes Açucarado", "brand": "Bulnez", "quantity": 1000, "price_cents": 1590}
+  ]
+}

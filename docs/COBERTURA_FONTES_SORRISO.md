@@ -26,7 +26,13 @@ O processo `collect-pharmacy-vtex --watch` inclui a Drogasil. A cada ciclo, a Dr
 
 O estado público da [unidade Atacadão Sorriso](https://www.atacadao.com.br/loja/sorriso) verificado anteriormente identificou `storeId=899`, endereço Rua Idemar Riedi 8150 e `ecommerce=null`. A filial publica encartes. O SQLite local conservava 90 preços vigentes do encarte com validade até 09/11/2026, marcados com estoque não confirmado. O catálogo geral do site precisa demonstrar vínculo local antes de ser usado como fonte da unidade.
 
-A [Therapeutica matriz Sorriso](https://www.therapeuticafarmacia.com.br/lojas/8) confirma a Av. Curitiba, 2734 e CNPJ 01.780.384/0001-75. O coletor usa o sitemap e os dados públicos do produto, com checagem de endereço e CNPJ no site. A rede local apresentou um emissor intermediário Fortinet que a cadeia padrão deste host não pôde validar para os dois domínios.
+O [índice BR Catálogos da unidade 899](https://brcatalogos.com.br/atacadao/loja-899) também lista o Ofertão e o [folheto Boa do Dia](https://brcatalogos.com.br/atacadao/boa-do-dia-mt). A cópia do folheto diário foi conferida visualmente em 04/11/2026. A arte do Atacadão traz a data e lista Sorriso, Rua Idemar Riedi 8150, no rodapé. Foram validados quatro preços com estoque não confirmado. O índice é independente e fornece imagens, sem o PDF estruturado usado na coleta oficial. O modo abaixo lê a imagem pública referenciada pelo índice, verifica o hash do arquivo revisado e expira os preços no fim do dia em Sorriso. Para cada nova arte, revise as condições, a data, os produtos e o endereço antes de registrar outro manifesto.
+
+```sh
+python3 scripts/collect_atacadao_flyers.py --reviewed-copy config/flyers/atacadao-boa-do-dia-2026-11-04.json --binary /caminho/para/sorriprecos
+```
+
+A [Therapeutica matriz Sorriso](https://www.therapeuticafarmacia.com.br/lojas/8) confirma a Av. Curitiba, 2734 e CNPJ 01.780.384/0001-75. O coletor usa o sitemap e os dados públicos do produto, com checagem de endereço e CNPJ no site. A rede local apresentou certificados emitidos por uma CA Fortinet que a cadeia padrão deste host não pôde validar para os dois domínios.
 
 Para retomar, execute os coletores em uma rede autorizada onde os certificados HTTPS sejam verificados normalmente. Em uma instalação com inspeção TLS aprovada, o administrador pode fornecer um PEM por coletor via `SORRIPRECOS_ATACADAO_CA_FILE` ou `SORRIPRECOS_THERAPEUTICA_CA_FILE`. O certificado deve vir do administrador da rede por canal autenticado. As variáveis são opcionais, adicionam confiança apenas no respectivo coletor e mantêm a validação de domínio. Verifique o HTTPS e o resultado de uma coleta antes de iniciar o modo contínuo.
 
