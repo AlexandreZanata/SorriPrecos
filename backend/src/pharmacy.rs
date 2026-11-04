@@ -1,4 +1,5 @@
 //! Read the local Therapeutica storefront's sitemap and published Product JSON-LD.
+mod drogasil;
 pub mod vtex;
 
 use crate::{

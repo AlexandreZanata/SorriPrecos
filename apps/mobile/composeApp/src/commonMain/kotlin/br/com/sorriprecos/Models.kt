@@ -10,6 +10,7 @@ import kotlinx.serialization.SerialName
     @SerialName("min_price_cents") val minPriceCents:Long?=null,
     @SerialName("unconfirmed_price_cents") val unconfirmedPriceCents:Long?=null,
     @SerialName("unconfirmed_valid_until") val unconfirmedValidUntil:Long?=null,
+    @SerialName("stock_only_valid_until") val stockOnlyValidUntil:Long?=null,
     @SerialName("last_collected_at") val lastCollectedAt:Long?=null,
     @SerialName("branch_count") val branchCount:Int=0,
     @SerialName("reference_price_cents") val referencePriceCents:Long?=null,
@@ -60,8 +61,15 @@ internal fun Product.hasUnconfirmedPrice(at: Long = platformNow()): Boolean =
     !isHistorical && unconfirmedPriceCents != null && unconfirmedValidUntil?.let { it >= at } == true &&
         lastCollectedAt?.let { it >= at - 172800 } == true
 
+internal fun Product.hasStockWithoutPrice(at: Long = platformNow()): Boolean =
+    !isHistorical && stockOnlyValidUntil?.let { it >= at } == true
+
+internal fun Offer.hasStockWithoutPrice(at: Long = platformNow()): Boolean =
+    status == "stock_confirmed_no_price" && validUntil?.let { it >= at } == true &&
+        collectedAt?.let { it >= at - 172800 } == true
+
 internal fun Product.isDiscoverable(at: Long = platformNow()): Boolean =
-    isHistorical || hasUnconfirmedPrice(at) || (minPriceCents != null && branchCount > 0 &&
+    isHistorical || hasUnconfirmedPrice(at) || hasStockWithoutPrice(at) || (minPriceCents != null && branchCount > 0 &&
         lastCollectedAt?.let { it >= at - 172800 } == true)
 
 fun money(cents:Long?):String {

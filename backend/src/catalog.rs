@@ -394,6 +394,7 @@ pub struct Product {
     pub min_price_cents: Option<i64>,
     pub unconfirmed_price_cents: Option<i64>,
     pub unconfirmed_valid_until: Option<i64>,
+    pub stock_only_valid_until: Option<i64>,
     pub last_collected_at: Option<i64>,
     pub branch_count: i64,
     pub reference_price_cents: Option<i64>,
@@ -402,7 +403,7 @@ pub struct Product {
     pub photo_revision: i64,
 }
 
-pub const PRODUCT_FIELDS: &str = "p.id,p.gtin,p.name,p.brand,p.quantity,p.unit,p.presentation,p.category,p.is_demo, CASE WHEN p.photo_source_url IS NOT NULL THEN '/v1/products/' || p.id || '/photo' END AS photo_path,p.photo_revision, MIN(CASE WHEN o.available=1 AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN CASE WHEN o.offer_type IN ('regular','promotion') AND COALESCE(o.conditions,'')='' THEN COALESCE(o.promotional_price_cents,o.price_cents) ELSE o.price_cents END END) AS min_price_cents,MIN(CASE WHEN o.supermarket_id='atacadao' AND o.available IS NULL AND o.price_cents IS NOT NULL AND o.valid_until>=CAST(strftime('%s','now') AS INTEGER) AND o.collected_at>=CAST(strftime('%s','now') AS INTEGER)-172800 AND EXISTS(SELECT 1 FROM source_products u WHERE u.id=o.source_product_id AND u.source_kind='retail' AND u.source_id LIKE 'flyer-%') THEN o.price_cents END) AS unconfirmed_price_cents,MIN(CASE WHEN o.supermarket_id='atacadao' AND o.available IS NULL AND o.price_cents IS NOT NULL AND o.valid_until>=CAST(strftime('%s','now') AS INTEGER) AND o.collected_at>=CAST(strftime('%s','now') AS INTEGER)-172800 AND EXISTS(SELECT 1 FROM source_products u WHERE u.id=o.source_product_id AND u.source_kind='retail' AND u.source_id LIKE 'flyer-%') THEN o.valid_until END) AS unconfirmed_valid_until,MAX(o.collected_at) AS last_collected_at, COUNT(DISTINCT CASE WHEN o.available=1 AND o.price_cents IS NOT NULL AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN o.branch_id END) AS branch_count, MIN(CASE WHEN o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.price_cents END) AS reference_price_cents, COUNT(DISTINCT CASE WHEN o.price_cents IS NOT NULL AND o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.branch_id END) AS historical_branch_count";
+pub const PRODUCT_FIELDS: &str = "p.id,p.gtin,p.name,p.brand,p.quantity,p.unit,p.presentation,p.category,p.is_demo, CASE WHEN p.photo_source_url IS NOT NULL THEN '/v1/products/' || p.id || '/photo' END AS photo_path,p.photo_revision, MIN(CASE WHEN o.available=1 AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN CASE WHEN o.offer_type IN ('regular','promotion') AND COALESCE(o.conditions,'')='' THEN COALESCE(o.promotional_price_cents,o.price_cents) ELSE o.price_cents END END) AS min_price_cents,MIN(CASE WHEN o.supermarket_id='atacadao' AND o.available IS NULL AND o.price_cents IS NOT NULL AND o.valid_until>=CAST(strftime('%s','now') AS INTEGER) AND o.collected_at>=CAST(strftime('%s','now') AS INTEGER)-172800 AND EXISTS(SELECT 1 FROM source_products u WHERE u.id=o.source_product_id AND u.source_kind='retail' AND u.source_id LIKE 'flyer-%') THEN o.price_cents END) AS unconfirmed_price_cents,MIN(CASE WHEN o.supermarket_id='atacadao' AND o.available IS NULL AND o.price_cents IS NOT NULL AND o.valid_until>=CAST(strftime('%s','now') AS INTEGER) AND o.collected_at>=CAST(strftime('%s','now') AS INTEGER)-172800 AND EXISTS(SELECT 1 FROM source_products u WHERE u.id=o.source_product_id AND u.source_kind='retail' AND u.source_id LIKE 'flyer-%') THEN o.valid_until END) AS unconfirmed_valid_until,MAX(CASE WHEN o.supermarket_id='drogasil' AND o.available=1 AND o.price_cents IS NULL AND o.valid_until>=unixepoch() AND o.collected_at>=unixepoch()-172800 AND EXISTS(SELECT 1 FROM source_products u WHERE u.id=o.source_product_id AND u.source_kind='retail' AND u.source_id LIKE 'rd-stock-%') THEN o.valid_until END) AS stock_only_valid_until,MAX(o.collected_at) AS last_collected_at, COUNT(DISTINCT CASE WHEN o.available=1 AND o.price_cents IS NOT NULL AND o.collected_at>=? AND (o.valid_until IS NULL OR o.valid_until>=?) THEN o.branch_id END) AS branch_count, MIN(CASE WHEN o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.price_cents END) AS reference_price_cents, COUNT(DISTINCT CASE WHEN o.price_cents IS NOT NULL AND o.collected_at<CAST(strftime('%s','now') AS INTEGER)-172800 THEN o.branch_id END) AS historical_branch_count";
 
 pub async fn search(
     pool: &SqlitePool,
@@ -563,11 +564,14 @@ async fn search_matches(
     let offer_filter = if historical {
         ""
     } else {
-        " AND o.price_cents IS NOT NULL
-          AND o.collected_at>=CAST(strftime('%s','now') AS INTEGER)-172800
-          AND (o.valid_until IS NULL OR o.valid_until>=CAST(strftime('%s','now') AS INTEGER))
-          AND (o.available=1 OR (o.available IS NULL AND o.supermarket_id='atacadao'
-            AND sp.source_id LIKE 'flyer-%' AND o.valid_until>=CAST(strftime('%s','now') AS INTEGER)))"
+        " AND o.collected_at>=unixepoch()-172800
+          AND (o.valid_until IS NULL OR o.valid_until>=unixepoch())
+          AND (
+            (o.price_cents IS NOT NULL AND (o.available=1 OR (o.available IS NULL
+              AND o.supermarket_id='atacadao' AND sp.source_id LIKE 'flyer-%' AND o.valid_until>=unixepoch())))
+            OR (o.supermarket_id='drogasil' AND sp.source_id LIKE 'rd-stock-%'
+              AND o.available=1 AND o.price_cents IS NULL AND o.valid_until>=unixepoch())
+          )"
     };
     let sql = format!(
         "WITH hits AS MATERIALIZED ({candidates} AND p.is_demo=? AND p.sector=? AND p.id>? AND EXISTS(SELECT 1 FROM source_products sp JOIN offers o ON o.source_product_id=sp.id JOIN branches b ON b.id=o.branch_id AND b.active=1 WHERE sp.product_id=p.id AND sp.source_kind=?{offer_filter}){pack_filter} ORDER BY p.id LIMIT ?) SELECT {PRODUCT_FIELDS},{} AS is_historical FROM hits h JOIN products p ON p.id=h.id LEFT JOIN offers o ON o.product_id=p.id AND o.branch_id IN(SELECT id FROM branches WHERE active=1) AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) GROUP BY p.id ORDER BY p.id",

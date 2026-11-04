@@ -968,3 +968,41 @@ async fn official_flyer_prices_are_searchable_but_not_ranked_as_available() {
     let (_, expired) = call(app(&pool), "/v1/products/search?q=arroz%20exclusivo").await;
     assert!(expired["items"].as_array().unwrap().is_empty());
 }
+
+#[tokio::test]
+async fn verified_pharmacy_stock_without_price_is_searchable_until_expiry() {
+    let (_d, pool) = fixture().await;
+    let mut stock = row("demo-a", 1000);
+    stock.branch_id = "drogasil-brescansin".into();
+    stock.source_id = "rd-stock-test".into();
+    stock.name = "Higiene estoque local".into();
+    stock.price_cents = None;
+    stock.valid_until = Some(now() + 1800);
+    catalog::import(&pool, "drogasil", &[stock], Some("estoque público"))
+        .await
+        .unwrap();
+
+    let search_url = "/v1/products/search?q=higiene%20estoque&sector=pharmacy";
+    let (_, search) = call(app(&pool), search_url).await;
+    let product = &search["items"][0];
+    let id = product["id"].as_i64().unwrap();
+    assert!(product["stock_only_valid_until"].is_i64());
+    assert!(product["min_price_cents"].is_null());
+    assert_eq!(product["branch_count"], 0);
+    let prices_url = format!("/v1/products/{id}/prices");
+    let (_, comparison) = call(app(&pool), &prices_url).await;
+    let offer = &comparison["items"][0];
+    assert_eq!(offer["status"], "stock_confirmed_no_price");
+    assert_eq!(offer["available"], true);
+    assert!(offer["effective_price_cents"].is_null());
+
+    sqlx::query("UPDATE offers SET valid_until=? WHERE supermarket_id='drogasil'")
+        .bind(now() - 1)
+        .execute(&pool)
+        .await
+        .unwrap();
+    let (_, expired) = call(app(&pool), search_url).await;
+    assert!(expired["items"].as_array().unwrap().is_empty());
+    let (_, comparison) = call(app(&pool), &prices_url).await;
+    assert_eq!(comparison["items"][0]["status"], "unknown");
+}

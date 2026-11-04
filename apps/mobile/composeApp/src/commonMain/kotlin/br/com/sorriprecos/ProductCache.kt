@@ -41,7 +41,8 @@ internal data class SyncData(
 @Serializable
 internal data class SyncFreshness(
     @SerialName("last_collected_at") val lastCollectedAt: Long? = null,
-    val offers: List<OfferFreshness> = emptyList()
+    val offers: List<OfferFreshness> = emptyList(),
+    @SerialName("stock_only_valid_until") val stockOnlyValidUntil: Long? = null
 )
 
 @Serializable
@@ -52,7 +53,10 @@ internal data class OfferFreshness(
 )
 
 internal fun ProductRecord.withFreshness(freshness: SyncFreshness, checkedAt: Long): ProductRecord {
-    val product = product?.copy(lastCollectedAt = freshness.lastCollectedAt)
+    val product = product?.copy(
+        lastCollectedAt = freshness.lastCollectedAt,
+        stockOnlyValidUntil = freshness.stockOnlyValidUntil
+    )
     val observations = freshness.offers.associateBy(OfferFreshness::branchId)
     val offers = comparison?.items?.map { offer ->
         val observation = observations[offer.branchId]

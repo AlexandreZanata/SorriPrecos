@@ -46,7 +46,7 @@ import kotlinx.coroutines.launch
     val product = loaded?.data?.product ?: selected
     val offers = loaded?.data?.items.orEmpty().filter { offer ->
         if (product.isHistorical) offer.collectedAt != null && offer.priceCents != null
-        else (offer.isCurrent() && offer.effectivePriceCents != null) || offer.hasUnconfirmedStock()
+        else (offer.isCurrent() && offer.effectivePriceCents != null) || offer.hasUnconfirmedStock() || offer.hasStockWithoutPrice()
     }
     val canAddToCart = offers.any { it.isCurrent() && it.effectivePriceCents != null }
     val best = offers.filter { it.isCurrent() }.mapNotNull { it.effectivePriceCents }.minOrNull()
@@ -93,8 +93,12 @@ import kotlinx.coroutines.launch
                 if (offers.none { it.sourceUrl != null }) item { Text(if(product.isDemo) "Dados fictícios. Não há site de oferta real." else "Sem URLs de produtos informadas pelas fontes.", fontSize = 13.sp) }
             } else {
                 item {
-                    Text("Preços por mercado", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                    Text(if (historical) "Registros históricos · não são ofertas atuais" else "Preços confirmados primeiro · estoque não confirmado ao final", fontSize = 12.sp, lineHeight = 17.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 4.dp))
+                    Text(if (offers.any { it.hasStockWithoutPrice() }) "Preços e estoque por filial" else "Preços por mercado", fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                    Text(when {
+                        historical -> "Registros históricos · não são ofertas atuais"
+                        offers.any { it.hasStockWithoutPrice() } -> "Preços confirmados primeiro · consulte a filial para itens sem preço"
+                        else -> "Preços confirmados primeiro · estoque não confirmado ao final"
+                    }, fontSize = 12.sp, lineHeight = 17.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 4.dp))
                     if (historical) Text("Toque na filial para ver endereço e origem.", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 3.dp))
                 }
                 items(if(showAll) offers else offers.take(5), key = { it.branchId }) { o ->
@@ -149,13 +153,14 @@ import kotlinx.coroutines.launch
                     }
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                         Text(offer.supermarketName, fontSize = 14.sp, lineHeight = 17.sp, fontWeight = FontWeight.Bold)
-                        if (recent || expanded || offer.status == "stale") Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (recent || expanded || offer.hasStockWithoutPrice() || offer.status == "stale") Row(verticalAlignment = Alignment.CenterVertically) {
                             AppIcon(Glyph.Pin, Modifier.size(12.dp), colors.onSurfaceVariant)
                             Spacer(Modifier.width(4.dp))
                             Text(offer.branchName, fontSize = 11.sp, color = colors.onSurfaceVariant)
                         }
                         val status = when {
                             recent -> age(offer.collectedAt).replaceFirst("Há ", "Verificado há ")
+                            offer.hasStockWithoutPrice() -> "Estoque confirmado para retirada"
                             offer.hasUnconfirmedStock() -> "Estoque não confirmado · encarte"
                             offer.status == "unavailable" -> "Indisponibilidade informada"
                             offer.status == "stale" || offer.status == "recent" ->
@@ -176,7 +181,7 @@ import kotlinx.coroutines.launch
                         }
                     }
                     Surface(color = if (lowest) colors.primary else colors.surfaceVariant, shape = RoundedCornerShape(11.dp)) {
-                        Text(if (value == null) "Preço indisponível" else money(value),
+                        Text(if (offer.hasStockWithoutPrice()) "Consultar preço" else value?.let(::money) ?: "Preço indisponível",
                             fontSize = if (value != null) 18.sp else 10.sp,
                             lineHeight = if (value != null) 22.sp else 13.sp,
                             fontWeight = FontWeight.Bold, color = if (lowest) colors.onPrimary else colors.onSurfaceVariant,

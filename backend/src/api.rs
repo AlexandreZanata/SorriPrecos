@@ -309,9 +309,14 @@ async fn comparison_data(
         let price=r.get::<Option<i64>,_>("price_cents");let promo=r.get::<Option<i64>,_>("promotional_price_cents");
         let kind=r.get::<Option<String>,_>("offer_type");let conditions=r.get::<Option<String>,_>("conditions");
         let until=r.get::<Option<i64>,_>("valid_until");
-        let state=if collected.is_none() {"unknown"} else if available==Some(false) {"unavailable"} else if price.is_none() || until.is_some_and(|t|t<at) {"unknown"} else if collected.is_some_and(|t|t<at-172800) {"stale"} else if available.is_none() && r.get::<String,_>("supermarket_id")=="atacadao" && r.get::<String,_>("source_sku").starts_with("flyer-") && until.is_some() {"unconfirmed_stock"} else if available.is_none() {"unknown"} else {"recent"};
+        let supermarket = r.get::<String,_>("supermarket_id");
+        let source_sku = r.get::<String,_>("source_sku");
+        let confirmed_stock_without_price = !historical && supermarket == "drogasil"
+            && source_sku.starts_with("rd-stock-") && available == Some(true) && price.is_none()
+            && until.is_some_and(|t| t >= at) && collected.is_some_and(|t| t >= at - 172800);
+        let state=if collected.is_none() {"unknown"} else if available==Some(false) {"unavailable"} else if confirmed_stock_without_price {"stock_confirmed_no_price"} else if price.is_none() || until.is_some_and(|t|t<at) {"unknown"} else if collected.is_some_and(|t|t<at-172800) {"stale"} else if available.is_none() && supermarket=="atacadao" && source_sku.starts_with("flyer-") && until.is_some() {"unconfirmed_stock"} else if available.is_none() {"unknown"} else {"recent"};
         let effective=if state=="recent" {if matches!(kind.as_deref(),Some("regular"|"promotion")) && conditions.as_deref().unwrap_or("").is_empty() {promo.or(price)} else {price}} else {None};
-        json!({"branch_id":r.get::<String,_>("branch_id"),"branch_name":r.get::<String,_>("branch_name"),"address":r.get::<String,_>("address"),"supermarket_id":r.get::<String,_>("supermarket_id"),"supermarket_name":r.get::<String,_>("supermarket_name"),"price_cents":price,"promotional_price_cents":promo,"effective_price_cents":effective,"offer_type":kind,"conditions":conditions,"available":available,"source_url":r.get::<Option<String>,_>("source_url"),"collected_at":collected,"valid_until":until,"status":state,"is_demo":p.is_demo,"city":"Sorriso","state":"MT"})
+        json!({"branch_id":r.get::<String,_>("branch_id"),"branch_name":r.get::<String,_>("branch_name"),"address":r.get::<String,_>("address"),"supermarket_id":supermarket,"supermarket_name":r.get::<String,_>("supermarket_name"),"price_cents":price,"promotional_price_cents":promo,"effective_price_cents":effective,"offer_type":kind,"conditions":conditions,"available":available,"source_url":r.get::<Option<String>,_>("source_url"),"collected_at":collected,"valid_until":until,"status":state,"is_demo":p.is_demo,"city":"Sorriso","state":"MT"})
     }).collect();
     // Multiple source SKUs can map to the same canonical product in one branch.
     // Keep the cheapest eligible observation per branch; otherwise prefer the latest.
@@ -361,6 +366,7 @@ async fn sync_products(State(s): State<AppState>, Json(request): Json<SyncReques
         if !entry.historical
             && product.min_price_cents.is_none()
             && product.unconfirmed_price_cents.is_none()
+            && product.stock_only_valid_until.is_none()
             && !entry.comparison
         {
             updates.push(json!({"id":entry.id,"historical":entry.historical,"removed":true}));
@@ -388,6 +394,9 @@ fn product_version(payload: &Value) -> (String, Value) {
     let last = content["product"]
         .as_object_mut()
         .and_then(|p| p.remove("last_collected_at"));
+    let stock_only_valid_until = content["product"]
+        .as_object_mut()
+        .and_then(|p| p.remove("stock_only_valid_until"));
     let mut observed = Vec::new();
     if let Some(offers) = content.get_mut("items").and_then(Value::as_array_mut) {
         for offer in offers.iter_mut() {
@@ -406,7 +415,7 @@ fn product_version(payload: &Value) -> (String, Value) {
     content.hash(&mut hasher);
     (
         format!("{:016x}", hasher.finish()),
-        json!({"last_collected_at":last,"offers":observed}),
+        json!({"last_collected_at":last,"stock_only_valid_until":stock_only_valid_until,"offers":observed}),
     )
 }
 

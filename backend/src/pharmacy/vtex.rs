@@ -240,6 +240,13 @@ pub async fn run(pool: &SqlitePool, watch: bool) -> Result<()> {
                 "pharmacy_vtex_branch_complete"
             );
         }
+        match super::drogasil::collect(pool).await {
+            Ok(verified) => {
+                total += verified;
+                tracing::info!(verified, "pharmacy_drogasil_stock_complete");
+            }
+            Err(error) => tracing::warn!(%error, "pharmacy_drogasil_stock_failed"),
+        }
         if !watch {
             ensure!(
                 total > 0,

@@ -49,5 +49,59 @@
         "source_id": "cnpj:06626253140670"
       }
     ]
+  },
+  {
+    "id": "drogasil",
+    "name": "Drogasil",
+    "website": "https://www.drogasil.com.br/",
+    "audit_class": "B",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogasil-blumenau",
+        "name": "Blumenau",
+        "address": "Av. Blumenau, 2995 · Sorriso-MT",
+        "source_id": "cnpj:61585865228411"
+      },
+      {
+        "id": "drogasil-brescansin",
+        "name": "Brescansin",
+        "address": "Av. Natalino João Brescansin, 488 · Sorriso-MT",
+        "source_id": "cnpj:61585865287345"
+      },
+      {
+        "id": "drogasil-tancredo",
+        "name": "Tancredo",
+        "address": "Av. Tancredo Neves, 2942 · Sorriso-MT",
+        "source_id": "cnpj:61585865413405"
+      }
+    ]
+  },
+  {
+    "id": "drogaria-nebrasca",
+    "name": "Drogaria Nebrasca",
+    "website": "https://drogarianebrasca24horas.com.br/contato/",
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-nebrasca-natalino",
+        "name": "Natalino",
+        "address": "Av. Natalino João Brescansin, 955 · Sorriso-MT",
+        "source_id": "cnpj:09039622000106"
+      },
+      {
+        "id": "drogaria-nebrasca-blumenau",
+        "name": "Blumenau",
+        "address": "Av. Blumenau, 3014 · Sorriso-MT",
+        "source_id": "cnpj:09039622000289"
+      },
+      {
+        "id": "drogaria-nebrasca-tangara",
+        "name": "Tangará",
+        "address": "Rua Tangará, 709 · Sorriso-MT",
+        "source_id": "cnpj:09039622000360"
+      }
+    ]
   }
 ]
