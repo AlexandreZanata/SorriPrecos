@@ -1,0 +1,20 @@
+{
+  "media_id": 3864,
+  "image_sha256": "267cbef7253cf913f9a41277dd576f8e81f0504b004ee4633ae335faafb54310",
+  "valid_from": "2026-11-04",
+  "valid_through": "2026-11-04",
+  "items": [
+    {"id": "coxao-duro", "name": "Coxão Duro Bovino", "price_cents": 4490},
+    {"id": "lombo-suino", "name": "Lombo Suíno com Pele e Osso", "price_cents": 1690},
+    {"id": "acem-com-osso", "name": "Acém Bovino com Osso", "price_cents": 3390},
+    {"id": "acem-sem-osso", "name": "Acém Bovino sem Osso", "price_cents": 4290},
+    {"id": "peito-com-osso", "name": "Peito Bovino com Osso", "price_cents": 3190},
+    {"id": "paleta-com-osso", "name": "Paleta Bovina com Osso", "price_cents": 3390},
+    {"id": "paleta-7-com-osso", "name": "Paleta 7 Bovina com Osso", "price_cents": 3890},
+    {"id": "paleta-sem-osso", "name": "Paleta Bovina sem Osso", "price_cents": 3990},
+    {"id": "musculo-resfriado", "name": "Músculo Bovino Resfriado", "price_cents": 3490},
+    {"id": "osso-buco-traseiro", "name": "Osso Buco Bovino Traseiro", "price_cents": 2890},
+    {"id": "bisteca-bovina", "name": "Bisteca Bovina", "price_cents": 4290},
+    {"id": "alcatra-bovina", "name": "Alcatra Bovina", "price_cents": 5990}
+  ]
+}

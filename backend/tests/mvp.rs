@@ -970,6 +970,38 @@ async fn official_flyer_prices_are_searchable_but_not_ranked_as_available() {
 }
 
 #[tokio::test]
+async fn casa_aurora_flyer_only_displays_current_unconfirmed_local_prices() {
+    let (_d, pool) = fixture().await;
+    let mut flyer = row("demo-a", 4490);
+    flyer.branch_id = "casa-aurora-centro".into();
+    flyer.source_id = "flyer-3864-coxao-duro".into();
+    flyer.name = "Coxão Duro Bovino".into();
+    flyer.available = None;
+    flyer.valid_until = Some(now() + 3600);
+    catalog::import(&pool, "casa-aurora", &[flyer], Some("encarte público"))
+        .await
+        .unwrap();
+    let search_url = "/v1/products/search?q=coxao%20duro";
+    let (_, search) = call(app(&pool), search_url).await;
+    let product = &search["items"][0];
+    assert_eq!(product["unconfirmed_price_cents"], 4490);
+    assert!(product["min_price_cents"].is_null());
+    let id = product["id"].as_i64().unwrap();
+    let (_, comparison) = call(app(&pool), &format!("/v1/products/{id}/prices")).await;
+    let offer = &comparison["items"][0];
+    assert_eq!(offer["status"], "unconfirmed_stock");
+    assert_eq!(offer["branch_id"], "casa-aurora-centro");
+    assert!(offer["effective_price_cents"].is_null());
+    sqlx::query("UPDATE offers SET valid_until=? WHERE supermarket_id='casa-aurora'")
+        .bind(now() - 1)
+        .execute(&pool)
+        .await
+        .unwrap();
+    let (_, expired) = call(app(&pool), search_url).await;
+    assert!(expired["items"].as_array().unwrap().is_empty());
+}
+
+#[tokio::test]
 async fn verified_pharmacy_stock_without_price_is_searchable_until_expiry() {
     let (_d, pool) = fixture().await;
     let mut stock = row("demo-a", 1000);

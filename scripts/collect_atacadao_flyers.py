@@ -10,6 +10,7 @@ import datetime as dt
 import json
 import os
 import re
+import ssl
 import subprocess
 import tempfile
 import time
@@ -42,7 +43,14 @@ class SameHostRedirect(urllib.request.HTTPRedirectHandler):
 
 def fetch(url, max_bytes):
     request = urllib.request.Request(url, headers={'User-Agent': 'SorriPrecos/1.0 (catalogo publico Sorriso)'})
-    with urllib.request.build_opener(SameHostRedirect()).open(request, timeout=35) as response:
+    handlers = [SameHostRedirect()]
+    if urllib.parse.urlsplit(url).hostname in ('www.atacadao.com.br', PDF_HOST):
+        ca_file = os.environ.get('SORRIPRECOS_ATACADAO_CA_FILE')
+        if ca_file:
+            context = ssl.create_default_context()
+            context.load_verify_locations(cafile=ca_file)
+            handlers.append(urllib.request.HTTPSHandler(context=context))
+    with urllib.request.build_opener(*handlers).open(request, timeout=35) as response:
         # Reject redirects away from the documented hosts, including local addresses.
         final = urllib.parse.urlsplit(response.url)
         original = urllib.parse.urlsplit(url)

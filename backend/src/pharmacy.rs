@@ -159,11 +159,33 @@ async fn read(response: reqwest::Response) -> Result<String> {
 
 pub async fn run(pool: &SqlitePool, limit: usize, watch: bool) -> Result<()> {
     ensure!((1..=40).contains(&limit), "lote de 1 a 40 páginas");
-    let client = reqwest::Client::builder()
+    let mut builder = reqwest::Client::builder()
         .redirect(reqwest::redirect::Policy::none())
         .timeout(Duration::from_secs(20))
-        .user_agent("SorriPrecos/0.1")
-        .build()?;
+        .user_agent("SorriPrecos/0.1");
+    if let Some(path) = std::env::var_os("SORRIPRECOS_THERAPEUTICA_CA_FILE") {
+        let file = tokio::fs::File::open(path)
+            .await
+            .context("CA da Therapeutica indisponível")?;
+        ensure!(
+            file.metadata().await?.is_file(),
+            "CA da Therapeutica exige arquivo PEM"
+        );
+        use tokio::io::AsyncReadExt;
+        let mut pem = Vec::new();
+        file.take(262_145).read_to_end(&mut pem).await?;
+        ensure!(
+            pem.len() <= 262_144,
+            "arquivo CA da Therapeutica acima de 256 KiB"
+        );
+        let roots =
+            reqwest::Certificate::from_pem_bundle(&pem).context("CA da Therapeutica inválida")?;
+        ensure!(!roots.is_empty(), "CA da Therapeutica sem certificados PEM");
+        for root in roots {
+            builder = builder.add_root_certificate(root);
+        }
+    }
+    let client = builder.build()?;
     loop {
         let delay = match scan(pool, &client, limit).await {
             Ok(delay) => delay,

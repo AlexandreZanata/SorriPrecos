@@ -194,7 +194,7 @@ fn row(body: &Value, branch: &Branch, sku: &str, price: i64) -> Result<ImportRow
     Ok(result)
 }
 
-fn package(name: &str, normalized: &str) -> Result<(i64, &'static str)> {
+pub(super) fn package(name: &str, normalized: &str) -> Result<(i64, &'static str)> {
     static UNITS: LazyLock<Regex> = LazyLock::new(|| {
         Regex::new(r"\b(\d+)\s*(?:un|uni|unidades?|comprimidos?|capsulas?|saches?|doses?|ampolas?|frascos?|supositorios?)$").unwrap()
     });

@@ -74,7 +74,7 @@ import androidx.compose.ui.unit.sp
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 5.dp)) {
                     AppIcon(Glyph.Cart, Modifier.size(12.dp), MaterialTheme.colorScheme.onSurfaceVariant); Spacer(Modifier.width(4.dp))
-                    Text(if (current) "${p.branchCount} filiais com preço" else if (unconfirmed) "Atacadão · estoque não confirmado" else if (stockOnly) "Veja as filiais" else if (historical) "${p.historicalBranchCount} registros antigos" else "Sem preço recente", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(if (current) "${p.branchCount} filiais com preço" else if (unconfirmed) "Estoque não confirmado" else if (stockOnly) "Veja as filiais" else if (historical) "${p.historicalBranchCount} registros antigos" else "Sem preço recente", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
