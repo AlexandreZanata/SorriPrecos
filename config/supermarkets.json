@@ -855,5 +855,19 @@
         "source_id": "aiqfome:140616:cnpj:66338429000100"
       }
     ]
+  },
+  {
+    "id": "nanai-sushi",
+    "name": "Nanai Sushi",
+    "website": "https://aiqfome.com/MT/sorriso/nanai-sushi",
+    "audit_class": "B",
+    "branches": [
+      {
+        "id": "nanai-sushi-sorriso",
+        "name": "Sorriso",
+        "address": "Avenida Tancredo Neves, 2862 · Sorriso-MT",
+        "source_id": "aiqfome:118383:cnpj:55597556000107"
+      }
+    ]
   }
 ]

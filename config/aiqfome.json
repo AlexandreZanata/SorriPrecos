@@ -623,5 +623,19 @@
       "bolo gelado"
     ],
     "allow_portions": true
+  },
+  {
+    "supermarket_id": "nanai-sushi",
+    "branch_id": "nanai-sushi-sorriso",
+    "slug": "nanai-sushi",
+    "seller_id": 118383,
+    "cnpj": "55597556000107",
+    "street": "AVENIDA TANCREDO NEVES",
+    "number": "2862",
+    "postcode": "78890143",
+    "categories": [
+      "complementos",
+      "bebidas"
+    ]
   }
 ]
