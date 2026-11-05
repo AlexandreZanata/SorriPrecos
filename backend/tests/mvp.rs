@@ -219,6 +219,47 @@ async fn distinct_packaging_never_merged() {
     );
 }
 #[tokio::test]
+async fn local_menu_sku_is_remapped_after_dish_change() {
+    let (_d, p) = fixture().await;
+    let mut first = row("demo-a", 2399);
+    first.source_id = "aiq-menu-1".into();
+    first.name = "Marmita de frango".into();
+    first.quantity = 1;
+    first.unit = "un".into();
+    first.presentation = "Porção · 1".into();
+    catalog::import(&p, "demo-a", &[first.clone()], None)
+        .await
+        .unwrap();
+    let mut second = first.clone();
+    second.name = "Marmita de carne".into();
+    second.price_cents = Some(2599);
+    catalog::import(&p, "demo-a", &[second], None)
+        .await
+        .unwrap();
+    let offer = sqlx::query(
+        "SELECT p.name,o.price_cents FROM offers o JOIN products p ON p.id=o.product_id",
+    )
+    .fetch_one(&p)
+    .await
+    .unwrap();
+    assert_eq!(offer.get::<String, _>("name"), "Marmita de carne");
+    assert_eq!(offer.get::<i64, _>("price_cents"), 2599);
+
+    let mut protected = first;
+    protected.source_id = "vip-menu-1".into();
+    protected.name = "Produto A".into();
+    catalog::import(&p, "demo-a", &[protected.clone()], None)
+        .await
+        .unwrap();
+    protected.name = "Produto B".into();
+    assert!(
+        catalog::import(&p, "demo-a", &[protected], None)
+            .await
+            .is_err()
+    );
+}
+
+#[tokio::test]
 async fn wrong_branch_rolls_back_entire_batch() {
     let (_d, p) = fixture().await;
     catalog::import(&p, "demo-a", &[row("demo-a", 2399)], None)

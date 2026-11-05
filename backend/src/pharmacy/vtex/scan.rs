@@ -12,9 +12,9 @@ use sqlx::SqlitePool;
 use std::{collections::BTreeMap, time::Duration};
 use url::Url;
 
-const DISCOVERY_PER_ROUND: usize = 10;
-const MAX_DISCOVERY_SKUS: usize = 48;
-const REFRESH_PER_BRANCH: i64 = 48;
+const DISCOVERY_PER_ROUND: usize = 240;
+const MAX_DISCOVERY_SKUS: usize = 960;
+const REFRESH_PER_BRANCH: i64 = 600;
 const CHECKOUT_BATCH: usize = 12;
 const BASIS: &str = "PUBLIC_STOREFRONT: índice VTEX e retirada verificada em Sorriso-MT";
 
@@ -299,7 +299,7 @@ pub(super) async fn collect(pool: &SqlitePool, client: &Client, market: &str) ->
     let candidates = discover(&mut store, &mut checkpoint).await?;
     let ids: Vec<_> = candidates.keys().map(String::as_str).collect();
     let mut rows = Vec::new();
-    let mut rejected = Vec::new();
+    let mut rejected: Vec<(String, String, String)> = Vec::new();
     for branch in &branches {
         for batch in ids.chunks(CHECKOUT_BATCH) {
             let data = store.simulate(branch, batch).await?;
@@ -309,21 +309,46 @@ pub(super) async fn collect(pool: &SqlitePool, client: &Client, market: &str) ->
                 };
                 match row(&candidates[*sku], branch, sku, price) {
                     Ok(row) => rows.push(row),
-                    Err(error) => rejected.push((branch.id, *sku, error.to_string())),
+                    Err(error) => {
+                        rejected.push((branch.id.to_owned(), (*sku).to_owned(), error.to_string()))
+                    }
+                }
+            }
+        }
+    }
+    let mut imported = 0;
+    if !rows.is_empty() {
+        match catalog::import_transaction(pool, market, &rows, false, "retail").await {
+            Ok(count) => imported = count,
+            Err(_) => {
+                for row in &rows {
+                    match catalog::import_transaction(
+                        pool,
+                        market,
+                        std::slice::from_ref(row),
+                        false,
+                        "retail",
+                    )
+                    .await
+                    {
+                        Ok(count) => imported += count,
+                        Err(error) => rejected.push((
+                            row.branch_id.clone(),
+                            row.source_id.trim_start_matches("vtex-").to_owned(),
+                            error.to_string(),
+                        )),
+                    }
                 }
             }
         }
     }
     let mut tx = pool.begin_with("BEGIN IMMEDIATE").await?;
-    if !rows.is_empty() {
-        catalog::import_in_transaction(&mut tx, market, &rows, false, "retail").await?;
-    }
     let run: i64 = sqlx::query_scalar("INSERT INTO collection_runs(supermarket_id,started_at,finished_at,status,authorization_reference,requests,imported) VALUES(?,?,?,'success',?,?,?) RETURNING id")
-        .bind(market).bind(at).bind(now()).bind(BASIS).bind(store.requests).bind((rows.len()+refreshed) as i64)
+        .bind(market).bind(at).bind(now()).bind(BASIS).bind(store.requests).bind((imported+refreshed) as i64)
         .fetch_one(&mut *tx).await?;
     for (branch, sku, reason) in rejected {
         sqlx::query("INSERT INTO source_catalog_items(supermarket_id,branch_id,source_id,raw_json,observed_at,run_id,normalized,reason) VALUES(?,?,?,?,?,?,0,?) ON CONFLICT(supermarket_id,branch_id,source_id) DO UPDATE SET raw_json=excluded.raw_json,observed_at=excluded.observed_at,run_id=excluded.run_id,normalized=0,reason=excluded.reason")
-            .bind(market).bind(branch).bind(format!("vtex-{sku}")).bind(candidates[sku].to_string()).bind(now()).bind(run).bind(reason)
+            .bind(market).bind(branch).bind(format!("vtex-{sku}")).bind(candidates.get(&sku).map(|value| value.to_string()).unwrap_or_default()).bind(now()).bind(run).bind(reason)
             .execute(&mut *tx).await?;
     }
     sqlx::query(
@@ -335,7 +360,7 @@ pub(super) async fn collect(pool: &SqlitePool, client: &Client, market: &str) ->
     .execute(&mut *tx)
     .await?;
     sqlx::query("INSERT INTO catalogue_collectors(supermarket_id,adapter,interval_seconds,status,last_started_at,last_finished_at,last_success_at,requests,raw_items,normalized_items) VALUES(?,'pharmacy-vtex',600,'success',?,?,?,?,?,?) ON CONFLICT(supermarket_id) DO UPDATE SET status='success',last_started_at=excluded.last_started_at,last_finished_at=excluded.last_finished_at,last_success_at=excluded.last_success_at,last_error=NULL,requests=excluded.requests,raw_items=excluded.raw_items,normalized_items=excluded.normalized_items")
-        .bind(market).bind(at).bind(now()).bind(now()).bind(store.requests).bind(ids.len() as i64).bind((rows.len()+refreshed) as i64).execute(&mut *tx).await?;
+        .bind(market).bind(at).bind(now()).bind(now()).bind(store.requests).bind(ids.len() as i64).bind((imported+refreshed) as i64).execute(&mut *tx).await?;
     tx.commit().await?;
     tracing::info!(
         market,
@@ -365,6 +390,51 @@ mod tests {
                     <loc>https://example.org/preservativo/p</loc>";
         assert_eq!(sitemap_urls(body, host, true), ["/sitemap/product-21.xml"]);
         assert_eq!(sitemap_urls(body, host, false), ["/creme/p"]);
+    }
+
+    #[tokio::test]
+    async fn refresh_queue_includes_all_known_offers_not_a_fixed_sample() {
+        let dir = tempfile::tempdir().unwrap();
+        let pool = crate::db::open(&format!(
+            "sqlite://{}",
+            dir.path().join("test.db").display()
+        ))
+        .await
+        .unwrap();
+        crate::db::seed_sources(&pool).await.unwrap();
+        let branch = super::super::BRANCHES
+            .iter()
+            .find(|branch| branch.id == "pague-menos-brescansin")
+            .unwrap();
+        let rows: Vec<ImportRow> = (0..60)
+            .map(|index| ImportRow {
+                source_id: format!("vtex-{index}"),
+                branch_id: branch.id.into(),
+                name: format!("Produto de teste {index} 20g"),
+                brand: "Teste".into(),
+                quantity: 20,
+                unit: "g".into(),
+                presentation: "Embalagem".into(),
+                category: "Farmácia".into(),
+                gtin: None,
+                price_cents: Some(1000 + index),
+                promotional_price_cents: None,
+                offer_type: "regular".into(),
+                conditions: None,
+                available: Some(true),
+                source_url: None,
+                photo_source_url: None,
+                collected_at: now() - 601,
+                valid_until: Some(now() + 1800),
+                source_city: Some("Sorriso".into()),
+                source_state: Some("MT".into()),
+            })
+            .collect();
+        catalog::import(&pool, branch.market, &rows, Some("test fixture"))
+            .await
+            .unwrap();
+        let due = current_rows(&pool, branch).await.unwrap();
+        assert_eq!(due.len(), 60);
     }
 
     #[test]

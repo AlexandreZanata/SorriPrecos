@@ -10,12 +10,17 @@
     "postcode": "78894067",
     "categories": [
       "carne bovina",
+      "artesanal",
+      "kits semanais",
+      "kits churrasco",
       "carne suina",
       "aves",
       "carne de carneiro",
       "linguicas caseira",
+      "espetinhos",
       "paes",
       "sal tempero maionese e molhos",
+      "carvao lenha e acendedores",
       "frios e derivados",
       "bebidas",
       "gelo"
@@ -31,12 +36,16 @@
     "number": "2694",
     "postcode": "78890000",
     "categories": [
+      "chas medicinais",
       "acucares",
       "castanhas",
       "farinhas",
       "frutas secas",
+      "mercadinho emporio",
       "sementes e graos",
+      "produtos em po",
       "temperos e especiarias",
+      "encapsulados",
       "bebidas",
       "aveia",
       "secao terere"
@@ -242,7 +251,32 @@
     "street": "Avenida perimetral sudoeste",
     "number": "3249",
     "postcode": "78890000",
-    "categories": [],
+    "categories": [
+      "combo salgado refri",
+      "paes e rosquinhas",
+      "lanches na chapa",
+      "frios fatiados presunto queijo mortadela",
+      "sucos",
+      "pastel",
+      "pao de queijo chipa",
+      "salgados fritos",
+      "salgados assados",
+      "cafe leite achocolatados iogurtes",
+      "refrigerantes",
+      "bolos",
+      "tapioca crepioca cuscus",
+      "sanduiche natural",
+      "cento de salgados mini salgados",
+      "mini pizza",
+      "tortas",
+      "petiscos",
+      "doces",
+      "cookies",
+      "mercearia mercado",
+      "sonhos",
+      "empadas quiches",
+      "acai e sorvetes"
+    ],
     "allow_portions": true
   },
   {
@@ -254,7 +288,33 @@
     "street": "Av. Natalino João Brescansin",
     "number": "1802",
     "postcode": "78890000",
-    "categories": [],
+    "categories": [
+      "x salada",
+      "caldos",
+      "combos",
+      "pao de queijo",
+      "pao de queijo recheado",
+      "pao",
+      "frios",
+      "cafe",
+      "bebidas quentes e frias",
+      "leite e chocolate quente e gelado",
+      "vitamina",
+      "sucos",
+      "confeitaria",
+      "sanduiche",
+      "omelete e ovos mexidos",
+      "lanches",
+      "tapiocas",
+      "crepioca",
+      "cuscuz",
+      "bebidas",
+      "mercearia",
+      "paes de fermentacao natural",
+      "salgados fritos",
+      "pastel grande frito na hora",
+      "bauru assado"
+    ],
     "allow_portions": true
   },
   {
@@ -266,7 +326,21 @@
     "street": "Avenida Blumenau Sul",
     "number": "388",
     "postcode": "78894357",
-    "categories": [],
+    "categories": [
+      "salgados frito mini sortido",
+      "salgado assado mini sortido",
+      "salgados assados grande",
+      "salgados fritos grandes",
+      "combos",
+      "lanches",
+      "mercearia",
+      "bebidas",
+      "sucos",
+      "agua de kero nosso coco",
+      "frios",
+      "paes diversos",
+      "sanduiches"
+    ],
     "allow_portions": true
   },
   {
@@ -278,7 +352,23 @@
     "street": "avenida Tancredo",
     "number": "2990",
     "postcode": "78890000",
-    "categories": [],
+    "categories": [
+      "salgados fritos",
+      "bolachas",
+      "salgadinhos",
+      "pao de queijo",
+      "bombons brigadeiros morango cravejado",
+      "bolos",
+      "salgados assados",
+      "lanches",
+      "doces confeitaria",
+      "cafe e achocolatado",
+      "refrigerante gatorade e agua",
+      "sucos",
+      "paes cuca torradas biscoitos",
+      "frios mercearia",
+      "trident e halls"
+    ],
     "allow_portions": true
   },
   {
@@ -290,7 +380,20 @@
     "street": "Avenida dos Imigrantes",
     "number": "3255",
     "postcode": "78890148",
-    "categories": [],
+    "categories": [
+      "queridinhos da dona diva",
+      "bolos da dona diva inteiros",
+      "paes de queijo salgados",
+      "pequenos doces quitutes",
+      "fatias sobremesas especiais",
+      "combos dona diva",
+      "mini bolos caseiros",
+      "bolachinhas amanteigadas da dona diva",
+      "para presentear",
+      "congelados da dona diva",
+      "cafes especiais",
+      "bebidas"
+    ],
     "allow_portions": true
   },
   {
@@ -302,7 +405,18 @@
     "street": "Avenida Perimetral Sul do Oeste, Sorriso - MT",
     "number": "1087",
     "postcode": "78894067",
-    "categories": [],
+    "categories": [
+      "acougue carnes por kg",
+      "kits de carne",
+      "refrigerantes e sucos",
+      "energeticos e isotonicos",
+      "aguas",
+      "gelo e carvao",
+      "cervejas long neck caixa",
+      "cervejas lata 269ml caixa",
+      "carnes assadas",
+      "guarnicoes"
+    ],
     "allow_portions": true
   },
   {
@@ -321,7 +435,8 @@
       "lasanhas",
       "escondidinhos",
       "caldos quentes",
-      "tortas"
+      "tortas",
+      "bebidas"
     ],
     "allow_portions": true
   },
@@ -338,7 +453,8 @@
       "massas dos caseirinhos",
       "copo da felicidade",
       "bolo vulcao",
-      "brigadeiros"
+      "brigadeiros",
+      "combos"
     ],
     "allow_portions": true
   },
@@ -357,9 +473,11 @@
       "tortas",
       "coxinha",
       "mine ovos",
+      "combos",
       "morango do amor",
       "delicias de sao joao",
-      "morangos"
+      "morangos",
+      "bebidas"
     ],
     "allow_portions": true
   },
@@ -373,11 +491,13 @@
     "number": "503",
     "postcode": "78891207",
     "categories": [
+      "bebidas",
       "tortas doces",
       "bolo gelado",
       "tortinhas",
       "sobremesas sob encomenda tortas inteiras sobremesas com frutas ou paves",
-      "bombom"
+      "bombom",
+      "presenteaveis"
     ],
     "allow_portions": true
   },
@@ -391,7 +511,8 @@
     "number": "1038",
     "postcode": "78890075",
     "categories": [
-      "cones trufados"
+      "cones trufados",
+      "bebidas"
     ],
     "allow_portions": true
   },
@@ -409,6 +530,7 @@
       "bolo gelado",
       "salgados",
       "torta no pote",
+      "bebidas",
       "bombom de morango"
     ],
     "allow_portions": true
@@ -423,14 +545,17 @@
     "number": "1968",
     "postcode": "78890000",
     "categories": [
+      "itens adicionais",
       "salgados",
-      "doses diarias",
       "os queridinhos da fran abreu",
       "sobremesas para compartilhar",
       "bolos comemore",
       "bolos gelado",
+      "doses diarias",
       "copos da felicidade",
-      "bolos de pote"
+      "bolos de pote",
+      "presentes surpresas",
+      "bebidas"
     ],
     "allow_portions": true
   },
@@ -444,13 +569,16 @@
     "number": "543",
     "postcode": "78896959",
     "categories": [
+      "itens adicionais",
       "os queridinhos da fran abreu",
       "doses diarias",
       "bolos gelado",
       "copos da felicidade",
       "bolos de pote",
       "bolos comemore",
-      "sobremesas para compartilhar"
+      "sobremesas para compartilhar",
+      "presentes surpresas",
+      "bebidas"
     ],
     "allow_portions": true
   },
@@ -468,7 +596,8 @@
       "caseirinhos",
       "pastel",
       "sucos",
-      "bolo no pote"
+      "bolo no pote",
+      "refrigerante"
     ],
     "allow_portions": true
   },
@@ -502,6 +631,7 @@
     "postcode": "78895082",
     "categories": [
       "geladinho",
+      "bebidas",
       "doces"
     ],
     "allow_portions": true
@@ -523,7 +653,8 @@
       "sanduiches",
       "sonho",
       "churros doce",
-      "bolo de pote fatia"
+      "bolo de pote fatia",
+      "bebidas"
     ],
     "allow_portions": true
   },
@@ -539,6 +670,9 @@
     "categories": [
       "pao com linguica",
       "cachorro quente",
+      "combos",
+      "combo com coca cola",
+      "bebidas",
       "salame",
       "linguica crua"
     ],
@@ -554,20 +688,29 @@
     "number": "1030",
     "postcode": "78890000",
     "categories": [
+      "marmita do dia carne suina assada",
+      "marmita de macarrao",
+      "refrigerantes",
+      "aguas",
       "lasanhas congeladas",
       "sucos 100 natural",
+      "pao italiano italiano recheado com molho de queijo gorgonzola e iscas de file mignon",
+      "caldos molho cachoror quente molho sugo molho a bolonhesa molho gorgonzola 350 ml congelados",
       "sopa fresca",
       "files parmegiana congelados",
       "escondidinho congelados",
       "paozinho congelado",
-      "massa caseira",
+      "massas caseiras congeladas",
       "pao de queijo",
       "sobremesas",
       "congelados",
       "molhos prontos",
       "marmita fit",
+      "cardapio da noite marmita de file de frango",
       "focaccia italiana assada",
-      "pasteis"
+      "pasteis",
+      "porcoes",
+      "buraco quente"
     ],
     "allow_portions": true
   },
@@ -581,10 +724,21 @@
     "number": "3493",
     "postcode": "78890000",
     "categories": [
+      "porcoes",
+      "lanches",
+      "lanches rapidos",
       "mercearia",
       "padaria",
       "acai",
       "sorvetes potes",
+      "agua",
+      "sucos",
+      "refrigerantes",
+      "energeticos",
+      "cervejas",
+      "bebidas destiladas",
+      "gelo",
+      "copos de acai",
       "biscoitos"
     ],
     "allow_portions": true
@@ -599,7 +753,8 @@
     "number": "3344",
     "postcode": "78890000",
     "categories": [
-      "massas congeladas"
+      "massas congeladas",
+      "bebidas"
     ],
     "allow_portions": true
   },
@@ -625,6 +780,1065 @@
     "allow_portions": true
   },
   {
+    "supermarket_id": "ac-marmitaria",
+    "branch_id": "ac-marmitaria-sorriso",
+    "slug": "ac-marmitaria",
+    "seller_id": 142126,
+    "cnpj": "35680530000102",
+    "street": "Rua irmã Benedita",
+    "number": "280",
+    "postcode": "78896067",
+    "categories": [
+      "hot dog",
+      "lanches",
+      "marmita noturna",
+      "cardapio do dia",
+      "porcoes",
+      "bebidas",
+      "feijoada avulsa",
+      "sobremesas",
+      "cardapio da noite"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "arena-marmitaria-e-lanches",
+    "branch_id": "arena-marmitaria-e-lanches-sorriso",
+    "slug": "arena-marmitaria-e-lanches",
+    "seller_id": 144111,
+    "cnpj": "61017214000165",
+    "street": "Avenida Claudino Frâncio, Sorriso - MT",
+    "number": "2845",
+    "postcode": "78892112",
+    "categories": [
+      "lanches",
+      "porcoes",
+      "marmitas",
+      "caldos",
+      "espetos",
+      "bebidas alcoolicas",
+      "bebidas nao alcoolicas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "assados-e-cia",
+    "branch_id": "assados-e-cia-sorriso",
+    "slug": "assados-e-cia",
+    "seller_id": 142020,
+    "cnpj": "44919305000177",
+    "street": "AVENIDA DOS UNIVERSITARIOS",
+    "number": "2081",
+    "postcode": "78895168",
+    "categories": [
+      "espetos individuais",
+      "jantinha completa",
+      "assados",
+      "acompanhamentos",
+      "caldos",
+      "bebidas",
+      "cervejas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "atelie-do-bolo",
+    "branch_id": "atelie-do-bolo-sorriso",
+    "slug": "atelie-do-bolo",
+    "seller_id": 138974,
+    "cnpj": "65587066000175",
+    "street": "Rua Bandeirantes",
+    "number": "436",
+    "postcode": "78890000",
+    "categories": [
+      "promocao todas as segundas feiras",
+      "bolos pequenos",
+      "bolos medios",
+      "bolos grandes",
+      "tortas salgadas",
+      "batata recheada frango cremoso catupiry",
+      "sanduiche",
+      "rosquinha doce",
+      "copo da felicidade",
+      "pudim",
+      "tortas doce",
+      "salgados fritos",
+      "pao de queijo",
+      "cappuccino",
+      "bebidas",
+      "combos do atelie",
+      "fatias de bolos recheados"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "baxinho-dos-assados",
+    "branch_id": "baxinho-dos-assados-sorriso",
+    "slug": "baxinho-dos-assados",
+    "seller_id": 115969,
+    "cnpj": "54927519000149",
+    "street": "Avenida Santa Maria",
+    "number": "131",
+    "postcode": "78890079",
+    "categories": [
+      "combo baxinho assados",
+      "assados",
+      "acompanhamentos",
+      "bebidas",
+      "combo com coca cola"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "bendito-pudim",
+    "branch_id": "bendito-pudim-sorriso",
+    "slug": "bendito-pudim",
+    "seller_id": 105713,
+    "cnpj": "51200783000198",
+    "street": "Rua Das Avencas",
+    "number": "370",
+    "postcode": "78890000",
+    "categories": [
+      "pudins",
+      "sorvetes artesanais",
+      "sobremesas",
+      "bolo gelado na travessa",
+      "bolos caseiros",
+      "natal"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "bodegas-marmitaria",
+    "branch_id": "bodegas-marmitaria-sorriso",
+    "slug": "bodegas-marmitaria",
+    "seller_id": 147371,
+    "cnpj": "45300158000115",
+    "street": "Rua napoli",
+    "number": "1206",
+    "postcode": "78890000",
+    "categories": [
+      "parmegiana",
+      "marmita do dia",
+      "feijoada",
+      "strogonoff",
+      "sucos",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "bolognas-macarrao-expresso",
+    "branch_id": "bolognas-macarrao-expresso-sorriso",
+    "slug": "bolognas-macarrao-expresso",
+    "seller_id": 106037,
+    "cnpj": "51068295000179",
+    "street": "Rua Celeste",
+    "number": "631",
+    "postcode": "78890000",
+    "categories": [
+      "receitas da casa",
+      "monte sua massa",
+      "mac cheese",
+      "bebidas",
+      "combo",
+      "strogobox",
+      "sobremesas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "bolos-caseiro",
+    "branch_id": "bolos-caseiro-sorriso",
+    "slug": "bolos-caseiro",
+    "seller_id": 138474,
+    "cnpj": "30883317000184",
+    "street": "Av. Blumenau Sul",
+    "number": "1850",
+    "postcode": "78895047",
+    "categories": [
+      "bolos caseiros",
+      "mine bolos",
+      "bebidas",
+      "brownie"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "bolos-da-tata",
+    "branch_id": "bolos-da-tata-sorriso",
+    "slug": "bolos-da-tata",
+    "seller_id": 147022,
+    "cnpj": "69667212000123",
+    "street": "Avenida Porto Alegre - Sul",
+    "number": "1808",
+    "postcode": "78894447",
+    "categories": [
+      "bolos"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "bolos-de-casa",
+    "branch_id": "bolos-de-casa-sorriso",
+    "slug": "bolos-de-casa",
+    "seller_id": 81547,
+    "cnpj": "28977495000122",
+    "street": "Av. Tancredo Neves",
+    "number": "301",
+    "postcode": "78890000",
+    "categories": [
+      "bolo vulcao",
+      "bolo pudim",
+      "bolos tradicionais",
+      "bolos de milho campeao de vendas",
+      "bolos de cenoura",
+      "bolos de fuba",
+      "bolos especiais",
+      "bolos salgados",
+      "bolos piscina",
+      "tortas",
+      "bolos integrais",
+      "bolo de mandioca com requeijao",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "caseirinhos-da-eva",
+    "branch_id": "caseirinhos-da-eva-sorriso",
+    "slug": "caseirinhos-da-eva",
+    "seller_id": 122851,
+    "cnpj": "35321252000105",
+    "street": "Rua das Hortências",
+    "number": "1320",
+    "postcode": "78890000",
+    "categories": [
+      "bolos mini vulcao",
+      "bolos caseirinhos",
+      "sobremesas",
+      "cassata",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "caseirinhos-da-val",
+    "branch_id": "caseirinhos-da-val-sorriso",
+    "slug": "caseirinhos-da-val",
+    "seller_id": 144688,
+    "cnpj": "37487831000140",
+    "street": "Rua Renascença",
+    "number": "1493",
+    "postcode": "78894045",
+    "categories": [
+      "mini pudim",
+      "bolos mini vulcao",
+      "copos da felicidade",
+      "sucos",
+      "fatias recheadas",
+      "acai montado",
+      "combos promocionais",
+      "coxinhas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "caseirinhos-da-vivi",
+    "branch_id": "caseirinhos-da-vivi-sorriso",
+    "slug": "caseirinhos-da-vivi",
+    "seller_id": 137019,
+    "cnpj": "64218660000126",
+    "street": "Avenida Blumenau Sul",
+    "number": "n/a",
+    "postcode": "78890000",
+    "categories": [
+      "cucas recheadas",
+      "salgados",
+      "festival de tortas",
+      "sobremesas",
+      "natal em familia 2026",
+      "bolachas e biscoitos",
+      "donut s",
+      "bolos caseiros",
+      "caseirinhos fit",
+      "cachorro quente",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "caseiros-da-cah",
+    "branch_id": "caseiros-da-cah-sorriso",
+    "slug": "caseiros-da-cah",
+    "seller_id": 139018,
+    "cnpj": "33504180000106",
+    "street": "Rua Mário Spinelli",
+    "number": "1911",
+    "postcode": "78890000",
+    "categories": [
+      "combinhoss",
+      "bolos na marmitinha 500ml",
+      "delicias no pote 200ml",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "chefe-massas",
+    "branch_id": "chefe-massas-sorriso",
+    "slug": "chefe-massas",
+    "seller_id": 144110,
+    "cnpj": "57865878000107",
+    "street": "Rua dos Bandeirantes",
+    "number": "SN",
+    "postcode": "78890265",
+    "categories": [
+      "pratos prontos praticidade em um click",
+      "monte sua massa",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "cheiro-e-tempero-marmitaria",
+    "branch_id": "cheiro-e-tempero-marmitaria-sorriso",
+    "slug": "cheiro-e-tempero-marmitaria",
+    "seller_id": 141107,
+    "cnpj": "14689817000123",
+    "street": "RUA GRACILIANO RAMOS",
+    "number": "1410",
+    "postcode": "78893166",
+    "categories": [
+      "marmitas",
+      "combos",
+      "marmita especial 1",
+      "marmita especial 2",
+      "marmita especial 3",
+      "adicionais",
+      "bebidas",
+      "combo coca cola"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "da-silva-marmitaria",
+    "branch_id": "da-silva-marmitaria-sorriso",
+    "slug": "da-silva-marmitaria",
+    "seller_id": 130702,
+    "cnpj": "59496629000117",
+    "street": "Rua Mato Grosso",
+    "number": "2613",
+    "postcode": "78896013",
+    "categories": [
+      "suco de polpa e natural de laranja",
+      "cardapio da semana",
+      "combos",
+      "quarta do sossego",
+      "feijoada",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "delicias-da-gi-confeitaria",
+    "branch_id": "delicias-da-gi-confeitaria-sorriso",
+    "slug": "delicias-da-gi-confeitaria",
+    "seller_id": 132182,
+    "cnpj": "60290622000123",
+    "street": "Rua Turqueza",
+    "number": "160",
+    "postcode": "78895064",
+    "categories": [
+      "mini caseirinhos",
+      "bolos caseiros",
+      "torta de bolacha",
+      "pudim",
+      "sequilhos de maisena"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "delicias-talisma-salgados",
+    "branch_id": "delicias-talisma-salgados-sorriso",
+    "slug": "delicias-talisma-salgados",
+    "seller_id": 26144,
+    "cnpj": "28803378000142",
+    "street": "Rua Serra Do Mar",
+    "number": "485",
+    "postcode": "78892349",
+    "categories": [
+      "salgadinhos",
+      "bebidas",
+      "combinados",
+      "bolos e doces",
+      "especialidades da casa"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "delicitta-refeicoes",
+    "branch_id": "delicitta-refeicoes-sorriso",
+    "slug": "delicitta-refeicoes",
+    "seller_id": 126494,
+    "cnpj": "44022030000174",
+    "street": "Avenida Otávio de Souza Cruz",
+    "number": "962",
+    "postcode": "78890000",
+    "categories": [
+      "hoje e dia de feijodada",
+      "marmita do dia",
+      "bebidas",
+      "marmita executiva"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "dom-quixote-restaurante",
+    "branch_id": "dom-quixote-restaurante-sorriso",
+    "slug": "dom-quixote-restaurante",
+    "seller_id": 116047,
+    "cnpj": "35788528000151",
+    "street": " Avenida São Marcos",
+    "number": "819",
+    "postcode": "78890000",
+    "categories": [
+      "feijoada tradicional",
+      "kit de feijoadas",
+      "sobremesas",
+      "estrogonofes de carne",
+      "estrogonofe de frango",
+      "bebidas",
+      "combo promocionais",
+      "molhos especiais"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "espetaria-e-frango-sertanejo-na-brasa",
+    "branch_id": "espetaria-e-frango-sertanejo-na-brasa-sorriso",
+    "slug": "espetaria-e-frango-sertanejo-na-brasa",
+    "seller_id": 134345,
+    "cnpj": "63043918000138",
+    "street": "AVENIDA NOVO HORIZONTE",
+    "number": "1674",
+    "postcode": "78895030",
+    "categories": [
+      "assados",
+      "espetinhos",
+      "acompanhamentos",
+      "sucos poupa",
+      "cervejas",
+      "refrigerantes"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "espetinho-e-marmitaria-da-baixinha",
+    "branch_id": "espetinho-e-marmitaria-da-baixinha-sorriso",
+    "slug": "espetinho-e-marmitaria-da-baixinha",
+    "seller_id": 143112,
+    "cnpj": "59213613000150",
+    "street": "Rua São Francisco de Assis",
+    "number": "1802",
+    "postcode": "78890000",
+    "categories": [
+      "espetinho completo",
+      "espetinho simples",
+      "adicionais acompanhamentos",
+      "bebidas",
+      "marmita do dia"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "flor-de-baunilha-confeitaria",
+    "branch_id": "flor-de-baunilha-confeitaria-sorriso",
+    "slug": "flor-de-baunilha-confeitaria",
+    "seller_id": 99988,
+    "cnpj": "41497022000196",
+    "street": "Avenida Porto Alegre",
+    "number": "2335",
+    "postcode": "78890000",
+    "categories": [
+      "morangos bombons",
+      "choux cream",
+      "eclair carolina",
+      "mini panetones",
+      "chas",
+      "alfajor brownie",
+      "entremets",
+      "panetones de fermentacao natural",
+      "pipocas trufadas",
+      "macarons"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "frango-na-brasa",
+    "branch_id": "frango-na-brasa-sorriso",
+    "slug": "frango-na-brasa",
+    "seller_id": 19643,
+    "cnpj": "30993510000178",
+    "street": "Avenida Porto Alegre",
+    "number": "1545",
+    "postcode": "78890000",
+    "categories": [
+      "marmitas frango na brasa",
+      "bebidas",
+      "carne assada",
+      "acompanhamentos",
+      "sobremesas",
+      "combos frango na brasa",
+      "coxa sobrecoxa",
+      "feijoada"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "gs-hamburgueria-e-marmitaria",
+    "branch_id": "gs-hamburgueria-e-marmitaria-sorriso",
+    "slug": "gs-hamburgueria-e-marmitaria",
+    "seller_id": 145965,
+    "cnpj": "65242666000100",
+    "street": "Rua José Rocha Santos Filho",
+    "number": "135",
+    "postcode": "78896103",
+    "categories": [
+      "espetinhos",
+      "marmita",
+      "pastel",
+      "bolo de pote",
+      "porcoes e combos",
+      "sobremesas",
+      "acai na garrafa",
+      "monte seu acai",
+      "hamburguer",
+      "bebidas",
+      "sucos",
+      "combos"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "guto-confeitaria",
+    "branch_id": "guto-confeitaria-sorriso",
+    "slug": "guto-confeitaria",
+    "seller_id": 120341,
+    "cnpj": "55472927000116",
+    "street": "Rua Floriano Peixoto",
+    "number": "294",
+    "postcode": "78890079",
+    "categories": [
+      "scoop cookie",
+      "tortas",
+      "doces",
+      "festival de fatias de tortas cookie",
+      "caseirinhos",
+      "combo com refrigerante",
+      "vai uma bebidinha ai",
+      "empadao",
+      "mini pizza",
+      "fundue no copo",
+      "natal 2026"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "iarla-ravana-confeitaria-artesanal",
+    "branch_id": "iarla-ravana-confeitaria-artesanal-sorriso",
+    "slug": "iarla-ravana-confeitaria-artesanal",
+    "seller_id": 135647,
+    "cnpj": "45714088000141",
+    "street": "Avenida dos Imigrantes",
+    "number": "2314",
+    "postcode": "78890000",
+    "categories": [
+      "fatias",
+      "salgados"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "ivani-salgados-buffet",
+    "branch_id": "ivani-salgados-buffet-sorriso",
+    "slug": "ivani-salgados-buffet",
+    "seller_id": 119362,
+    "cnpj": "52856707000106",
+    "street": "AVENIDA ADOLINO BEDIN",
+    "number": "651",
+    "postcode": "78894132",
+    "categories": [
+      "salgados",
+      "salgados assados",
+      "combos",
+      "bebidas",
+      "promocao 50 salgados"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "karneiros-salgados",
+    "branch_id": "karneiros-salgados-sorriso",
+    "slug": "karneiros-salgados",
+    "seller_id": 145516,
+    "cnpj": "69003901000133",
+    "street": "RUA JOSE LINS DO REGO",
+    "number": "344",
+    "postcode": "78893286",
+    "categories": [
+      "salgados 25 gramas",
+      "mix de misto 25 gramas 30 unidades",
+      "combos",
+      "bebidas",
+      "churros doce de leite",
+      "lanche da tarde",
+      "cento de salgados"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "la-caramelle-confeitaria",
+    "branch_id": "la-caramelle-confeitaria-sorriso",
+    "slug": "la-caramelle-confeitaria",
+    "seller_id": 142936,
+    "cnpj": "50927871000123",
+    "street": "Rua amazonas",
+    "number": "1075",
+    "postcode": "78892147",
+    "categories": [
+      "bombom de morango",
+      "bolos de pote",
+      "bebidas",
+      "bombom de pote",
+      "kit fim de festa",
+      "cheesecake de pote",
+      "pipoca gourmet de balde",
+      "fatias de bolo",
+      "bolo gelado",
+      "pao de queijo artesanal",
+      "docinhos de festa tradicionais",
+      "bolos de festa"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "larissa-moro-confeitaria",
+    "branch_id": "larissa-moro-confeitaria-sorriso",
+    "slug": "larissa-moro-confeitaria",
+    "seller_id": 138589,
+    "cnpj": "65158368000128",
+    "street": "RUA OLIDES PERIN",
+    "number": "1694",
+    "postcode": "78893242",
+    "categories": [
+      "festival de fatias",
+      "bolo nuvem",
+      "brigadeiros",
+      "festival de morango",
+      "brownie",
+      "bolo no pote",
+      "bombom aberto",
+      "copo da felicidade",
+      "brownie e suas diversas variacoes",
+      "sorvetes artesanais",
+      "mini vulcao caseirinhos",
+      "x bolo",
+      "salgado",
+      "tortinha salgada",
+      "bebidas",
+      "cone trufado",
+      "dia dos pais"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "ln-salgados",
+    "branch_id": "ln-salgados-sorriso",
+    "slug": "ln-salgados",
+    "seller_id": 138337,
+    "cnpj": "65184363000170",
+    "street": "Rua roma",
+    "number": "1125",
+    "postcode": "78894065",
+    "categories": [
+      "combo 30 salgados",
+      "para lanchar agora",
+      "salgados de festa cento",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "madae-produtos-naturais",
+    "branch_id": "madae-produtos-naturais-sorriso",
+    "slug": "madae-produtos-naturais",
+    "seller_id": 129130,
+    "cnpj": "55738450000178",
+    "street": "AVENIDA NATALINO JOAO BRESCANSIN",
+    "number": "1074",
+    "postcode": "78896016",
+    "categories": [
+      "balas barrinhas e chocolates",
+      "acucares e adocantes",
+      "chas",
+      "castanhas e oleaginosas",
+      "granolas e cereais",
+      "encapsulados",
+      "farinhas e farelos",
+      "fitoterapicos",
+      "frutas desidratadas",
+      "graos e sementes",
+      "propolis e xaropes",
+      "kits e mix",
+      "massagem",
+      "mel",
+      "naturais",
+      "oleos essenciais e vegetais",
+      "pasta de amendoim",
+      "terere",
+      "risotos e massas",
+      "sal",
+      "sem gluten",
+      "shots",
+      "oleo de coco",
+      "snacks e biscoitos",
+      "supercafes",
+      "suplementos",
+      "temperos e especiarias"
+    ],
+    "allow_portions": false
+  },
+  {
+    "supermarket_id": "maninho-restaurante-e-petiscaria",
+    "branch_id": "maninho-restaurante-e-petiscaria-sorriso",
+    "slug": "maninho-restaurante-e-petiscaria",
+    "seller_id": 73560,
+    "cnpj": "39517414000128",
+    "street": "Avenida São Francisco de Assis",
+    "number": "1328",
+    "postcode": "78890000",
+    "categories": [
+      "marmita",
+      "caldos",
+      "espetinho",
+      "lanche",
+      "feijoada",
+      "bebidas",
+      "cerveja",
+      "combos",
+      "frango assado na brasa"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "mara-bolos-e-salgados",
+    "branch_id": "mara-bolos-e-salgados-sorriso",
+    "slug": "mara-bolos-e-salgados",
+    "seller_id": 138261,
+    "cnpj": "43575341000106",
+    "street": "RUA PASSO FUNDO",
+    "number": "1274",
+    "postcode": "78898120",
+    "categories": [
+      "combo salgadinho guarana 1l",
+      "salgados",
+      "bolos",
+      "bolo de pote",
+      "doces",
+      "cento de salgados",
+      "bebidas",
+      "batatas recheadas",
+      "mini ovos de pascoa",
+      "geladinhos gourmet"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "mari-salgados",
+    "branch_id": "mari-salgados-sorriso",
+    "slug": "mari-salgados",
+    "seller_id": 125886,
+    "cnpj": "59344353000151",
+    "street": "São tome",
+    "number": "1609",
+    "postcode": "78892253",
+    "categories": [
+      "bolos de festa doces e sobremesa",
+      "combos de salgadinhos",
+      "salgadinhos e nuggets",
+      "cachorro quente",
+      "bebidas",
+      "kit festa"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "marmitaria-agua-na-boka",
+    "branch_id": "marmitaria-agua-na-boka-sorriso",
+    "slug": "marmitaria-agua-na-boka",
+    "seller_id": 19978,
+    "cnpj": "28082457000101",
+    "street": "AV PERIMETRAL SUDOESTE ",
+    "number": "3414",
+    "postcode": "78890000",
+    "categories": [
+      "cardapio do dia",
+      "monte sua marmita",
+      "feijoadas",
+      "marmitas com batata",
+      "marmita economica",
+      "comercial para 2 pessoas",
+      "porcoes",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "marmitaria-america-express",
+    "branch_id": "marmitaria-america-express-sorriso",
+    "slug": "marmitaria-america-express",
+    "seller_id": 129845,
+    "cnpj": "60599972000176",
+    "street": "Perimetral Sudoeste",
+    "number": "2124",
+    "postcode": "78891207",
+    "categories": [
+      "marmitas caseiras de segunda a sabado",
+      "marmita do dia",
+      "quarta e sabado e dia de feijoada kits",
+      "bebidas",
+      "strogonoff"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "marmitaria-dois-irmaos",
+    "branch_id": "marmitaria-dois-irmaos-sorriso",
+    "slug": "marmitaria-dois-irmaos",
+    "seller_id": 128153,
+    "cnpj": "59156853000160",
+    "street": "Rua Palmares",
+    "number": "979",
+    "postcode": "78890000",
+    "categories": [
+      "marmita do dia suco de brinde",
+      "marmita",
+      "feijoada",
+      "bebidas",
+      "acompanhamentos",
+      "outras opcoes",
+      "parmegianas",
+      "cardapio do dia"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "marmitaria-e-feijoada-da-edileuza",
+    "branch_id": "marmitaria-e-feijoada-da-edileuza-sorriso",
+    "slug": "marmitaria-e-feijoada-da-edileuza",
+    "seller_id": 146019,
+    "cnpj": "68857199000102",
+    "street": "RUA VARSOVIA",
+    "number": "854",
+    "postcode": "78891502",
+    "categories": [
+      "combo especial",
+      "prato do dia",
+      "somente a feijoada",
+      "acompanhamentos",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "marmitaria-e-salgados-temperos-da-lu",
+    "branch_id": "marmitaria-e-salgados-temperos-da-lu-sorriso",
+    "slug": "marmitaria-e-salgados-temperos-da-lu",
+    "seller_id": 129430,
+    "cnpj": "22146594000186",
+    "street": "AVENIDA PERIMETRAL SUDOESTE",
+    "number": "2000",
+    "postcode": "78890026",
+    "categories": [
+      "cachorro quente gourmet",
+      "refrigerantes",
+      "marmita do dia"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "marmitaria-fogao-a-lenha",
+    "branch_id": "marmitaria-fogao-a-lenha-sorriso",
+    "slug": "marmitaria-fogao-a-lenha",
+    "seller_id": 41751,
+    "cnpj": "40302279000182",
+    "street": "Rua Das Avencas",
+    "number": "671",
+    "postcode": "78892158",
+    "categories": [
+      "acompanhamentos adicionais",
+      "marmita executiva",
+      "almoco executivo para dois",
+      "marmitas",
+      "combo fogao a lenha",
+      "sobremesa",
+      "monte seu almoco",
+      "bebidas agua e refrigerante lata"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "marmitaria-imperio",
+    "branch_id": "marmitaria-imperio-sorriso",
+    "slug": "marmitaria-imperio",
+    "seller_id": 128323,
+    "cnpj": "59573636000175",
+    "street": "AVENIDA LOS ANGELES",
+    "number": "526",
+    "postcode": "78894182",
+    "categories": [
+      "porcao",
+      "marmita da noite todos os dias",
+      "marmita executiva carne",
+      "espeto espetinho",
+      "pastel",
+      "cachorro quente",
+      "marmita almoco",
+      "caldos",
+      "bebidas",
+      "sucos"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "marmitaria-maranata",
+    "branch_id": "marmitaria-maranata-sorriso",
+    "slug": "marmitaria-maranata",
+    "seller_id": 69129,
+    "cnpj": "35745432000106",
+    "street": "Avenida porto alegre",
+    "number": "S/N",
+    "postcode": "78894082",
+    "categories": [
+      "marmitas",
+      "bebidas",
+      "sucos",
+      "suco prats"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "marmitaria-sabor-de-minas",
+    "branch_id": "marmitaria-sabor-de-minas-sorriso",
+    "slug": "marmitaria-sabor-de-minas",
+    "seller_id": 120807,
+    "cnpj": "56321811000149",
+    "street": "RUA CAMINHO DO SOL",
+    "number": "770",
+    "postcode": "78895022",
+    "categories": [
+      "prato do dia",
+      "bebidas"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "marmitaria-sabor-do-brasil",
+    "branch_id": "marmitaria-sabor-do-brasil-sorriso",
+    "slug": "marmitaria-sabor-do-brasil",
+    "seller_id": 112318,
+    "cnpj": "14487685000157",
+    "street": "AVENIDA PERIMETRAL SUDOESTE",
+    "number": "3100",
+    "postcode": "78890000",
+    "categories": [
+      "marmita completa",
+      "marmita bovina",
+      "marmita frango",
+      "bebidas",
+      "salada"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "massas-e-salgados-nilce",
+    "branch_id": "massas-e-salgados-nilce-sorriso",
+    "slug": "massas-e-salgados-nilce",
+    "seller_id": 62662,
+    "cnpj": "31151209000180",
+    "street": "Rua Marechal Candido Rondon ",
+    "number": "2645",
+    "postcode": "78890000",
+    "categories": [
+      "bebidas",
+      "salgados fritos e ou assados",
+      "2 pasteis suco 500ml",
+      "lasanhas congeladas",
+      "porcao de pastelzinho frito",
+      "combo de pasteis",
+      "suco natural",
+      "combo kids",
+      "pao de queijo com refri lata",
+      "file a parmegiana",
+      "comida pronta",
+      "massas",
+      "salgados congelados",
+      "complementos"
+    ],
+    "allow_portions": true
+  },
+  {
+    "provider": "ola",
+    "supermarket_id": "recanto-da-viola",
+    "branch_id": "recanto-da-viola-sorriso",
+    "slug": "recanto-da-viola",
+    "storefront_id": "d7b6d885-fa19-4a2f-bc16-dd5da94b4f73",
+    "street": "Estrada sem nome - Sorriso, MT, 78890-000, Brasil",
+    "categories": [
+      "acompanhamentos",
+      "almoco fim de semana",
+      "bebidas",
+      "cachaca dose",
+      "caldos",
+      "cerveja 600 ml",
+      "cerveja lata",
+      "destilados garrafa",
+      "dose destilados",
+      "drinks",
+      "entradas",
+      "file mignon a la carte",
+      "frango a la carte",
+      "long neck",
+      "pastel",
+      "peixes a la carte",
+      "petiscos de carne",
+      "petiscos de frutos do mar",
+      "petiscos do recanto",
+      "petiscos sab dom e feriados",
+      "petiscos tradicionais",
+      "porcoes de peixe",
+      "salgadinhos",
+      "sucos",
+      "vinhos"
+    ]
+  },
+  {
+    "provider": "ola",
+    "supermarket_id": "ricks-burger",
+    "branch_id": "ricks-burger-sorriso",
+    "slug": "ricks-burger",
+    "storefront_id": "7bf41e86-3b9a-4340-b30c-b0e55ee6bfe5",
+    "street": "Av. dos Universitários - Rota do Sol, Sorriso - MT, 78890-000, Brasil",
+    "categories": [
+      "bebidas",
+      "combos",
+      "destaques",
+      "hamburguer",
+      "porcoes"
+    ]
+  },
+  {
     "supermarket_id": "nanai-sushi",
     "branch_id": "nanai-sushi-sorriso",
     "slug": "nanai-sushi",
@@ -634,8 +1848,37 @@
     "number": "2862",
     "postcode": "78890143",
     "categories": [
+      "combinados",
+      "pratos quentes",
+      "monte seu poke",
+      "novidade",
+      "entradas",
+      "temaki",
+      "hot",
+      "sobremesas",
+      "sashimi",
+      "niguiri",
+      "joe",
+      "hossomaki",
+      "uramaki",
       "complementos",
       "bebidas"
+    ]
+  },
+  {
+    "provider": "ola",
+    "supermarket_id": "pizzaria-top-30-ola",
+    "branch_id": "pizzaria-top-30-ola-sorriso",
+    "slug": "pizzaria-top30",
+    "storefront_id": "d1df9820-337a-4e44-8e4a-cf4c89d51699",
+    "street": "Perimetral Sudoeste - Bela Vista, Sorriso - MT, 78890-000, Brasil",
+    "categories": [
+      "bebidas",
+      "bebidas copia",
+      "destaques",
+      "pizza grande",
+      "pizza pequena",
+      "porcoes"
     ]
   },
   {
@@ -648,22 +1891,41 @@
     "number": "2302",
     "postcode": "78890143",
     "categories": [
+      "diversos",
+      "produtos em capsulas",
       "acucares e adocantes",
       "frutas desidratadas",
+      "produtos em po",
       "temperos",
       "castanhas sementes graos e flocos",
+      "chas",
       "farinhas farelos e fibras",
       "chips biscoitos",
       "granolas",
       "pimentas",
       "sal",
       "sucrilhos",
+      "proteinas",
+      "argilas",
       "arroz",
+      "azeite e oleos prensado a frio",
       "barras de cereal",
       "biscoitos",
+      "bombas",
+      "fibra intestinal",
       "chocolates",
+      "colagenos instantaneo",
+      "copos para terere",
+      "coqueteleiras",
       "ervas para terere",
-      "vinagres"
+      "xaropes",
+      "propolis",
+      "garrafas termicas",
+      "oleos vegetais naturais",
+      "oleos essenciais",
+      "sal",
+      "vinagres",
+      "proteinas"
     ]
   },
   {
@@ -679,8 +1941,8 @@
       "copos da felicidade",
       "mini bolo vulcao",
       "fatias delicia",
-      "geladinho gourmet",
-      "bebidas"
+      "bebidas",
+      "geladinho gourmet"
     ],
     "allow_portions": true
   },
@@ -696,6 +1958,7 @@
     "categories": [
       "marmitas",
       "frangos",
+      "costelas",
       "costelas"
     ],
     "allow_portions": true
@@ -713,6 +1976,7 @@
       "marmitas de mini salgados",
       "pasteis grandes e enroladinho",
       "cento de salgados",
+      "combos",
       "bebidas"
     ],
     "allow_portions": true
@@ -727,6 +1991,7 @@
     "number": "338",
     "postcode": "78890000",
     "categories": [
+      "cafe da manha",
       "lanches quentes",
       "sanduiches",
       "bebidas quentes",
@@ -748,6 +2013,7 @@
     "categories": [
       "bombom",
       "mini bolos",
+      "bolo de pote",
       "copos da felicidade",
       "tortas",
       "bebidas",
@@ -765,12 +2031,197 @@
     "number": "1125",
     "postcode": "78890000",
     "categories": [
+      "super combo",
       "marmitas",
       "guarnicoes e acompanhamentos",
       "bebidas",
       "sucos",
+      "kit churrasco",
       "porcao de churrasco",
       "feijoada"
+    ],
+    "allow_portions": true
+  },
+  {
+    "supermarket_id": "blumenau-bebidas",
+    "branch_id": "blumenau-bebidas-sorriso",
+    "slug": "blumenau-bebidas",
+    "seller_id": 29350,
+    "cnpj": "24566105000251",
+    "street": "Avenida Blumenau",
+    "number": "2841",
+    "postcode": "78890000",
+    "categories": [
+      "cerveja lata",
+      "vinhos tinto seco",
+      "whisky",
+      "cervejas de garrafa 600ml",
+      "cerveja long neck",
+      "cerveja 300ml",
+      "aguas de coco",
+      "refrigerantes pets",
+      "vinho tinto suave",
+      "doces chocolates halls",
+      "refrigerantes latas",
+      "rum",
+      "ice",
+      "mercadinho",
+      "gelos",
+      "vodka",
+      "sucos e misturas",
+      "bebida lactea",
+      "gin",
+      "tequilas",
+      "salgadinhos amendoin sorvete bolacha",
+      "sorvetes potes",
+      "aguardentes",
+      "licores bitter",
+      "aguas mineral",
+      "energeticos latas",
+      "energetico pet 2lt",
+      "isotonicos",
+      "para o seu churrasco",
+      "espumantes",
+      "barril de chopp 5lt"
+    ],
+    "allow_portions": false
+  },
+  {
+    "supermarket_id": "borges-distribuidora",
+    "branch_id": "borges-distribuidora-sorriso",
+    "slug": "borges-distribuidora",
+    "seller_id": 143819,
+    "cnpj": "39749646000101",
+    "street": "Alameda Carlos Luz, Sorriso - MT",
+    "number": "145",
+    "postcode": "78894605",
+    "categories": [
+      "gas de cozinha",
+      "agua mineral",
+      "refrigerante lata",
+      "cerveja long neck",
+      "cerveja lata unidade",
+      "cerveja lata caixa",
+      "refrigerante litro"
+    ],
+    "allow_portions": false
+  },
+  {
+    "supermarket_id": "flash-distribuidora",
+    "branch_id": "flash-distribuidora-sorriso",
+    "slug": "flash-distribuidora",
+    "seller_id": 140847,
+    "cnpj": "66276349000169",
+    "street": "Perimetral Sudoeste",
+    "number": "2309",
+    "postcode": "78892171",
+    "categories": [
+      "cervejas",
+      "energeticos",
+      "destilados",
+      "gelo",
+      "aguas e refrigerantes",
+      "combos",
+      "conveniencia",
+      "caixas de cerveja"
+    ],
+    "allow_portions": false
+  },
+  {
+    "supermarket_id": "magnata-distribuidora-01",
+    "branch_id": "magnata-distribuidora-01-sorriso",
+    "slug": "magnata-distribuidora-01",
+    "seller_id": 139245,
+    "cnpj": "48745923000280",
+    "street": "Av. Curitiba",
+    "number": "1440",
+    "postcode": "78896003",
+    "categories": [
+      "ice cabare",
+      "ice kislla",
+      "aguas",
+      "carvao",
+      "aperitivo",
+      "energeticos",
+      "gelos",
+      "cachacas",
+      "cervejas",
+      "destilados",
+      "refrigerantes",
+      "vinhos",
+      "whisky",
+      "outros"
+    ],
+    "allow_portions": false
+  },
+  {
+    "supermarket_id": "mineiros-bebidas",
+    "branch_id": "mineiros-bebidas-sorriso",
+    "slug": "mineiros-bebidas",
+    "seller_id": 35575,
+    "cnpj": "28496937000119",
+    "street": "Av Tancredo Neves",
+    "number": "2218",
+    "postcode": "78890000",
+    "categories": [
+      "cervejas lata",
+      "cervejas long neck",
+      "cervejas garrafa",
+      "refrigerantes",
+      "aguas mineral",
+      "sucos e agua de coco",
+      "energeticos",
+      "gelos",
+      "carvao",
+      "wiskys",
+      "vodkas",
+      "licors",
+      "tequila",
+      "vinhos",
+      "cachacas"
+    ],
+    "allow_portions": false
+  },
+  {
+    "supermarket_id": "pitbull-distribuidora",
+    "branch_id": "pitbull-distribuidora-sorriso",
+    "slug": "pitbull-distribuidora",
+    "seller_id": 98063,
+    "cnpj": "33312019000122",
+    "street": "RUA SAO FRANCISCO DE ASSIS",
+    "number": "1522",
+    "postcode": "78898170",
+    "categories": [
+      "destilado",
+      "caixa cerveja latas",
+      "cervejas lata",
+      "cervejas long neck",
+      "refrigerantes",
+      "energeticos",
+      "carvao",
+      "agua s",
+      "gelo",
+      "vodka",
+      "whisky",
+      "aguardentes"
+    ],
+    "allow_portions": false
+  },
+  {
+    "supermarket_id": "restaurante-e-churrascaria-galpao-crioulo",
+    "branch_id": "restaurante-e-churrascaria-galpao-crioulo-sorriso",
+    "slug": "restaurante-e-churrascaria-galpao-crioulo",
+    "seller_id": 128512,
+    "cnpj": "41922938000146",
+    "street": "AVENIDA PORTO ALEGRE",
+    "number": "1209",
+    "postcode": "78894391",
+    "categories": [
+      "feijoadas combo 1 marmita arroz 1 marmita de feijoada 1 marmita couve feijao tropeiro torresmo banana da terra",
+      "marmitas",
+      "refrigerantes",
+      "porcoes",
+      "agua"
     ],
     "allow_portions": true
   }

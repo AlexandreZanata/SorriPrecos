@@ -212,7 +212,7 @@ pub async fn import(
     result
 }
 
-async fn import_transaction(
+pub(crate) async fn import_transaction(
     pool: &SqlitePool,
     source: &str,
     rows: &[ImportRow],
@@ -332,10 +332,36 @@ pub(crate) async fn import_in_transaction(
         .fetch_one(&mut **tx)
         .await?;
         ensure!(
-            sp.get::<i64, _>("product_id") == pid && sp.get::<String, _>("source_kind") == kind,
+            sp.get::<String, _>("source_kind") == kind,
             "código de origem mudou de produto; revisão manual necessária"
         );
         let sid: i64 = sp.get("id");
+        if sp.get::<i64, _>("product_id") != pid {
+            ensure!(
+                ["aiq-", "ola-", "egao-", "dmacena-"]
+                    .iter()
+                    .any(|prefix| r.source_id.starts_with(prefix)),
+                "código de origem mudou de produto; revisão manual necessária"
+            );
+            sqlx::query("DELETE FROM price_history WHERE offer_id IN (SELECT id FROM offers WHERE source_product_id=?)")
+                .bind(sid)
+                .execute(&mut **tx)
+                .await?;
+            sqlx::query(
+                "UPDATE source_products SET product_id=?,original_name=?,source_url=? WHERE id=?",
+            )
+            .bind(pid)
+            .bind(&r.name)
+            .bind(&r.source_url)
+            .bind(sid)
+            .execute(&mut **tx)
+            .await?;
+            sqlx::query("UPDATE offers SET product_id=? WHERE source_product_id=?")
+                .bind(pid)
+                .bind(sid)
+                .execute(&mut **tx)
+                .await?;
+        }
         let previous=sqlx::query("SELECT id,price_cents,promotional_price_cents,collected_at FROM offers WHERE source_product_id=? AND branch_id=?").bind(sid).bind(&r.branch_id).fetch_optional(&mut **tx).await?;
         if previous
             .as_ref()

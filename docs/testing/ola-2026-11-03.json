@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-03",
+  "method": "GET público sem login; coleta em banco isolado e em banco local; estoque não controlado como desconhecido",
+  "sources": [
+    {
+      "url": "https://recanto-da-viola.ola.click/products",
+      "storefront_id": "d7b6d885-fa19-4a2f-bc16-dd5da94b4f73",
+      "status": "success",
+      "requests": 1,
+      "raw_items": 56,
+      "normalized_items": 56,
+      "scope_rejected": 0
+    },
+    {
+      "url": "https://ricks-burger.ola.click/products",
+      "storefront_id": "7bf41e86-3b9a-4340-b30c-b0e55ee6bfe5",
+      "status": "success",
+      "requests": 1,
+      "raw_items": 13,
+      "normalized_items": 13,
+      "scope_rejected": 0
+    },
+    {
+      "url": "https://pizzaria-top30.ola.click/products",
+      "storefront_id": "d1df9820-337a-4e44-8e4a-cf4c89d51699",
+      "status": "success",
+      "requests": 1,
+      "raw_items": 4,
+      "normalized_items": 4,
+      "scope_rejected": 0
+    }
+  ]
+}

@@ -30,7 +30,7 @@ def main():
                 if label in phone.texts(root):break
                 scroll(phone);root=phone.dump()
             phone.tap(label);phone.tap('Início')
-        phone.launch();root=phone.wait('Produtos do dia a dia');assert not any('MODO DEMO' in t or 'DADOS REAIS HISTÓRICOS' in t for t in phone.texts(root))
+        phone.launch();root=phone.wait('Ofertas em destaque');assert not any('MODO DEMO' in t or 'DADOS REAIS HISTÓRICOS' in t for t in phone.texts(root))
         phone.screenshot(output/'home.png');passed('Catálogo atual é separado do Procon e da demonstração')
         phone.tap('Buscar');phone.wait('Encontre o produto');phone.command('shell','input','text',product['gtin']);root=phone.wait(expected)
         assert product['name'] in phone.texts(root);assert 'Embalagem: 5 kg' in phone.texts(root)

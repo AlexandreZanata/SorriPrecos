@@ -10,6 +10,8 @@ ORIGIN = "https://www.redemachado.com.br"
 SORRISO_STORE_POSTCODE = "78893110"
 SORRISO_STORE_CNPJ = "03790896001110"
 CLUB_PATH = "/c/1864462699260793/clube-mais"
+SEARCH_PATH = "/busca?s=arroz"
+SITEMAP_PATH = "/sitemap-produtos-3.xml"
 MAX_CATALOGUE_BYTES = 2 * 1024 * 1024
 
 
@@ -58,6 +60,31 @@ def club_catalogue_scope(session):
     }
 
 
+def public_page_scope(session, path):
+    with session.open(ORIGIN + path, timeout=20) as response:
+        payload = response.read(MAX_CATALOGUE_BYTES + 1)
+    if len(payload) > MAX_CATALOGUE_BYTES:
+        raise ValueError("Página acima do limite de 2 MiB")
+    html = payload.decode("utf-8", errors="replace")
+    cnpjs = sorted({
+        re.sub(r"\D", "", match)
+        for match in re.findall(r"CNPJ\s*:?\s*(\d{2}\.\d{3}\.\d{3}[./]\d{4}-\d{2})", html, re.I)
+    })
+    price_count = len(re.findall(r'product-card__new-price[^>]*>\s*R\$', html))
+    scope = "needs_branch_verification"
+    if not price_count:
+        scope = "no_prices"
+    elif cnpjs and SORRISO_STORE_CNPJ not in cnpjs:
+        scope = "other_store"
+    return {
+        "url": ORIGIN + path,
+        "visible_prices": price_count,
+        "observed_cnpjs": cnpjs,
+        "agile_price_branch_ids": sorted(set(re.findall(r'data-id-filial="(\d+)"', html))),
+        "scope": scope,
+    }
+
+
 def main():
     session = build_opener(NoRedirect(), HTTPCookieProcessor(http.cookiejar.CookieJar()))
     issued = json_request(session, "/controllers/api-controller.php?acao=tokens")
@@ -82,7 +109,9 @@ def main():
             "A vitrine aceitou o CEP. Ainda é preciso confirmar o CNPJ da filial do catálogo."
             if accepted else "A vitrine não confirmou atendimento para o CEP da filial."
         ),
+        "public_search": public_page_scope(session, SEARCH_PATH),
         "club_catalogue": club_catalogue_scope(session),
+        "product_sitemap": f"{ORIGIN}{SITEMAP_PATH}",
     }, ensure_ascii=False, indent=2))
 
 

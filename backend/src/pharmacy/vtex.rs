@@ -141,11 +141,7 @@ fn row(body: &Value, branch: &Branch, sku: &str, price: i64) -> Result<ImportRow
             "Embalagem",
             product["categories"][0]
                 .as_str()
-                .and_then(|path| {
-                    path.split('/')
-                        .filter(|name| !name.trim().is_empty())
-                        .next_back()
-                })
+                .and_then(|path| path.split('/').rfind(|name| !name.trim().is_empty()))
                 .unwrap_or("Farmácia"),
         )
     };

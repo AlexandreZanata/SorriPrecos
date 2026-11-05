@@ -1,0 +1,1477 @@
+{
+  "date": "2026-11-03",
+  "directory": "https://aiqfome.com/restaurantes/sorriso-MT",
+  "directory_candidates": 532,
+  "reviewed_this_round": 96,
+  "method": "Busca por nomes ligados a restaurantes, peixarias, empórios, padarias, assados, massas e similares; não cobre individualmente todas as vitrines do diretório. Coleta isolada interrompida após resposta HTTP 429.",
+  "enabled": 49,
+  "sources": [
+    {
+      "url": "https://aiqfome.com/MT/sorriso/ac-marmitaria",
+      "status": "enabled",
+      "seller_id": 142126,
+      "selected_categories": [
+        "hot dog",
+        "lanches",
+        "marmita noturna",
+        "cardapio do dia",
+        "porcoes",
+        "feijoada avulsa",
+        "sobremesas",
+        "cardapio da noite"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 58,
+        "normalized_items": 41,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/arena-marmitaria-e-lanches",
+      "status": "enabled",
+      "seller_id": 144111,
+      "selected_categories": [
+        "lanches",
+        "porcoes",
+        "marmitas",
+        "caldos",
+        "espetos"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 41,
+        "normalized_items": 35,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/assados-e-cia",
+      "status": "enabled",
+      "seller_id": 142020,
+      "selected_categories": [
+        "espetos individuais",
+        "jantinha completa",
+        "assados",
+        "acompanhamentos",
+        "caldos"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 26,
+        "normalized_items": 21,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/assados-oliveira",
+      "status": "pending",
+      "reason": "CNPJ compartilhado com outras vitrines: assados-oliveira, confeitaria-susan-guedes, peixaria-rekantu. Vínculo entre filiais exige revisão."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/atelie-do-bolo",
+      "status": "enabled",
+      "seller_id": 138974,
+      "selected_categories": [
+        "bolos pequenos",
+        "bolos medios",
+        "bolos grandes",
+        "tortas salgadas",
+        "batata recheada frango cremoso catupiry",
+        "sanduiche",
+        "rosquinha doce",
+        "copo da felicidade",
+        "pudim",
+        "tortas doce",
+        "salgados fritos",
+        "pao de queijo",
+        "cappuccino",
+        "fatias de bolos recheados"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 127,
+        "normalized_items": 122,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/baxinho-dos-assados",
+      "status": "enabled",
+      "seller_id": 115969,
+      "selected_categories": [
+        "assados",
+        "acompanhamentos"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 12,
+        "normalized_items": 12,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/bendito-pudim",
+      "status": "enabled",
+      "seller_id": 105713,
+      "selected_categories": [
+        "pudins",
+        "sorvetes artesanais",
+        "sobremesas",
+        "bolo gelado na travessa",
+        "bolos caseiros"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 92,
+        "normalized_items": 81,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/bodegas-marmitaria",
+      "status": "enabled",
+      "seller_id": 147371,
+      "selected_categories": [
+        "parmegiana",
+        "marmita do dia",
+        "feijoada",
+        "strogonoff",
+        "sucos"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 56,
+        "normalized_items": 23,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/bolognas-macarrao-expresso",
+      "status": "enabled",
+      "seller_id": 106037,
+      "selected_categories": [
+        "receitas da casa",
+        "mac cheese",
+        "strogobox",
+        "sobremesas"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 19,
+        "normalized_items": 1,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/bolos-caseiro",
+      "status": "enabled",
+      "seller_id": 138474,
+      "selected_categories": [
+        "bolos caseiros",
+        "mine bolos",
+        "brownie"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 27,
+        "normalized_items": 3,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/bolos-da-tata",
+      "status": "enabled",
+      "seller_id": 147022,
+      "selected_categories": [
+        "bolos"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 30,
+        "normalized_items": 30,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/bolos-de-casa",
+      "status": "enabled",
+      "seller_id": 81547,
+      "selected_categories": [
+        "bolo vulcao",
+        "bolo pudim",
+        "bolos tradicionais",
+        "bolos de milho campeao de vendas",
+        "bolos de cenoura",
+        "bolos de fuba",
+        "bolos especiais",
+        "bolos salgados",
+        "bolos piscina",
+        "tortas",
+        "bolos integrais",
+        "bolo de mandioca com requeijao"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 93,
+        "normalized_items": 70,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/cafe-sabor-do-nordeste",
+      "status": "pending",
+      "reason": "CNPJ compartilhado com outras vitrines: cafe-sabor-do-nordeste, cafe-sabor-do-nordeste-sao-mateus. Vínculo entre filiais exige revisão."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/cafe-sabor-do-nordeste-sao-mateus",
+      "status": "pending",
+      "reason": "CNPJ compartilhado com outras vitrines: cafe-sabor-do-nordeste, cafe-sabor-do-nordeste-sao-mateus. Vínculo entre filiais exige revisão."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/caseirinhos-da-eva",
+      "status": "enabled",
+      "seller_id": 122851,
+      "selected_categories": [
+        "bolos mini vulcao",
+        "bolos caseirinhos",
+        "sobremesas",
+        "cassata"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 17,
+        "normalized_items": 17,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/caseirinhos-da-val",
+      "status": "enabled",
+      "seller_id": 144688,
+      "selected_categories": [
+        "mini pudim",
+        "bolos mini vulcao",
+        "copos da felicidade",
+        "sucos",
+        "fatias recheadas",
+        "acai montado",
+        "coxinhas"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 19,
+        "normalized_items": 19,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/caseirinhos-da-vivi",
+      "status": "enabled",
+      "seller_id": 137019,
+      "selected_categories": [
+        "cucas recheadas",
+        "salgados",
+        "festival de tortas",
+        "sobremesas",
+        "bolachas e biscoitos",
+        "donut s",
+        "bolos caseiros",
+        "caseirinhos fit",
+        "cachorro quente"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 121,
+        "normalized_items": 72,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/caseiros-da-cah",
+      "status": "enabled",
+      "seller_id": 139018,
+      "selected_categories": [
+        "bolos na marmitinha 500ml",
+        "delicias no pote 200ml"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 15,
+        "normalized_items": 15,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/chefe-massas",
+      "status": "enabled",
+      "seller_id": 144110,
+      "selected_categories": [
+        "pratos prontos praticidade em um click"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 4,
+        "normalized_items": 4,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/cheiro-e-tempero-marmitaria",
+      "status": "enabled",
+      "seller_id": 141107,
+      "selected_categories": [
+        "marmitas",
+        "marmita especial 1",
+        "marmita especial 2",
+        "marmita especial 3"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 13,
+        "normalized_items": 8,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/cia-dos-assados",
+      "status": "pending",
+      "reason": "CNPJ compartilhado com outras vitrines: cia-dos-assados, rei-do-frango. Vínculo entre filiais exige revisão."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/confeitaria-susan-guedes",
+      "status": "pending",
+      "reason": "CNPJ compartilhado com outras vitrines: assados-oliveira, confeitaria-susan-guedes, peixaria-rekantu. Vínculo entre filiais exige revisão."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/da-silva-marmitaria",
+      "status": "enabled",
+      "seller_id": 130702,
+      "selected_categories": [
+        "suco de polpa e natural de laranja",
+        "cardapio da semana",
+        "quarta do sossego",
+        "feijoada"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 28,
+        "normalized_items": 28,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/delicias-da-gi-confeitaria",
+      "status": "enabled",
+      "seller_id": 132182,
+      "selected_categories": [
+        "mini caseirinhos",
+        "bolos caseiros",
+        "torta de bolacha",
+        "pudim",
+        "sequilhos de maisena"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 33,
+        "normalized_items": 6,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/delicias-talisma-salgados",
+      "status": "enabled",
+      "seller_id": 26144,
+      "selected_categories": [
+        "salgadinhos",
+        "bolos e doces",
+        "especialidades da casa"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 41,
+        "normalized_items": 11,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/delicitta-refeicoes",
+      "status": "enabled",
+      "seller_id": 126494,
+      "selected_categories": [
+        "hoje e dia de feijodada",
+        "marmita do dia",
+        "marmita executiva"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 32,
+        "normalized_items": 27,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/dom-quixote-restaurante",
+      "status": "enabled",
+      "seller_id": 116047,
+      "selected_categories": [
+        "feijoada tradicional",
+        "sobremesas",
+        "estrogonofes de carne",
+        "estrogonofe de frango",
+        "molhos especiais"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 55,
+        "normalized_items": 12,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/dprandine-frango-no-balde",
+      "status": "pending_collection",
+      "seller_id": 105444,
+      "selected_categories": [
+        "porcoes mais deliciosas"
+      ],
+      "reason": "catálogo sem variantes de mercearia utilizáveis"
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/espetaria-e-frango-sertanejo-na-brasa",
+      "status": "enabled",
+      "seller_id": 134345,
+      "selected_categories": [
+        "assados",
+        "espetinhos",
+        "acompanhamentos",
+        "sucos poupa"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 47,
+        "normalized_items": 16,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/espetinho-e-marmitaria-da-baixinha",
+      "status": "enabled",
+      "seller_id": 143112,
+      "selected_categories": [
+        "espetinho completo",
+        "espetinho simples",
+        "marmita do dia"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 23,
+        "normalized_items": 23,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/flor-de-baunilha-confeitaria",
+      "status": "enabled",
+      "seller_id": 99988,
+      "selected_categories": [
+        "morangos bombons",
+        "choux cream",
+        "eclair carolina",
+        "mini panetones",
+        "chas",
+        "alfajor brownie",
+        "entremets",
+        "pipocas trufadas",
+        "macarons",
+        "panetones de fermentacao natural"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 66,
+        "normalized_items": 54,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/frango-na-brasa",
+      "status": "enabled",
+      "seller_id": 19643,
+      "selected_categories": [
+        "marmitas frango na brasa",
+        "carne assada",
+        "acompanhamentos",
+        "sobremesas",
+        "coxa sobrecoxa",
+        "feijoada"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 132,
+        "normalized_items": 55,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/gs-hamburgueria-e-marmitaria",
+      "status": "enabled",
+      "seller_id": 145965,
+      "selected_categories": [
+        "espetinhos",
+        "marmita",
+        "pastel",
+        "bolo de pote",
+        "sobremesas",
+        "acai na garrafa",
+        "hamburguer",
+        "sucos"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 60,
+        "normalized_items": 36,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/guto-confeitaria",
+      "status": "enabled",
+      "seller_id": 120341,
+      "selected_categories": [
+        "scoop cookie",
+        "doces",
+        "caseirinhos",
+        "festival de fatias de tortas cookie",
+        "tortas",
+        "empadao",
+        "mini pizza",
+        "fundue no copo"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 38,
+        "normalized_items": 37,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/iarla-ravana-confeitaria-artesanal",
+      "status": "enabled",
+      "seller_id": 135647,
+      "selected_categories": [
+        "fatias",
+        "salgados"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 21,
+        "normalized_items": 21,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/ivani-salgados-buffet",
+      "status": "enabled",
+      "seller_id": 119362,
+      "selected_categories": [
+        "salgados",
+        "salgados assados"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 48,
+        "normalized_items": 48,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/karneiros-salgados",
+      "status": "enabled",
+      "seller_id": 145516,
+      "selected_categories": [
+        "salgados 25 gramas",
+        "mix de misto 25 gramas 30 unidades",
+        "churros doce de leite",
+        "lanche da tarde",
+        "cento de salgados"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 18,
+        "normalized_items": 18,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/la-caramelle-confeitaria",
+      "status": "enabled",
+      "seller_id": 142936,
+      "selected_categories": [
+        "bombom de morango",
+        "bolos de pote",
+        "bombom de pote",
+        "cheesecake de pote",
+        "pipoca gourmet de balde",
+        "fatias de bolo",
+        "bolo gelado",
+        "pao de queijo artesanal",
+        "docinhos de festa tradicionais",
+        "bolos de festa"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 39,
+        "normalized_items": 35,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/larissa-moro-confeitaria",
+      "status": "enabled",
+      "seller_id": 138589,
+      "selected_categories": [
+        "festival de fatias",
+        "bolo nuvem",
+        "brigadeiros",
+        "festival de morango",
+        "brownie",
+        "bolo no pote",
+        "bombom aberto",
+        "copo da felicidade",
+        "brownie e suas diversas variacoes",
+        "sorvetes artesanais",
+        "mini vulcao caseirinhos",
+        "x bolo",
+        "salgado",
+        "tortinha salgada",
+        "cone trufado"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 87,
+        "normalized_items": 87,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/ln-salgados",
+      "status": "enabled",
+      "seller_id": 138337,
+      "selected_categories": [
+        "para lanchar agora",
+        "salgados de festa cento"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 11,
+        "normalized_items": 11,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/luana-tamires-confeitaria",
+      "status": "pending_collection",
+      "seller_id": 131090,
+      "selected_categories": [
+        "copos da felicidade",
+        "mini bolo vulcao",
+        "fatias delicia",
+        "geladinho gourmet"
+      ],
+      "reason": "HTTP status client error (429 Too Many Requests) for url (https://aiqfome.com/MT/sorriso/luana-tamires-confeitaria)"
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/madae-produtos-naturais",
+      "status": "enabled",
+      "seller_id": 129130,
+      "selected_categories": [
+        "balas barrinhas e chocolates",
+        "acucares e adocantes",
+        "castanhas e oleaginosas",
+        "granolas e cereais",
+        "farinhas e farelos",
+        "frutas desidratadas",
+        "graos e sementes",
+        "pasta de amendoim",
+        "terere",
+        "risotos e massas",
+        "sal",
+        "snacks e biscoitos",
+        "temperos e especiarias"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 248,
+        "normalized_items": 47,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/maninho-restaurante-e-petiscaria",
+      "status": "enabled",
+      "seller_id": 73560,
+      "selected_categories": [
+        "marmita",
+        "caldos",
+        "espetinho",
+        "lanche",
+        "feijoada",
+        "frango assado na brasa"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 77,
+        "normalized_items": 31,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/mara-bolos-e-salgados",
+      "status": "enabled",
+      "seller_id": 138261,
+      "selected_categories": [
+        "salgados",
+        "bolos",
+        "bolo de pote",
+        "doces",
+        "cento de salgados",
+        "batatas recheadas",
+        "geladinhos gourmet"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 40,
+        "normalized_items": 31,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/mari-salgados",
+      "status": "enabled",
+      "seller_id": 125886,
+      "selected_categories": [
+        "bolos de festa doces e sobremesa",
+        "salgadinhos e nuggets",
+        "cachorro quente"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 39,
+        "normalized_items": 8,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/marmitaria-agua-na-boka",
+      "status": "enabled",
+      "seller_id": 19978,
+      "selected_categories": [
+        "cardapio do dia",
+        "feijoadas",
+        "marmitas com batata",
+        "marmita economica",
+        "comercial para 2 pessoas",
+        "porcoes"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 38,
+        "normalized_items": 23,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/marmitaria-america-express",
+      "status": "enabled",
+      "seller_id": 129845,
+      "selected_categories": [
+        "marmitas caseiras de segunda a sabado",
+        "marmita do dia",
+        "strogonoff"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 40,
+        "normalized_items": 32,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/marmitaria-dois-irmaos",
+      "status": "enabled",
+      "seller_id": 128153,
+      "selected_categories": [
+        "marmita",
+        "feijoada",
+        "acompanhamentos",
+        "outras opcoes",
+        "parmegianas",
+        "cardapio do dia"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 136,
+        "normalized_items": 66,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/marmitaria-e-feijoada-da-edileuza",
+      "status": "enabled",
+      "seller_id": 146019,
+      "selected_categories": [
+        "prato do dia",
+        "somente a feijoada"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 4,
+        "normalized_items": 4,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/marmitaria-e-salgados-temperos-da-lu",
+      "status": "enabled",
+      "seller_id": 129430,
+      "selected_categories": [
+        "cachorro quente gourmet",
+        "marmita do dia"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 3,
+        "normalized_items": 3,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/marmitaria-fogao-a-lenha",
+      "status": "enabled",
+      "seller_id": 41751,
+      "selected_categories": [
+        "marmita executiva",
+        "almoco executivo para dois",
+        "marmitas",
+        "sobremesa"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 18,
+        "normalized_items": 5,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/marmitaria-imperio",
+      "status": "enabled",
+      "seller_id": 128323,
+      "selected_categories": [
+        "porcao",
+        "marmita da noite todos os dias",
+        "marmita executiva carne",
+        "espeto espetinho",
+        "pastel",
+        "cachorro quente",
+        "marmita almoco",
+        "caldos",
+        "sucos"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 87,
+        "normalized_items": 79,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/marmitaria-maranata",
+      "status": "enabled",
+      "seller_id": 69129,
+      "selected_categories": [
+        "marmitas",
+        "sucos",
+        "suco prats"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 73,
+        "normalized_items": 28,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/marmitaria-quintal-do-sabor",
+      "status": "pending_collection",
+      "seller_id": 141088,
+      "selected_categories": [
+        "marmitas"
+      ],
+      "reason": "catálogo sem variantes de mercearia utilizáveis"
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/marmitaria-sabor-de-minas",
+      "status": "enabled",
+      "seller_id": 120807,
+      "selected_categories": [
+        "prato do dia"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 9,
+        "normalized_items": 9,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/marmitaria-sabor-do-brasil",
+      "status": "enabled",
+      "seller_id": 112318,
+      "selected_categories": [
+        "marmita completa",
+        "marmita bovina",
+        "marmita frango",
+        "salada"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 7,
+        "normalized_items": 7,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/massas-e-salgados-nilce",
+      "status": "enabled",
+      "seller_id": 62662,
+      "selected_categories": [
+        "salgados fritos e ou assados",
+        "porcao de pastelzinho frito",
+        "suco natural",
+        "file a parmegiana",
+        "comida pronta",
+        "massas",
+        "lasanhas congeladas",
+        "salgados congelados"
+      ],
+      "isolated_collection": {
+        "status": "success",
+        "raw_items": 96,
+        "normalized_items": 26,
+        "scope_rejected": 0,
+        "error": null
+      }
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/minoaka-salgaderia",
+      "status": "pending_collection",
+      "seller_id": 76612,
+      "selected_categories": [
+        "mini salgados",
+        "salgado grande",
+        "mini pasteis",
+        "cueca virada",
+        "pao de queijo"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/monster-assados",
+      "status": "pending",
+      "reason": "CNPJ compartilhado com outras vitrines: monster-assados, rei-dos-assados. Vínculo entre filiais exige revisão."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/neguinho-do-frango",
+      "status": "pending_collection",
+      "seller_id": 132856,
+      "selected_categories": [
+        "assados",
+        "acompanhamentos",
+        "sobremesa"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/nutrys-produtos-naturais",
+      "status": "pending_collection",
+      "seller_id": 141596,
+      "selected_categories": [
+        "acucares e adocantes",
+        "frutas desidratadas",
+        "temperos",
+        "castanhas sementes graos e flocos",
+        "farinhas farelos e fibras",
+        "chips biscoitos",
+        "granolas",
+        "pimentas",
+        "sal",
+        "sucrilhos",
+        "arroz",
+        "barras de cereal",
+        "biscoitos",
+        "chocolates",
+        "ervas para terere",
+        "vinagres"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/oh-caseirinhos-da-nei",
+      "status": "pending_collection",
+      "seller_id": 132558,
+      "selected_categories": [
+        "bombom",
+        "mini bolos",
+        "bolo de pote",
+        "copos da felicidade",
+        "tortas",
+        "tacas de sobremesa"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/olaff-restaurante-e-pizzaria",
+      "status": "pending_collection",
+      "seller_id": 137729,
+      "selected_categories": [
+        "porcoes",
+        "pratos executivos",
+        "lanches"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/pamonha-mineira-sorriso",
+      "status": "pending_collection",
+      "seller_id": 134621,
+      "selected_categories": [
+        "pamonhas",
+        "pamonhas recheadas",
+        "sobremesas",
+        "sucos"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/paula-gourmet-confeitaria-e-cafe",
+      "status": "pending_collection",
+      "seller_id": 91358,
+      "selected_categories": [
+        "caseirinhos",
+        "fatias nega maluca",
+        "brownie",
+        "fatias salgadas",
+        "pudim",
+        "salgados",
+        "coxinha crocante",
+        "empada aberta",
+        "trufas",
+        "fatia tipo bolo gelado",
+        "bolo de pote",
+        "doces",
+        "copo da felicidade",
+        "fatias especiais paula gourmet"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/peixaria-rekantu",
+      "status": "pending",
+      "reason": "CNPJ compartilhado com outras vitrines: assados-oliveira, confeitaria-susan-guedes, peixaria-rekantu. Vínculo entre filiais exige revisão."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/perimetral-dos-assados",
+      "status": "pending_collection",
+      "seller_id": 144608,
+      "selected_categories": [
+        "marmitas",
+        "frangos",
+        "costelas"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/point-dos-salgados",
+      "status": "pending_collection",
+      "seller_id": 101581,
+      "selected_categories": [
+        "super petisto com limao",
+        "mini salgados misto",
+        "50 mini salgadinhos sortidos",
+        "mini churros tradicional",
+        "divirta se escolhendo os seus favoritos",
+        "cento de mini bolinha de queijo especial domingo"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/pomodoro-parmegianas-e-massas",
+      "status": "pending_collection",
+      "seller_id": 132751,
+      "selected_categories": [
+        "parmegianas",
+        "massas",
+        "strogonoff",
+        "pratos executivos"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/portinari-massas-e-risotos",
+      "status": "pending_collection",
+      "seller_id": 141711,
+      "selected_categories": [
+        "massas",
+        "risotos",
+        "lasanhas",
+        "saladas"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/puro-cafe",
+      "status": "pending_collection",
+      "seller_id": 133774,
+      "selected_categories": [
+        "cafe da manha",
+        "lanches quentes",
+        "sanduiches",
+        "omelete e ovos mexidos"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/rangus-restaurante",
+      "status": "pending_collection",
+      "seller_id": 20280,
+      "selected_categories": [
+        "marmitas",
+        "porcoes e acompanhamentos",
+        "sobremesas"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/rd-marmitaria",
+      "status": "pending_collection",
+      "seller_id": 145767,
+      "selected_categories": [
+        "feijoada nutella com costelinha suina",
+        "bife bovino",
+        "figado bovino",
+        "calabresa acebolada com bacon",
+        "file de frango acebolado",
+        "strogonoff de frango"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/rei-do-frango",
+      "status": "pending",
+      "reason": "CNPJ compartilhado com outras vitrines: cia-dos-assados, rei-do-frango. Vínculo entre filiais exige revisão."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/rei-dos-assados",
+      "status": "pending",
+      "reason": "CNPJ compartilhado com outras vitrines: monster-assados, rei-dos-assados. Vínculo entre filiais exige revisão."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-acafrao",
+      "status": "pending_collection",
+      "seller_id": 17823,
+      "selected_categories": [
+        "porcoes",
+        "pratos",
+        "saladas",
+        "acompanhamentos",
+        "caldos",
+        "sucos"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-costelao",
+      "status": "pending_collection",
+      "seller_id": 138949,
+      "selected_categories": [
+        "saladas",
+        "marmita light nº9",
+        "marmita prime",
+        "costelao prime pratos feitos",
+        "marmita padrao nao fazemos alteracao",
+        "churrasco em porcoes",
+        "guarnicoes e acompanhamentos",
+        "feijoadas",
+        "sobremesas"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-do-embaixador",
+      "status": "pending_collection",
+      "seller_id": 40736,
+      "selected_categories": [
+        "feijoada",
+        "marmita",
+        "caldos",
+        "sucos"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-e-churrascaria-lacador",
+      "status": "pending_collection",
+      "seller_id": 103682,
+      "selected_categories": [
+        "marmita padrao"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-e-espetinho-sol-nascente",
+      "status": "pending_collection",
+      "seller_id": 134606,
+      "selected_categories": [
+        "espetos",
+        "marmitas",
+        "pocoes",
+        "caldos"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-e-marmitaria-esquina-88",
+      "status": "pending_collection",
+      "seller_id": 113025,
+      "selected_categories": [
+        "espetinho",
+        "sabado da feijoada",
+        "marmita do dia",
+        "porcoes"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-e-peixaria-sorriso",
+      "status": "pending_collection",
+      "seller_id": 139534,
+      "selected_categories": [
+        "marmitas",
+        "sucos",
+        "porcao de jacare aproximadamente 200g"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-imigrantes",
+      "status": "pending_collection",
+      "seller_id": 143141,
+      "selected_categories": [
+        "marmitas"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-marmitaria-bazza",
+      "status": "pending_collection",
+      "seller_id": 137527,
+      "selected_categories": [
+        "marmita do dia",
+        "marmita light zero carbo"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-nossa-senhora-do-sorriso",
+      "status": "pending_collection",
+      "seller_id": 122344,
+      "selected_categories": [
+        "marmita",
+        "marmita janta",
+        "parmegianas e lasanhas",
+        "lanches",
+        "pasteis",
+        "strogonoff",
+        "porcao"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-sabor-do-sul",
+      "status": "pending_collection",
+      "seller_id": 135202,
+      "selected_categories": [
+        "marmita padrao",
+        "churrasco em porcoes",
+        "saladas",
+        "guarnicoes e acompanhamentos",
+        "feijoadas"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-silvestre",
+      "status": "pending_collection",
+      "seller_id": 20027,
+      "selected_categories": [
+        "marmita",
+        "suco",
+        "pratos executivos",
+        "porcoes assadas",
+        "porcoes",
+        "a la carte"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-sorrisol",
+      "status": "pending_collection",
+      "seller_id": 139047,
+      "selected_categories": [
+        "marmitex"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/restaurante-tinelli",
+      "status": "pending_collection",
+      "seller_id": 113383,
+      "selected_categories": [
+        "marmitas",
+        "guarnicoes e acompanhamentos",
+        "sucos",
+        "porcao de churrasco",
+        "feijoada"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/suprema-marmitaria",
+      "status": "pending_collection",
+      "seller_id": 138835,
+      "selected_categories": [
+        "cardapio do dia"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/tsurumi-confeitaria-fina",
+      "status": "pending_collection",
+      "seller_id": 134151,
+      "selected_categories": [
+        "doces exclusivos japoneses",
+        "fusoes japonesas sofisticadas",
+        "bolos japoneses",
+        "salgados japones"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/valzinha-salgados",
+      "status": "pending_collection",
+      "seller_id": 142693,
+      "selected_categories": [
+        "marmitas de mini salgados",
+        "pasteis grandes e enroladinho",
+        "cento de salgados"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/vitoria-regia-marmitaria",
+      "status": "pending_collection",
+      "seller_id": 52073,
+      "selected_categories": [
+        "marmita do dia",
+        "feijoada"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/vovo-clo-comida-caseira",
+      "status": "pending_collection",
+      "seller_id": 143554,
+      "selected_categories": [
+        "estrogonofes de frango",
+        "feijoada tradicional",
+        "sobremesas"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/wm-assados",
+      "status": "pending_collection",
+      "seller_id": 143565,
+      "selected_categories": [
+        "acompanhamentos",
+        "assados"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "url": "https://aiqfome.com/MT/sorriso/xodo-restaurante-e-lanchonete",
+      "status": "pending_collection",
+      "seller_id": 102101,
+      "selected_categories": [
+        "marmitas xodo",
+        "marmitas executivas",
+        "marmita do dia",
+        "carne e salada",
+        "salada ou maionese",
+        "lanches",
+        "suco sorriso",
+        "feijoada",
+        "dobradinha"
+      ],
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    }
+  ]
+}

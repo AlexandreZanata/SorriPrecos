@@ -2,6 +2,13 @@
 
 Executada em 03/11/2026, em Linux, com Rust 1.99.0, Java 21, Gradle 8.14.4 e Android SDK 36. APK `0.1.0`, application ID `br.com.sorriprecos`, Android mínimo 26 e target 36.
 
+## Atualização de cobertura — 05/11/2026
+
+- **39 testes Rust** e **11 testes Kotlin** passaram; `cargo fmt --check`, `cargo clippy -D warnings`, `:composeApp:lintDebug` e `:composeApp:assembleDebug` concluíram sem erro.
+- **101 fontes locais** (`aiqfome`, `Ola`, `Egao` e `D’Macena`) terminaram com status `success`. A Blumenau Bebidas publicou 2.626 variantes em uma página de 12,2 MiB; o leitor aceitou a página com limite de 16 MiB e normalizou 921 ofertas. As outras seis novas vitrines também concluíram.
+- As varreduras paginadas do VipCommerce concluíram ao menos uma passagem completa em Sorrinorte, Sorriso e DelMoro. O Machado continua sem contexto público de Sorriso: `/busca` e o `sitemap-produtos-3.xml` identificam a filial 3, CNPJ 03.790.896/0003-00, em Sinop, e o CEP da unidade Tancredo Neves segue recusado.
+- APK **0.1.1** (versionCode 2) instalado por ADB no aparelho físico. O `android_live_smoke.py` passou nos seis checks de catálogo atual, busca por GTIN, comparação, detalhes, cache offline e reconexão.
+
 ## Automatizados
 
 **35 testes Rust passaram**, incluindo normalização de acentos; checksum GTIN; conversão e distinção de embalagens; preços inteiros; rejeição de medicamentos; migração, WAL e FKs; importação idempotente e histórico; conflito de GTIN/embalagem; preservação em lote inválido; observação antiga; busca FTS por embalagem; ordenação/vínculo de filial; promoções condicionadas; preços ausentes, vencidos, indisponíveis e desatualizados; isolamento DEMO/real e autorização; CSV/JSON; paginação; ETag; limites de busca/rate; leituras simultâneas a escritas; coleta paginada sintética; resposta 429; ausência de coleta por busca do consumidor; deduplicação de múltiplos SKUs da mesma filial; rejeição de município ausente/estrangeiro/UF incorreta; preço histórico separado do mínimo recente, com estoque desconhecido.

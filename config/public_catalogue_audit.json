@@ -59,19 +59,24 @@
       "market": "machado",
       "platform": "Agile B2B",
       "status": "pending_sorriso_context",
+      "revalidated_at": "2026-11-05",
       "anonymous_bootstrap": "https://www.redemachado.com.br/controllers/api-controller.php?acao=tokens",
       "public_search": "https://www.redemachado.com.br/components/products-assistent.php",
+      "public_search_page": "https://www.redemachado.com.br/busca?s=arroz",
+      "sitemap": "https://www.redemachado.com.br/sitemap-produtos-3.xml",
       "token_parameter": "agile_token",
       "bootstrap_http": 200,
       "search_with_visitor_session_http": 200,
       "observed_city": "Sinop",
       "observed_filial": 3,
-      "reason": "O seletor público recusou os CEPs de Sorriso testados, incluindo o CEP oficial da unidade de Noêmia Tonello Dalmolin 2501. A sessão padrão permanece em Sinop.",
+      "observed_cnpj": "03790896000300",
+      "reason": "A busca pública /busca?s= responde com preços, mas o HTML e o sitemap-produtos-3.xml continuam identificando a filial 3, CNPJ 03.790.896/0003-00, em Sinop. A consulta de CEP para Sorriso, incluindo 78893-110, segue recusada. Não há catálogo público atual atribuível à unidade Tancredo Neves.",
       "checked_url": "https://turismo.sorriso.mt.gov.br/produtos-servicos/mercado",
       "tested_postcodes": [
         "78893110",
+        "78890000",
         "78894280",
-        "78890000"
+        "78896042"
       ],
       "local_cnpj": "03790896001110"
     },
@@ -572,16 +577,16 @@
     {
       "market": "blumenau-bebidas",
       "platform": "aiqfome",
-      "status": "pending_response_too_large",
+      "status": "enabled",
       "public_page": "https://aiqfome.com/MT/sorriso/blumenau-bebidas",
-      "reason": "Resposta excedeu limite de 8 MiB; catálogo e identidade não verificados nesta rodada."
+      "reason": "Catálogo público integral com 1.068 itens e 33 categorias; identidade declara CNPJ 24.566.105/0002-51 na Avenida Blumenau, 2841. O limite de página do ingestor foi ampliado para 16 MiB; o cadastro imobiliário/CNPJ divulgado diverge do endereço em fontes externas, então a identidade usada é a publicada pela própria vitrine."
     },
     {
       "market": "borges-distribuidora",
       "platform": "aiqfome",
-      "status": "pending_category_review",
+      "status": "enabled",
       "public_page": "https://aiqfome.com/MT/sorriso/borges-distribuidora",
-      "reason": "Vende gás, cigarros e bebidas; categorias e embalagens alimentícias ainda precisam de seleção e teste."
+      "reason": "Categorias de bebidas habilitadas; gás e cigarro ficaram de fora. Endereço e CNPJ publicados pela vitrine."
     },
     {
       "market": "copao-de-coxinha",
@@ -607,9 +612,9 @@
     {
       "market": "flash-distribuidora",
       "platform": "aiqfome",
-      "status": "pending_category_review",
+      "status": "enabled",
       "public_page": "https://aiqfome.com/MT/sorriso/flash-distribuidora",
-      "reason": "Vende bebidas, cigarros e outros itens; requer seleção de categorias e revisão de preços condicionados."
+      "reason": "Categorias de bebidas, gelo e combos habilitadas; conveniência/tabacaria ficou de fora. Endereço e CNPJ publicados pela vitrine."
     },
     {
       "market": "gt-bebidas",
@@ -635,16 +640,16 @@
     {
       "market": "magnata-distribuidora-01",
       "platform": "aiqfome",
-      "status": "pending_category_review",
+      "status": "enabled",
       "public_page": "https://aiqfome.com/MT/sorriso/magnata-distribuidora-01",
-      "reason": "Bebidas e outros itens com categorias mistas; precisa de seleção e revisão."
+      "reason": "Categorias de bebidas e gelo habilitadas. Endereço e CNPJ publicados pela vitrine."
     },
     {
       "market": "mineiros-bebidas",
       "platform": "aiqfome",
-      "status": "pending_category_review",
+      "status": "enabled",
       "public_page": "https://aiqfome.com/MT/sorriso/mineiros-bebidas",
-      "reason": "Vitrine de bebidas requer revisão de categorias e condições de embalagens retornáveis."
+      "reason": "Categorias de bebidas e gelo habilitadas. Endereço e CNPJ publicados pela vitrine."
     },
     {
       "market": "pet-casa-agroshop",
@@ -656,9 +661,9 @@
     {
       "market": "pitbull-distribuidora",
       "platform": "aiqfome",
-      "status": "pending_category_review",
+      "status": "enabled",
       "public_page": "https://aiqfome.com/MT/sorriso/pitbull-distribuidora",
-      "reason": "Bebidas e itens não alimentícios misturados; precisa de seleção e revisão."
+      "reason": "Categorias de bebidas e gelo habilitadas; cigarros e copos ficaram de fora. Endereço e CNPJ publicados pela vitrine."
     },
     {
       "market": "portal-bebidas",
@@ -670,9 +675,323 @@
     {
       "market": "restaurante-e-churrascaria-galpao-crioulo",
       "platform": "aiqfome",
-      "status": "pending_category_review",
+      "status": "enabled",
       "public_page": "https://aiqfome.com/MT/sorriso/restaurante-e-churrascaria-galpao-crioulo",
-      "reason": "Vitrine de refeições e bebidas precisa de seleção e validação dos produtos e suas condições."
+      "reason": "Cardápio de feijoadas, marmitas, porções e bebidas habilitado. Endereço e CNPJ publicados pela vitrine."
+    },
+    {
+      "market": "ac-marmitaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/ac-marmitaria",
+      "seller_id": 142126,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "arena-marmitaria-e-lanches",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/arena-marmitaria-e-lanches",
+      "seller_id": 144111,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "assados-e-cia",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/assados-e-cia",
+      "seller_id": 142020,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "assados-oliveira",
+      "platform": "aiqfome",
+      "status": "pending_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/assados-oliveira",
+      "reason": "CNPJ compartilhado com outras vitrines: assados-oliveira, confeitaria-susan-guedes, peixaria-rekantu. Vínculo entre filiais exige revisão."
+    },
+    {
+      "market": "atelie-do-bolo",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/atelie-do-bolo",
+      "seller_id": 138974,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "baxinho-dos-assados",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/baxinho-dos-assados",
+      "seller_id": 115969,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "bendito-pudim",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/bendito-pudim",
+      "seller_id": 105713,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "bodegas-marmitaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/bodegas-marmitaria",
+      "seller_id": 147371,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "bolognas-macarrao-expresso",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/bolognas-macarrao-expresso",
+      "seller_id": 106037,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "bolos-caseiro",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/bolos-caseiro",
+      "seller_id": 138474,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "bolos-da-tata",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/bolos-da-tata",
+      "seller_id": 147022,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "bolos-de-casa",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/bolos-de-casa",
+      "seller_id": 81547,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "cafe-sabor-do-nordeste",
+      "platform": "aiqfome",
+      "status": "pending_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/cafe-sabor-do-nordeste",
+      "reason": "CNPJ compartilhado com outras vitrines: cafe-sabor-do-nordeste, cafe-sabor-do-nordeste-sao-mateus. Vínculo entre filiais exige revisão."
+    },
+    {
+      "market": "cafe-sabor-do-nordeste-sao-mateus",
+      "platform": "aiqfome",
+      "status": "pending_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/cafe-sabor-do-nordeste-sao-mateus",
+      "reason": "CNPJ compartilhado com outras vitrines: cafe-sabor-do-nordeste, cafe-sabor-do-nordeste-sao-mateus. Vínculo entre filiais exige revisão."
+    },
+    {
+      "market": "caseirinhos-da-eva",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/caseirinhos-da-eva",
+      "seller_id": 122851,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "caseirinhos-da-val",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/caseirinhos-da-val",
+      "seller_id": 144688,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "caseirinhos-da-vivi",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/caseirinhos-da-vivi",
+      "seller_id": 137019,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "caseiros-da-cah",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/caseiros-da-cah",
+      "seller_id": 139018,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "chefe-massas",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/chefe-massas",
+      "seller_id": 144110,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "cheiro-e-tempero-marmitaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/cheiro-e-tempero-marmitaria",
+      "seller_id": 141107,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "cia-dos-assados",
+      "platform": "aiqfome",
+      "status": "pending_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/cia-dos-assados",
+      "reason": "CNPJ compartilhado com outras vitrines: cia-dos-assados, rei-do-frango. Vínculo entre filiais exige revisão."
+    },
+    {
+      "market": "confeitaria-susan-guedes",
+      "platform": "aiqfome",
+      "status": "pending_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/confeitaria-susan-guedes",
+      "reason": "CNPJ compartilhado com outras vitrines: assados-oliveira, confeitaria-susan-guedes, peixaria-rekantu. Vínculo entre filiais exige revisão."
+    },
+    {
+      "market": "da-silva-marmitaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/da-silva-marmitaria",
+      "seller_id": 130702,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "delicias-da-gi-confeitaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/delicias-da-gi-confeitaria",
+      "seller_id": 132182,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "delicias-talisma-salgados",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/delicias-talisma-salgados",
+      "seller_id": 26144,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "delicitta-refeicoes",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/delicitta-refeicoes",
+      "seller_id": 126494,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "dom-quixote-restaurante",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/dom-quixote-restaurante",
+      "seller_id": 116047,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "dprandine-frango-no-balde",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/dprandine-frango-no-balde",
+      "reason": "catálogo sem variantes de mercearia utilizáveis"
+    },
+    {
+      "market": "espetaria-e-frango-sertanejo-na-brasa",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/espetaria-e-frango-sertanejo-na-brasa",
+      "seller_id": 134345,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "espetinho-e-marmitaria-da-baixinha",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/espetinho-e-marmitaria-da-baixinha",
+      "seller_id": 143112,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "flor-de-baunilha-confeitaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/flor-de-baunilha-confeitaria",
+      "seller_id": 99988,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "frango-na-brasa",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/frango-na-brasa",
+      "seller_id": 19643,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "gs-hamburgueria-e-marmitaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/gs-hamburgueria-e-marmitaria",
+      "seller_id": 145965,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "guto-confeitaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/guto-confeitaria",
+      "seller_id": 120341,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "iarla-ravana-confeitaria-artesanal",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/iarla-ravana-confeitaria-artesanal",
+      "seller_id": 135647,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "ivani-salgados-buffet",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/ivani-salgados-buffet",
+      "seller_id": 119362,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "karneiros-salgados",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/karneiros-salgados",
+      "seller_id": 145516,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "la-caramelle-confeitaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/la-caramelle-confeitaria",
+      "seller_id": 142936,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "larissa-moro-confeitaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/larissa-moro-confeitaria",
+      "seller_id": 138589,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "ln-salgados",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/ln-salgados",
+      "seller_id": 138337,
+      "scope": "Sorriso-MT"
     },
     {
       "market": "luana-tamires-confeitaria",
@@ -682,25 +1001,159 @@
       "reason": "Primeira coleta principal em 04/11/2026: 21 variantes examinadas, 21 normalizadas. Indisponíveis no momento."
     },
     {
+      "market": "madae-produtos-naturais",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/madae-produtos-naturais",
+      "seller_id": 129130,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "maninho-restaurante-e-petiscaria",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/maninho-restaurante-e-petiscaria",
+      "seller_id": 73560,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "mara-bolos-e-salgados",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/mara-bolos-e-salgados",
+      "seller_id": 138261,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "mari-salgados",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/mari-salgados",
+      "seller_id": 125886,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "marmitaria-agua-na-boka",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/marmitaria-agua-na-boka",
+      "seller_id": 19978,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "marmitaria-america-express",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/marmitaria-america-express",
+      "seller_id": 129845,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "marmitaria-dois-irmaos",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/marmitaria-dois-irmaos",
+      "seller_id": 128153,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "marmitaria-e-feijoada-da-edileuza",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/marmitaria-e-feijoada-da-edileuza",
+      "seller_id": 146019,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "marmitaria-e-salgados-temperos-da-lu",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/marmitaria-e-salgados-temperos-da-lu",
+      "seller_id": 129430,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "marmitaria-fogao-a-lenha",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/marmitaria-fogao-a-lenha",
+      "seller_id": 41751,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "marmitaria-imperio",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/marmitaria-imperio",
+      "seller_id": 128323,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "marmitaria-maranata",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/marmitaria-maranata",
+      "seller_id": 69129,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "marmitaria-quintal-do-sabor",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/marmitaria-quintal-do-sabor",
+      "reason": "catálogo sem variantes de mercearia utilizáveis"
+    },
+    {
+      "market": "marmitaria-sabor-de-minas",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/marmitaria-sabor-de-minas",
+      "seller_id": 120807,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "marmitaria-sabor-do-brasil",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/marmitaria-sabor-do-brasil",
+      "seller_id": 112318,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "massas-e-salgados-nilce",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/massas-e-salgados-nilce",
+      "seller_id": 62662,
+      "scope": "Sorriso-MT"
+    },
+    {
+      "market": "minoaka-salgaderia",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/minoaka-salgaderia",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "monster-assados",
+      "platform": "aiqfome",
+      "status": "pending_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/monster-assados",
+      "reason": "CNPJ compartilhado com outras vitrines: monster-assados, rei-dos-assados. Vínculo entre filiais exige revisão."
+    },
+    {
+      "market": "neguinho-do-frango",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/neguinho-do-frango",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
       "market": "nutrys-produtos-naturais",
       "platform": "aiqfome",
       "status": "enabled",
       "public_page": "https://aiqfome.com/MT/sorriso/nutrys-produtos-naturais",
       "reason": "Primeira coleta principal em 04/11/2026: 192 variantes examinadas, 165 normalizadas. Indisponíveis no momento."
-    },
-    {
-      "market": "perimetral-dos-assados",
-      "platform": "aiqfome",
-      "status": "enabled",
-      "public_page": "https://aiqfome.com/MT/sorriso/perimetral-dos-assados",
-      "reason": "Primeira coleta principal em 04/11/2026: 16 variantes examinadas, uma normalizada. Indisponível no momento."
-    },
-    {
-      "market": "valzinha-salgados",
-      "platform": "aiqfome",
-      "status": "enabled",
-      "public_page": "https://aiqfome.com/MT/sorriso/valzinha-salgados",
-      "reason": "Primeira coleta principal em 04/11/2026: 24 variantes examinadas, 16 normalizadas. Indisponíveis no momento."
     },
     {
       "market": "oh-caseirinhos-da-nei",
@@ -710,6 +1163,62 @@
       "reason": "Primeira coleta principal em 04/11/2026: 39 variantes examinadas, 20 normalizadas. Indisponíveis no momento."
     },
     {
+      "market": "olaff-restaurante-e-pizzaria",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/olaff-restaurante-e-pizzaria",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "pamonha-mineira-sorriso",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/pamonha-mineira-sorriso",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "paula-gourmet-confeitaria-e-cafe",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/paula-gourmet-confeitaria-e-cafe",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "peixaria-rekantu",
+      "platform": "aiqfome",
+      "status": "pending_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/peixaria-rekantu",
+      "reason": "CNPJ compartilhado com outras vitrines: assados-oliveira, confeitaria-susan-guedes, peixaria-rekantu. Vínculo entre filiais exige revisão."
+    },
+    {
+      "market": "perimetral-dos-assados",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/perimetral-dos-assados",
+      "reason": "Primeira coleta principal em 04/11/2026: 16 variantes examinadas, uma normalizada. Indisponível no momento."
+    },
+    {
+      "market": "point-dos-salgados",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/point-dos-salgados",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "pomodoro-parmegianas-e-massas",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/pomodoro-parmegianas-e-massas",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "portinari-massas-e-risotos",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/portinari-massas-e-risotos",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
       "market": "puro-cafe",
       "platform": "aiqfome",
       "status": "enabled",
@@ -717,11 +1226,206 @@
       "reason": "Primeira coleta principal em 04/11/2026: 29 variantes examinadas, 14 normalizadas. Indisponíveis no momento."
     },
     {
+      "market": "rangus-restaurante",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/rangus-restaurante",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "rd-marmitaria",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/rd-marmitaria",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "rei-do-frango",
+      "platform": "aiqfome",
+      "status": "pending_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/rei-do-frango",
+      "reason": "CNPJ compartilhado com outras vitrines: cia-dos-assados, rei-do-frango. Vínculo entre filiais exige revisão."
+    },
+    {
+      "market": "rei-dos-assados",
+      "platform": "aiqfome",
+      "status": "pending_identity",
+      "public_page": "https://aiqfome.com/MT/sorriso/rei-dos-assados",
+      "reason": "CNPJ compartilhado com outras vitrines: monster-assados, rei-dos-assados. Vínculo entre filiais exige revisão."
+    },
+    {
+      "market": "restaurante-acafrao",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-acafrao",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-costelao",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-costelao",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-do-embaixador",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-do-embaixador",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-e-churrascaria-lacador",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-e-churrascaria-lacador",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-e-espetinho-sol-nascente",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-e-espetinho-sol-nascente",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-e-marmitaria-esquina-88",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-e-marmitaria-esquina-88",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-e-peixaria-sorriso",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-e-peixaria-sorriso",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-imigrantes",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-imigrantes",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-marmitaria-bazza",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-marmitaria-bazza",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-nossa-senhora-do-sorriso",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-nossa-senhora-do-sorriso",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-sabor-do-sul",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-sabor-do-sul",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-silvestre",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-silvestre",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "restaurante-sorrisol",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/restaurante-sorrisol",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
       "market": "restaurante-tinelli",
       "platform": "aiqfome",
       "status": "enabled",
       "public_page": "https://aiqfome.com/MT/sorriso/restaurante-tinelli",
       "reason": "Primeira coleta principal em 04/11/2026: 134 variantes examinadas, 51 normalizadas. Indisponíveis no momento."
+    },
+    {
+      "market": "suprema-marmitaria",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/suprema-marmitaria",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "tsurumi-confeitaria-fina",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/tsurumi-confeitaria-fina",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "valzinha-salgados",
+      "platform": "aiqfome",
+      "status": "enabled",
+      "public_page": "https://aiqfome.com/MT/sorriso/valzinha-salgados",
+      "reason": "Primeira coleta principal em 04/11/2026: 24 variantes examinadas, 16 normalizadas. Indisponíveis no momento."
+    },
+    {
+      "market": "vitoria-regia-marmitaria",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/vitoria-regia-marmitaria",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "vovo-clo-comida-caseira",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/vovo-clo-comida-caseira",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "wm-assados",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/wm-assados",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "xodo-restaurante-e-lanchonete",
+      "platform": "aiqfome",
+      "status": "pending_collection",
+      "public_page": "https://aiqfome.com/MT/sorriso/xodo-restaurante-e-lanchonete",
+      "reason": "Coleta isolada interrompida após limite HTTP 429; validação não concluída."
+    },
+    {
+      "market": "recanto-da-viola",
+      "platform": "Ola",
+      "status": "enabled",
+      "public_page": "https://recanto-da-viola.ola.click/products",
+      "storefront_id": "d7b6d885-fa19-4a2f-bc16-dd5da94b4f73",
+      "scope": "Sorriso-MT",
+      "reason": "Estoque desconhecido quando a plataforma não habilita controle de estoque."
+    },
+    {
+      "market": "ricks-burger",
+      "platform": "Ola",
+      "status": "enabled",
+      "public_page": "https://ricks-burger.ola.click/products",
+      "storefront_id": "7bf41e86-3b9a-4340-b30c-b0e55ee6bfe5",
+      "scope": "Sorriso-MT",
+      "reason": "Estoque desconhecido quando a plataforma não habilita controle de estoque."
+    },
+    {
+      "market": "pizzaria-top-30-ola",
+      "platform": "Ola",
+      "status": "enabled",
+      "public_page": "https://pizzaria-top30.ola.click/products",
+      "storefront_id": "d1df9820-337a-4e44-8e4a-cf4c89d51699",
+      "scope": "Sorriso-MT",
+      "reason": "Porções selecionadas; pizzas dependem de escolha de sabores e não foram habilitadas. Estoque desconhecido."
     }
   ],
   "alternate_sources": [
@@ -778,6 +1482,30 @@
       "status": "pending_discovery",
       "url": "https://app.bysell.com.br/lista/sorriso-mt/",
       "evidence": "Diretório encontrado na pesquisa; estabelecimentos e dados individuais ainda não foram validados."
+    },
+    {
+      "name": "Panificadora e Confeitaria Ana Júlia",
+      "status": "pending_catalogue_validation",
+      "url": "https://mechameaqui.com.br/panificadora-e-confeitaria-ana-julia-padaria-sorriso-mt/",
+      "evidence": "Diretório informa endereço local e link para cardápio; acesso retornou HTTP 403, portanto preços e ingestão não foram validados."
+    },
+    {
+      "name": "O Padrinho Restaurante",
+      "status": "pending_catalogue_validation",
+      "url": "https://opadrinhorestaurante.com.br/",
+      "evidence": "Página pesquisada informa endereço local e link de cardápio; estrutura e preços atuais não foram validados."
+    },
+    {
+      "name": "Companhia do Tereré",
+      "url": "https://companhia-do-terere.ola.click/products",
+      "status": "pending_package_validation",
+      "evidence": "Página pública de Sorriso contém 36 ervas com valores e IDs, porém títulos e variantes verificados não informam embalagem; pesos não foram inferidos."
+    },
+    {
+      "name": "Padaria Doce Mel · Ola",
+      "url": "https://padaria-doce-mel.ola.click/products",
+      "status": "duplicate_existing_branch",
+      "evidence": "Endereço Perimetral Sudoeste 3249 corresponde à filial já habilitada no aiqfome. Não criar uma segunda filial a partir da mesma loja."
     }
   ]
 }

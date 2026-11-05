@@ -1,4 +1,36 @@
-# Catálogos públicos por filial — 03/11/2026
+# Catálogos públicos por filial — 05/11/2026
+
+## Bebidas, caixas e novas vitrines aiqfome — 05/11/2026
+
+O leitor aiqfome passou a aceitar páginas de até 16 MiB, porque a vitrine [Blumenau Bebidas](https://aiqfome.com/MT/sorriso/blumenau-bebidas) publica 12,2 MiB em um único menu. A página contém 1.068 itens e 2.626 variantes; a coleta normalizou 921 ofertas com embalagem confirmada. O CNPJ e o endereço usados no cadastro são os publicados pela própria vitrine (24.566.105/0002-51, Avenida Blumenau, 2841). Registros externos divergem sobre o número/CNPJ, então a identidade adotada é a declarada pela fonte.
+
+Também foram habilitadas as categorias de bebidas de [Borges](https://aiqfome.com/MT/sorriso/borges-distribuidora), [Flash](https://aiqfome.com/MT/sorriso/flash-distribuidora), [Magnata](https://aiqfome.com/MT/sorriso/magnata-distribuidora-01), [Mineiros](https://aiqfome.com/MT/sorriso/mineiros-bebidas) e [Pitbull](https://aiqfome.com/MT/sorriso/pitbull-distribuidora), além das refeições do [Galpão Crioulo](https://aiqfome.com/MT/sorriso/restaurante-e-churrascaria-galpao-crioulo). Tabacaria, isqueiro, copos, gás e cigarro ficaram fora do escopo. As coletas locais terminaram com status `success`; itens sem peso/volume, com medidas conflitantes ou sem preço continuam registrados na auditoria, sem entrar no ranking.
+
+O leitor aceita rótulos de caixa fechada (`CX C-6`, `CAIXA COM 12`, `12uni`) e multiplica o tamanho da unidade pelo número de unidades. Medidas divergentes entre título e variante continuam rejeitadas para não inventar embalagem.
+
+A auditoria de 05/11/2026 leu as 96 vitrines aiqfome habilitadas e gravou `source_coverage` por fonte: 987 categorias publicadas, 976 selecionadas e 11 excluídas explicitamente (tabacaria, cigarro, isqueiro, copos, utensílios, presentes, merchandising e couvert). Nenhuma categoria de alimento ou bebida ficou de fora. As três vitrines Ola também foram ampliadas: Recanto da Viola 25/26, Rick’s Burger 5/5 e Pizzaria Top 30 6/6; apenas o couvert do Recanto ficou fora. `scripts/audit_source_coverage.py` repete a comparação e `scripts/audit_ingestion_coverage.py` confere o estado persistido, inclusive categorias ignoradas inesperadas.
+
+## Vitrines Ola em Sorriso — 03/11/2026
+
+O levantamento identificou três vitrines adicionais, [Recanto da Viola](https://recanto-da-viola.ola.click/products), [Rick’s Burger](https://ricks-burger.ola.click/products) e [Pizzaria Top 30](https://pizzaria-top30.ola.click/products). O coletor usa um GET público do cardápio e lê o estado Nuxt publicado no HTML, sem conta de cliente. Antes de importar, confere o UUID da empresa e o endereço textual completo informado pela vitrine em Sorriso-MT. Os endereços publicados não informam número; o cadastro conserva essa limitação.
+
+As categorias de alimentos foram selecionadas individualmente. Cada variante conserva o UUID da plataforma e seu preço, e itens com grupos de opções ficam pendentes de revisão. A plataforma informa que o controle de estoque está desabilitado nos itens observados; a disponibilidade desses itens é, portanto, **desconhecida**, mesmo quando a vitrine exibe o item. Esses preços não entram como ofertas disponíveis no ranking. O prazo de validade é de 30 minutos, como nas demais vitrines locais. A coleta de validação isolada e a primeira coleta no banco local tiveram sucesso: 56 variantes do Recanto, 13 do Rick’s e quatro porções da Top 30. As pizzas da Top 30 exigem seleção de sabores e não foram habilitadas. Detalhes em `docs/testing/ola-2026-11-03.json`.
+
+[Companhia do Tereré](https://companhia-do-terere.ola.click/products) publica 36 itens e preços em endereço de Sorriso, mas não informa peso ou volume das ervas nos itens verificados; permanece pendente. A [Padaria Doce Mel na Ola](https://padaria-doce-mel.ola.click/products) corresponde ao endereço da filial já cadastrada via aiqfome e não foi duplicada.
+
+O formato Nuxt é uma estrutura publicada pelo frontend e pode mudar sem aviso. A coleta falha se identidade, endereço ou estrutura divergirem, e não substitui a necessidade de verificar condições de uso dos dados da plataforma e dos estabelecimentos.
+
+## Pesquisa ampliada de alimentação e limite da plataforma — 03/11/2026
+
+Uma segunda triagem examinou 96 vitrines adicionais do diretório de Sorriso, selecionadas por nomes ligados a empórios, peixarias, padarias, massas, assados, confeitaria e refeições. O detalhamento, as categorias selecionadas e os motivos de pendência estão em `docs/testing/local-food-more-2026-11-03.json`. Essas 96 não representam todas as vitrines da cidade.
+
+Foram cadastradas 49 novas fontes que concluíram a coleta em um SQLite isolado, entre elas Madae Produtos Naturais, Ateliê do Bolo, Bendito Pudim, Massas e Salgados Nilce, Marmitaria Império e diversos estabelecimentos de refeições e confeitaria. Foram observadas 2.464 variantes selecionadas, das quais 1.498 foram normalizadas; 414 estavam disponíveis no momento do teste. No Madae, apenas categorias alimentícias verificadas foram habilitadas; suplementos, fitoterápicos, cápsulas, óleos essenciais e acessórios ficaram de fora. A normalização da fonte exige peso ou volume para itens de mercearia.
+
+A plataforma respondeu HTTP 429 durante a rodada. O processo foi interrompido e não se repetiu a coleta na base principal. Os cadastros das 49 filiais estão na base local, mas os preços dessa rodada existem apenas no banco de teste e **ainda não foram importados para a base principal**. Outras 47 candidatas ficaram pendentes por identidade compartilhada, ausência de variantes utilizáveis ou teste interrompido, incluindo Nutrys Produtos Naturais. Não se deve atribuir os resultados isolados à base principal como preços atuais.
+
+O agendador limita as requisições de comércio local a uma por segundo. HTTP 429 ou 503 pausa o provedor por pelo menos 600 segundos ou pelo prazo maior indicado em `Retry-After`, inclusive após reinício. [Orçamentos e retomada](CATALOGUE_COLLECTION.md)
+
+Na máquina desta pesquisa, o processo antigo foi interrompido e a retomada da versão compilada foi agendada por `sorriprecos-local-food-stable.timer` do systemd de usuário. O serviço usa a cópia `artifacts/sorriprecos-local-food`, para não ser substituído por compilações simultâneas. Acompanhe o resultado com `systemctl --user status sorriprecos-local-food-stable.service` e `/v1/collectors`; um timer em espera não confirma que a coleta futura terá sucesso. A continuidade depende da sessão e da disponibilidade da plataforma.
 
 ## Pesquisa adicional de estabelecimentos alimentícios — 03/11/2026
 
