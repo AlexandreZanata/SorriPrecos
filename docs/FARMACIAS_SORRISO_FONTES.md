@@ -1,5 +1,7 @@
 # Catálogos digitais de farmácias em Sorriso
 
+O inventário completo das farmácias, incluindo as que só têm aplicativo, está em [FARMACIAS_SORRISO_MAPA.md](FARMACIAS_SORRISO_MAPA.md) e no arquivo legível por máquina [`config/pharmacy_audit.json`](../config/pharmacy_audit.json).
+
 Revalidação de 4 de novembro de 2026. A amostra cobre higiene bucal e saúde sexual no contexto de venda online observado. Cada filial precisa devolver o vendedor, o produto, a disponibilidade e a retirada no endereço local.
 
 - **Therapeutica Curitiba**, CNPJ 01.780.384/0001-75, Avenida Curitiba, 2734. Já cadastrada no app, com dados de sua própria loja virtual. A conexão HTTPS do coletor ainda falha na validação do certificado em algumas consultas. [Vitrine e matriz](https://www.therapeuticafarmacia.com.br/lojas/8)
