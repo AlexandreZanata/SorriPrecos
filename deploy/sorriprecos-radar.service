@@ -1,0 +1,25 @@
+[Unit]
+Description=SorriPrecos public Radar/Farmarcas pharmacy app catalogues (Sorriso-MT)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=sorriprecos
+Group=sorriprecos
+WorkingDirectory=/opt/sorriprecos
+Environment=DATABASE_URL=sqlite:///var/lib/sorriprecos/catalog.db
+ExecStart=/usr/bin/flock -n /var/lib/sorriprecos/radar.lock /usr/bin/python3 /opt/sorriprecos/scripts/collect_radar_farmacias.py --database-url sqlite:///var/lib/sorriprecos/catalog.db --binary /opt/sorriprecos/sorriprecos --config /etc/sorriprecos/radar.json --watch
+Restart=on-failure
+RestartSec=30
+KillSignal=SIGINT
+TimeoutStopSec=30
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/sorriprecos
+MemoryMax=384M
+
+[Install]
+WantedBy=multi-user.target

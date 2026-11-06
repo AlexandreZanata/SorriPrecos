@@ -1,0 +1,25 @@
+{
+  "network_id": "7c5dcf05-9b31-11ec-b903-02e456736522",
+  "source": "ultra-popular",
+  "authorization": "PUBLIC_STOREFRONT: API pública do app Ultra Popular/Farmarcas, sem login ou credenciais de cliente",
+  "stores": [
+    {
+      "store_id": "417b6102-02c5-4176-8db8-01dd2118ae1f",
+      "branch_id": "ultra-popular-centro",
+      "cnpj": "10341045001740",
+      "name": "Drogarias Ultra Popular Centro"
+    },
+    {
+      "store_id": "6e2adf39-fb9d-4408-bc24-70e0d3e2aa0f",
+      "branch_id": "ultra-popular-blumenau",
+      "cnpj": "10341045001660",
+      "name": "Drogaria DMD - Blumenau"
+    },
+    {
+      "store_id": "63073d56-ca5a-4758-9f86-1d53b1c03f79",
+      "branch_id": "ultra-popular-tancredo",
+      "cnpj": "10341045001821",
+      "name": "Drogaria DMD - Tancredo"
+    }
+  ]
+}

@@ -338,7 +338,7 @@ pub(crate) async fn import_in_transaction(
         let sid: i64 = sp.get("id");
         if sp.get::<i64, _>("product_id") != pid {
             ensure!(
-                ["aiq-", "ola-", "egao-", "dmacena-"]
+                ["aiq-", "ola-", "egao-", "dmacena-", "radar-"]
                     .iter()
                     .any(|prefix| r.source_id.starts_with(prefix)),
                 "código de origem mudou de produto; revisão manual necessária"

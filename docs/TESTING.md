@@ -4,9 +4,10 @@ Executada em 03/11/2026, em Linux, com Rust 1.99.0, Java 21, Gradle 8.14.4 e And
 
 ## Atualização de cobertura — 05/11/2026
 
-- **39 testes Rust** e **11 testes Kotlin** passaram; `cargo fmt --check`, `cargo clippy -D warnings`, `:composeApp:lintDebug` e `:composeApp:assembleDebug` concluíram sem erro.
+- **39 testes Rust**, **11 testes Kotlin** e **19 testes Python** passaram; `cargo fmt --check`, `cargo clippy -D warnings`, `:composeApp:lintDebug` e `:composeApp:assembleDebug` concluíram sem erro.
 - **101 fontes locais** (`aiqfome`, `Ola`, `Egao` e `D’Macena`) terminaram com status `success`. A Blumenau Bebidas publicou 2.626 variantes em uma página de 12,2 MiB; o leitor aceitou a página com limite de 16 MiB e normalizou 921 ofertas. As outras seis novas vitrines também concluíram.
 - As varreduras paginadas do VipCommerce concluíram ao menos uma passagem completa em Sorrinorte, Sorriso e DelMoro. O Machado continua sem contexto público de Sorriso: `/busca` e o `sitemap-produtos-3.xml` identificam a filial 3, CNPJ 03.790.896/0003-00, em Sinop, e o CEP da unidade Tancredo Neves segue recusado.
+- **Radar/Farmarcas:** após descompilar os APKs públicos, a API pública do app Ultra Popular foi identificada e validada. A filial Centro de Sorriso importou 1.260 produtos disponíveis no ciclo final, sem login; 338 ofertas antigas foram marcadas como indisponíveis. `scripts/test_radar_collector.py` cobre embalagem, GTIN, itens sem preço e apresentação.
 - APK **0.1.1** (versionCode 2) instalado por ADB no aparelho físico. O `android_live_smoke.py` passou nos seis checks de catálogo atual, busca por GTIN, comparação, detalhes, cache offline e reconexão.
 
 ## Automatizados

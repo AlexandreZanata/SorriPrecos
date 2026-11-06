@@ -1,14 +1,13 @@
-# Mapa das farmácias de Sorriso-MT — 05/11/2026
+# Mapa das farmácias de Sorriso-MT — 06/11/2026
 
 Levantamento público para o escopo Sorriso-MT (IBGE 5107925). A base combina o CNES (estabelecimentos tipo 43), o diretório farmaciaqui.net, os sites oficiais das redes e o cadastro já existente em `config/pharmacies.json`. O inventário bruto está em `config/pharmacy_audit.json`; esta página resume o que tem catálogo público e o que depende de integração comercial.
 
 ## Resultado
 
 - **73 registros** brutos e **61 chaves de endereço** após consolidar duplicatas de nome/endereço.
-- **Catálogo público com preço/estoque por filial:** Therapeutica (matriz Curitiba 2734; a filial Blumenau 2265 existe e não é uma segunda fonte automaticamente atribuível), Drogaria São Paulo Brescansin e Pague Menos Brescansin/Tancredo.
+- **Catálogo público com preço/estoque por filial:** Therapeutica (matriz Curitiba 2734; a filial Blumenau 2265 existe e não é uma segunda fonte automaticamente atribuível), Drogaria São Paulo Brescansin, Pague Menos Brescansin/Tancredo e **Drogarias Ultra Popular** (API pública do app Radar/Farmarcas; 1.319 produtos no primeiro ciclo e 1.260 no ciclo validado na filial Centro).
 - **Estoque público sem preço local:** três unidades Drogasil (Blumenau 2995, Brescansin 488 e Tancredo 2942).
-- **Somente aplicativo (E-Delivery/FEBRAFAR/Farmarcas):** Farma & Farma, Ultra Popular e FarMelhor. Os apps são personalizados por rede e o catálogo/estoque não tem endpoint web público verificado. Não foram descompilados; a obtenção de produtos exige feed/API autorizado da rede.
-- **App/vitrine sem vínculo local confirmado:** Farmácia Madeira. A vitrine publica catálogo, mas a retirada/preço da unidade de Sorriso não foi confirmada; o app é próprio e não foi descompilado.
+- **Somente aplicativo sem catálogo público validado:** FarMelhor (vitrine web 403), Farma & Farma (filial Sorriso com `modules.sales=false`) e Farmácia Madeira (app Remédio Brasil sem vínculo local confirmado). Os apps não foram descompilados para uso de endpoints privados.
 - **Programa público:** Farmácia Popular, Farmácia Cidadã (seis unidades), CAF e congêneres; não são ofertas de varejo comparáveis.
 - **Demais farmácias independentes:** sem catálogo público de produto/preço verificado; contato por WhatsApp, site institucional ou diretório local.
 
@@ -16,16 +15,9 @@ Levantamento público para o escopo Sorriso-MT (IBGE 5107925). A base combina o 
 
 | ID | Farmácia | CNPJ/CNES | Endereço | Telefone | Status | Rota |
 |---|---|---|---|---|---|---|
-| ph-09 | DROGARIA ULTRAPOPULAR AV BLUMENAU | 10341045001660 / CNES 8404720 | BLUMENAU, 1101 - JARDIM AMAZONIA | 66 35666767 | Somente app | https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
-| ph-10 | DROGARIA ULTRAPOPULAR AV TANCREDO NEVES | 10341045001821 / CNES 8408769 | TANCREDO NEVES, 1439 - BELA VISTA | 66 35664747 | Somente app | https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
-| ph-11 | DROGARIA ULTRAPOPULAR BRESCANSIN LOJA 02 | 10341045001740 / CNES 8529728 | NATALINO JOAO BRESCANSIN, 1075 - CENTRO SUL | 663544-7757 | Somente app | https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
 | ph-02 | DROGARIAS FARMELHOR | 31216969000128 / CNES 9689338 | TANCREDO NEVES, 2302 - CENTRO | 66 35450026 | Somente app | https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.farmelhor https://unidades.franquiafarmelhor.com.br/farmelhor-centro-sorriso-mt-73568 |
 | ph-39 | Drogarias FarMelhor | dup. ph-02 | Av. Tancredo Neves, 2302 | (66) 3544-0303 | Somente app | https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.farmelhor https://unidades.franquiafarmelhor.com.br/farmelhor-centro-sorriso-mt-73568 |
 | ph-25 | FARMACIA FARMA | 26661675000175 / CNES 9396675 | NATALINO JOAO BRESCANSIN, 451 - CENTRO | 66 35449275 | Somente app | https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.farmaefarma https://www.farmaefarma.com.br/ |
-| ph-58 | Farmácia Ultra Popular Loja 01 | dup. ph-10 | Av. Tancredo Neves, 1439 Esquina com a | (66) 3544-1507 | Somente app | https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
-| ph-59 | Farmácia Ultra Popular Loja 03 | dup. ph-42 | Av. Natalino João Brescansin, 936 | (66) 3544-1555 | Somente app | https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
-| ph-60 | Farmácia Ultra Popular Loja 04 |  | Av. São Francisco de Assis, 862 | (66) 3544-3836 | Somente app | https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
-| ph-61 | Farmácia Ultra Popular Loja 04 |  | MT-242, 3011 | (66) 3544-3001 | Somente app | https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
 | ph-23 | FARMACIA MADEIRA | 09404121000173 / CNES 9395954 | NATALINO JOAO BRESCANSIN, 577 - CENTRO | 66 35444162 | App/vitrine sem vínculo local | https://play.google.com/store/apps/details?id=com.inteliger.madeira.app https://app.farmaciamadeira.com.br/ |
 | ph-52 | FARMACIA MADEIRA | dup. ph-23 | Av. Natalino João Brescansin, 577 | (66) 3544-4168 | App/vitrine sem vínculo local | https://play.google.com/store/apps/details?id=com.inteliger.madeira.app https://app.farmaciamadeira.com.br/ |
 | ph-14 | BIOMAGISTRAL | 46455133000153 / CNES 4638263 | AVENIDA BLUMENAU, 2234 - JARDIM ALVORADA |  | Sem catálogo público |  |
@@ -74,6 +66,13 @@ Levantamento público para o escopo Sorriso-MT (IBGE 5107925). A base combina o 
 | ph-05 | SUPREMA FARMA NOEMIA TONELLO DALMOLIN | 52950355000226 / CNES 8570582 | NOEMIA TONELLO DALMOLIN, 2285 - PARQUE UNIVERSITARIO | 66 99652626 | Sem catálogo público |  |
 | ph-04 | SUPREMA FARMA SORRISO | 52950355000145 / CNES 8560420 | TANCREDO NEVES, 1935 - BELA VISTA | 66 99651812 | Sem catálogo público |  |
 | ph-06 | DROGARIA SAO PAULO | 61412110120487 / CNES 5897858 | NATALINO JOAO BRESCANSIN, 1722 - CENTRO NORTE | 11 32747400 | Catálogo público | https://www.drogariasaopaulo.com.br/ |
+| ph-09 | DROGARIA ULTRAPOPULAR AV BLUMENAU | 10341045001660 / CNES 8404720 | BLUMENAU, 1101 - JARDIM AMAZONIA | 66 35666767 | Catálogo público | API pública do app Radar/Farmarcas; catálogo com preço e estoque por filial https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
+| ph-10 | DROGARIA ULTRAPOPULAR AV TANCREDO NEVES | 10341045001821 / CNES 8408769 | TANCREDO NEVES, 1439 - BELA VISTA | 66 35664747 | Catálogo público | API pública do app Radar/Farmarcas; catálogo com preço e estoque por filial https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
+| ph-11 | DROGARIA ULTRAPOPULAR BRESCANSIN LOJA 02 | 10341045001740 / CNES 8529728 | NATALINO JOAO BRESCANSIN, 1075 - CENTRO SUL | 663544-7757 | Catálogo público | API pública do app Radar/Farmarcas; catálogo com preço e estoque por filial https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
+| ph-58 | Farmácia Ultra Popular Loja 01 | dup. ph-10 | Av. Tancredo Neves, 1439 Esquina com a | (66) 3544-1507 | Catálogo público | API pública do app Radar/Farmarcas; catálogo com preço e estoque por filial https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
+| ph-59 | Farmácia Ultra Popular Loja 03 | dup. ph-42 | Av. Natalino João Brescansin, 936 | (66) 3544-1555 | Catálogo público | API pública do app Radar/Farmarcas; catálogo com preço e estoque por filial https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
+| ph-60 | Farmácia Ultra Popular Loja 04 |  | Av. São Francisco de Assis, 862 | (66) 3544-3836 | Catálogo público | API pública do app Radar/Farmarcas; catálogo com preço e estoque por filial https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
+| ph-61 | Farmácia Ultra Popular Loja 04 |  | MT-242, 3011 | (66) 3544-3001 | Catálogo público | API pública do app Radar/Farmarcas; catálogo com preço e estoque por filial https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular https://www.drogariasultrapopular.com.br/ |
 | ph-64 | Farmácias Pague Menos | 06626253098020 / dup. ph-69 | Av. Natalino João Brescansin, 1314 | (66) 3544-1752 | Catálogo público | https://www.paguemenos.com.br/ |
 | ph-17 | PHARMACIA THERAPEUTICA | 01780384000337 / CNES 5424399 | AVENIDA BLUMENAU, 2265 - BELA VISTA |  | Catálogo público | https://www.therapeuticafarmacia.com.br/ |
 | ph-18 | PHARMACIA THERAPEUTICA | 01780384000175 / CNES 5424402 | AVENIDA CURITIBA, 2734 - CENTRO | 66 3544-3337 | Catálogo público | https://www.therapeuticafarmacia.com.br/ |
@@ -92,4 +91,4 @@ Levantamento público para o escopo Sorriso-MT (IBGE 5107925). A base combina o 
 
 ## Limite de cobertura
 
-Os catálogos de app-only não são públicos. A extração de endpoints por descompilação, engenharia reversa ou uso de credenciais internas contraria a regra do projeto (`docs/LEGAL_CONSIDERATIONS.md`) e os termos das plataformas. Para levar essas redes ao ingestor, o caminho correto é solicitar à rede/FEBRAFAR/Farmarcas um feed CSV/JSON ou uma API autorizada, com filial, produto, preço, estoque e validade. O mesmo vale para as farmácias independentes que hoje só atendem por WhatsApp.
+Os catálogos de app-only restantes não têm endpoint público verificado. A extração de endpoints por descompilação, engenharia reversa ou uso de credenciais internas contraria a regra do projeto (`docs/LEGAL_CONSIDERATIONS.md`) e os termos das plataformas. Para levar essas redes ao ingestor, o caminho correto é solicitar à rede um feed CSV/JSON ou uma API autorizada, com filial, produto, preço, estoque e validade. O mesmo vale para as farmácias independentes que hoje só atendem por WhatsApp.

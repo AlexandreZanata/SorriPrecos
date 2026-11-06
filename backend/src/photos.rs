@@ -24,6 +24,8 @@ pub(crate) fn trusted_url(value: &str) -> Option<Url> {
     let prefix = match url.host_str()? {
         "www.therapeuticafarmacia.com.br" => "/storage/empresas/01780384000175/produtos/",
         "paguemenos.vteximg.com.br" | "drogariasp.vteximg.com.br" => "/arquivos/ids/",
+        "products-images-edelivery-sp.s3.sa-east-1.amazonaws.com"
+        | "ecomm-products-images-sp.s3.sa-east-1.amazonaws.com" => "/",
         "product-data.raiadrogasil.io" => "/images/",
         "files.aiqfome.com" => "/itens/",
         "produto-assets-vipcommerce-com-br.br-se1.magaluobjects.com" => "/250x250/",

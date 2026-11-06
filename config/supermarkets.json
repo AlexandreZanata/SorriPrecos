@@ -1793,5 +1793,32 @@
         "source_id": "aiqfome:128512:cnpj:41922938000146"
       }
     ]
+  },
+  {
+    "id": "ultra-popular",
+    "name": "Drogarias Ultra Popular",
+    "website": "https://www.drogariasultrapopular.com.br/",
+    "audit_class": "B",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "ultra-popular-centro",
+        "name": "Centro",
+        "address": "Av. Natalino João Brescansin, 1075, Sala 02 · Sorriso-MT",
+        "source_id": "radar:417b6102-02c5-4176-8db8-01dd2118ae1f"
+      },
+      {
+        "id": "ultra-popular-blumenau",
+        "name": "Blumenau",
+        "address": "Av. Blumenau, 1101 · Sorriso-MT",
+        "source_id": "radar:6e2adf39-fb9d-4408-bc24-70e0d3e2aa0f"
+      },
+      {
+        "id": "ultra-popular-tancredo",
+        "name": "Tancredo",
+        "address": "Av. Tancredo Neves, 1439 · Sorriso-MT",
+        "source_id": "radar:63073d56-ca5a-4758-9f86-1d53b1c03f79"
+      }
+    ]
   }
 ]

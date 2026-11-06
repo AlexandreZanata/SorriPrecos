@@ -37,7 +37,7 @@
       "dedupe_key": "tancredo neves 2302 centro",
       "app": "https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.farmelhor",
       "public_page": "https://unidades.franquiafarmelhor.com.br/farmelhor-centro-sorriso-mt-73568",
-      "notes": "Catálogo privado no app; sem endpoint público verificado. Necessário feed/API autorizado da rede; não descompilar."
+      "notes": "App E-Delivery da rede; a vitrine web retornou 403 e não foi possível validar catálogo local. Não descompilar."
     },
     {
       "name": "DROGASIL DS2739",
@@ -135,12 +135,13 @@
       "phone": "66 35666767",
       "source": "CNES",
       "id": "ph-09",
-      "status": "app_only",
+      "status": "public_catalogue",
       "checked_at": "2026-11-05",
       "dedupe_key": "blumenau 1101 jardim amazonia",
       "app": "https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular",
       "public_page": "https://www.drogariasultrapopular.com.br/",
-      "notes": "Catálogo privado no app; sem endpoint público verificado. Necessário feed/API autorizado da rede; não descompilar."
+      "notes": "Ingestão ativa via API pública do app; três filiais mapeadas, catálogo local na filial Centro.",
+      "route": "API pública do app Radar/Farmarcas; catálogo com preço e estoque por filial"
     },
     {
       "name": "DROGARIA ULTRAPOPULAR AV TANCREDO NEVES",
@@ -151,12 +152,13 @@
       "phone": "66 35664747",
       "source": "CNES",
       "id": "ph-10",
-      "status": "app_only",
+      "status": "public_catalogue",
       "checked_at": "2026-11-05",
       "dedupe_key": "tancredo neves 1439 bela vista",
       "app": "https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular",
       "public_page": "https://www.drogariasultrapopular.com.br/",
-      "notes": "Catálogo privado no app; sem endpoint público verificado. Necessário feed/API autorizado da rede; não descompilar."
+      "notes": "Ingestão ativa via API pública do app; três filiais mapeadas, catálogo local na filial Centro.",
+      "route": "API pública do app Radar/Farmarcas; catálogo com preço e estoque por filial"
     },
     {
       "name": "DROGARIA ULTRAPOPULAR BRESCANSIN LOJA 02",
@@ -167,12 +169,13 @@
       "phone": "663544-7757",
       "source": "CNES",
       "id": "ph-11",
-      "status": "app_only",
+      "status": "public_catalogue",
       "checked_at": "2026-11-05",
       "dedupe_key": "natalino joao brescansin 1075 centro sul",
       "app": "https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular",
       "public_page": "https://www.drogariasultrapopular.com.br/",
-      "notes": "Catálogo privado no app; sem endpoint público verificado. Necessário feed/API autorizado da rede; não descompilar."
+      "notes": "Ingestão ativa via API pública do app; três filiais mapeadas, catálogo local na filial Centro.",
+      "route": "API pública do app Radar/Farmarcas; catálogo com preço e estoque por filial"
     },
     {
       "name": "FARMACIA CIDADA VI ROTA DO SOL",
@@ -345,7 +348,7 @@
       "dedupe_key": "natalino joao brescansin 577 centro",
       "app": "https://play.google.com/store/apps/details?id=com.inteliger.madeira.app",
       "public_page": "https://app.farmaciamadeira.com.br/",
-      "notes": "Vitrine tem catálogo, mas preço/retirada não foram atribuíveis à unidade de Sorriso. App próprio; não descompilar."
+      "notes": "App Remédio Brasil; a vitrine pública é da rede e não foi possível atribuir preço/retirada à unidade de Sorriso."
     },
     {
       "name": "DROGARIA AMARAL",
@@ -375,7 +378,7 @@
       "dedupe_key": "natalino joao brescansin 451 centro",
       "app": "https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.farmaefarma",
       "public_page": "https://www.farmaefarma.com.br/",
-      "notes": "Catálogo privado no app; sem endpoint público verificado. Necessário feed/API autorizado da rede; não descompilar."
+      "notes": "App E-Delivery; a filial de Sorriso (CNPJ 26.661.675/0001-75) está com modules.sales=false e não publica catálogo local."
     },
     {
       "name": "FARMACIA SORRIFARMA",
@@ -574,7 +577,7 @@
       "dedupe_key": "av tancredo neves 2302",
       "app": "https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.farmelhor",
       "public_page": "https://unidades.franquiafarmelhor.com.br/farmelhor-centro-sorriso-mt-73568",
-      "notes": "Catálogo privado no app; sem endpoint público verificado. Necessário feed/API autorizado da rede; não descompilar.",
+      "notes": "App E-Delivery da rede; a vitrine web retornou 403 e não foi possível validar catálogo local. Não descompilar.",
       "duplicate_of": "ph-02"
     },
     {
@@ -762,7 +765,7 @@
       "dedupe_key": "av natalino joao brescansin 577",
       "app": "https://play.google.com/store/apps/details?id=com.inteliger.madeira.app",
       "public_page": "https://app.farmaciamadeira.com.br/",
-      "notes": "Vitrine tem catálogo, mas preço/retirada não foram atribuíveis à unidade de Sorriso. App próprio; não descompilar.",
+      "notes": "App Remédio Brasil; a vitrine pública é da rede e não foi possível atribuir preço/retirada à unidade de Sorriso.",
       "duplicate_of": "ph-23"
     },
     {
@@ -837,20 +840,21 @@
     },
     {
       "name": "Farmácia Ultra Popular Loja 01",
-      "cnpj": "",
+      "cnpj": "10341045001821",
       "cnes": "",
       "address": "Av. Tancredo Neves, 1439 Esquina com a",
       "postcode": "78890000",
       "phone": "(66) 3544-1507",
       "source": "farmaciaqui",
       "id": "ph-58",
-      "status": "app_only",
+      "status": "public_catalogue",
       "checked_at": "2026-11-05",
       "dedupe_key": "av tancredo neves 1439 esquina com a",
       "app": "https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular",
       "public_page": "https://www.drogariasultrapopular.com.br/",
-      "notes": "Catálogo privado no app; sem endpoint público verificado. Necessário feed/API autorizado da rede; não descompilar.",
-      "duplicate_of": "ph-10"
+      "notes": "Ingestão ativa via API pública do app; três filiais mapeadas, catálogo local na filial Centro.",
+      "duplicate_of": "ph-10",
+      "route": "API pública do app Radar/Farmarcas; catálogo com preço e estoque por filial"
     },
     {
       "name": "Farmácia Ultra Popular Loja 03",
@@ -861,13 +865,14 @@
       "phone": "(66) 3544-1555",
       "source": "farmaciaqui",
       "id": "ph-59",
-      "status": "app_only",
+      "status": "no_public_catalogue",
       "checked_at": "2026-11-05",
       "dedupe_key": "av natalino joao brescansin 936",
       "app": "https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular",
       "public_page": "https://www.drogariasultrapopular.com.br/",
-      "notes": "Catálogo privado no app; sem endpoint público verificado. Necessário feed/API autorizado da rede; não descompilar.",
-      "duplicate_of": "ph-42"
+      "notes": "Ingestão ativa via API pública do app; três filiais mapeadas, catálogo local na filial Centro.",
+      "duplicate_of": "ph-42",
+      "route": "Sem catálogo público; listagem de diretório não confirmada na API"
     },
     {
       "name": "Farmácia Ultra Popular Loja 04",
@@ -878,12 +883,13 @@
       "phone": "(66) 3544-3836",
       "source": "farmaciaqui",
       "id": "ph-60",
-      "status": "app_only",
+      "status": "no_public_catalogue",
       "checked_at": "2026-11-05",
       "dedupe_key": "av sao francisco de assis 862",
       "app": "https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular",
       "public_page": "https://www.drogariasultrapopular.com.br/",
-      "notes": "Catálogo privado no app; sem endpoint público verificado. Necessário feed/API autorizado da rede; não descompilar."
+      "notes": "Endereço de Loja 04 não retornou filial correspondente na API Radar.",
+      "route": "Sem catálogo público; listagem de diretório não confirmada na API"
     },
     {
       "name": "Farmácia Ultra Popular Loja 04",
@@ -894,12 +900,13 @@
       "phone": "(66) 3544-3001",
       "source": "farmaciaqui",
       "id": "ph-61",
-      "status": "app_only",
+      "status": "no_public_catalogue",
       "checked_at": "2026-11-05",
       "dedupe_key": "mt 242 3011",
       "app": "https://play.google.com/store/apps/details?id=br.com.febrafar.edelivery.ultrapopular",
       "public_page": "https://www.drogariasultrapopular.com.br/",
-      "notes": "Catálogo privado no app; sem endpoint público verificado. Necessário feed/API autorizado da rede; não descompilar."
+      "notes": "Endereço de Loja 04 não retornou filial correspondente na API Radar.",
+      "route": "Sem catálogo público; listagem de diretório não confirmada na API"
     },
     {
       "name": "Farmácia – Unidade Sorriso",
