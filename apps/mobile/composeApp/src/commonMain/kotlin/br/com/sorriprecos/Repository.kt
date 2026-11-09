@@ -87,9 +87,9 @@ class Repository(val store:LocalStore,val baseUrl:String,val client:HttpClient=p
             .also { saveRecord(id, historical, it) }
     }
 
-    suspend fun search(query: String, demo: Boolean, after: Long = 0, historical: Boolean = false, pharmacy: Boolean = false, force: Boolean = false): Loaded<Items<Product>> =
+    suspend fun search(query: String, demo: Boolean, after: Long = 0, historical: Boolean = false, pharmacy: Boolean = false, force: Boolean = false, sort: String = "relevance", photo: Boolean = false): Loaded<Items<Product>> =
         withContext(Dispatchers.Default) {
-            val path = "/v1/products/search?q=${query.encodeURLParameter()}&demo=$demo&after=$after&historical=$historical" +
+            val path = "/v1/products/search?q=${query.encodeURLParameter()}&demo=$demo&after=$after&historical=$historical&sort=$sort&photo=$photo" +
                 if (pharmacy) "&sector=pharmacy" else ""
             val key = "search:v1:$baseUrl:$path"
             val page = disk.get(key)?.let { decodeCached<SearchPage>(it) }

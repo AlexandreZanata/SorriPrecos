@@ -199,6 +199,9 @@ async fn branches(
 struct Search {
     q: String,
     sector: Option<String>,
+    sort: Option<String>,
+    #[serde(default)]
+    photo: bool,
     #[serde(default = "default_limit")]
     limit: i64,
     #[serde(default)]
@@ -233,7 +236,27 @@ async fn search(
             "setor deve ser market ou pharmacy",
         ));
     }
-    let mut items = catalog::search_sector(
+    let options = match q.sort.as_deref().unwrap_or("relevance") {
+        "relevance" => catalog::SearchOptions {
+            sort: catalog::Sort::Relevance,
+            photo: q.photo,
+        },
+        "price" => catalog::SearchOptions {
+            sort: catalog::Sort::Price,
+            photo: q.photo,
+        },
+        "recent" => catalog::SearchOptions {
+            sort: catalog::Sort::Recent,
+            photo: q.photo,
+        },
+        _ => {
+            return Ok(error(
+                StatusCode::BAD_REQUEST,
+                "sort deve ser relevance, price ou recent",
+            ));
+        }
+    };
+    let mut items = catalog::search_sector_opts(
         &s.pool,
         &q.q,
         q.limit + 1,
@@ -241,12 +264,17 @@ async fn search(
         q.demo,
         q.historical,
         sector,
+        options,
     )
     .await?;
     let has_more = items.len() > q.limit as usize;
     items.truncate(q.limit as usize);
     let next_after = if has_more {
-        items.last().map(|p| p.id)
+        if options.sort == catalog::Sort::Relevance {
+            items.last().map(|p| p.id)
+        } else {
+            Some(q.after + q.limit)
+        }
     } else {
         None
     };

@@ -1,6 +1,8 @@
 package br.com.sorriprecos
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -55,6 +57,8 @@ import kotlinx.coroutines.launch
     var catalog by remember { mutableStateOf(CatalogStatus()) }
     var results by remember { mutableStateOf<List<Product>>(emptyList()) }
     var nextAfter by remember { mutableStateOf<Long?>(null) }
+    var sort by remember { mutableStateOf("relevance") }
+    var photoOnly by remember { mutableStateOf(false) }
     var searching by remember { mutableStateOf(false) }
     var sourceLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
@@ -99,7 +103,7 @@ import kotlinx.coroutines.launch
         catch (e: Exception) { error = e.message }
         finally { sourceLoading = false }
     }
-    LaunchedEffect(query, demo, historical, pharmacy, repo, refresh) {
+    LaunchedEffect(query, demo, historical, pharmacy, repo, refresh, sort, photoOnly) {
         paginationJob?.cancelAndJoin()
         results = emptyList(); nextAfter = null; searchOffline = false
         if (query.trim().length < 2) { searching = false; return@LaunchedEffect }
@@ -107,7 +111,7 @@ import kotlinx.coroutines.launch
         try {
             delay(350)
             val force = refresh != lastSearchRefresh
-            val loaded = repo.search(query.trim(), demo, historical = historical && !pharmacy, pharmacy = pharmacy, force = force)
+            val loaded = repo.search(query.trim(), demo, historical = historical && !pharmacy, pharmacy = pharmacy, force = force, sort = sort, photo = photoOnly)
             lastSearchRefresh = refresh
             results = loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline
         } catch (e: CancellationException) { throw e }
@@ -192,9 +196,17 @@ import kotlinx.coroutines.launch
                                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                         FilterChip(selected = !pharmacy, onClick = { pharmacy = false; category = null }, label = { Text("Mercado") })
                                         FilterChip(selected = pharmacy, onClick = { pharmacy = true; category = pharmacyCategory }, label = { Text("Farmácia") })
+                                        FilterChip(selected = photoOnly, onClick = { photoOnly = !photoOnly }, label = { Text("Com foto") })
                                     }
                                 }
                                 item { SearchField(query, autofocus = category == null, onChange = { query = it.take(100) }, onSearch = { focus.clearFocus(); refresh++ }) }
+                                if (query.trim().length >= 2) item {
+                                    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        FilterChip(selected = sort == "relevance", onClick = { sort = "relevance" }, label = { Text("Relevância") })
+                                        FilterChip(selected = sort == "price", onClick = { sort = "price" }, label = { Text("Mais barato") })
+                                        FilterChip(selected = sort == "recent", onClick = { sort = "recent" }, label = { Text("Recente") })
+                                    }
+                                }
                                 if (query.trim().length < 2) {
                                     item { Text(category?.label ?: "Encontre o produto que você procura", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp)) }
                                     val terms = category?.terms ?: if (historical) listOf("Chocolate", "Lacta", "Bacalhau") else quickProducts.map { it.query.replaceFirstChar(Char::uppercaseChar) }
@@ -217,7 +229,7 @@ import kotlinx.coroutines.launch
                                     if (nextAfter != null) item { OutlinedButton(onClick = {
                                         paginationJob = scope.launch {
                                             searching = true
-                                            try { val loaded = repo.search(query.trim(), demo, nextAfter!!, historical && !pharmacy, pharmacy); results += loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline }
+                                            try { val loaded = repo.search(query.trim(), demo, nextAfter!!, historical && !pharmacy, pharmacy, sort = sort, photo = photoOnly); results += loaded.data.items; nextAfter = loaded.data.nextAfter; searchOffline = loaded.offline }
                                             catch (e: CancellationException) { throw e } catch (e: Exception) { error = e.message } finally { searching = false }
                                         }
                                     }, enabled = !searching, modifier = Modifier.fillMaxWidth()) { Text("Carregar mais") } }
