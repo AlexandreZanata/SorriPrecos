@@ -12,3 +12,17 @@ Pesquisa revalidada em 05/11/2026. A filial é **Machado Tancredo Neves**, CNPJ 
 - O [levantamento público de Páscoa do Procon-MT](https://www.procon.mt.gov.br/documents/d/procon/tabela-produtos-analisados-pascoa-final) traz observações de março de 2026 para Machado Tancredo Neves, mas são referências históricas e permanecem separadas de preços atuais.
 
 Não foi encontrada nesta rodada uma fonte de preços atuais que identifique a filial de Sorriso e seja acessível sem autenticação. Não inferir preços da loja Sinop nem transformar observações históricas em ofertas atuais. Para uma futura integração, verificar se uma fonte pública fornece identidade de filial, descrição/embalagem, preço e condições, data e eventual disponibilidade; preservar a fonte e tratar estoque desconhecido explicitamente.
+
+## Revalidação no aplicativo oficial (09/11/2026)
+
+O aplicativo **Machado Supermercados** (`br.com.redemachado`, Agile E-commerce) foi
+instalado no aparelho físico e aberto para conferir se existia uma seleção de loja
+diferente da web. O app carrega o mesmo catálogo de `www.redemachado.com.br`, sem
+seletor de filial; o contexto publicado continua sendo a filial 3, CNPJ
+03.790.896/0003-00, em Sinop. O outro app da rede, **Clube + Machado Supermercados**
+(`br.com.gsgroup.zoombox.machadoprimaveras`), é o programa de relacionamento de Sinop.
+A consulta de CEP 78893-110 para a unidade Tancredo Neves segue recusada.
+
+Não há, portanto, preço público atual atribuível à loja de Sorriso. O cadastro da
+filial permanece no aplicativo como **coleta pendente**, sem preços de Sinop
+reutilizados.

@@ -170,7 +170,12 @@ async fn supermarkets(
     Query(m): Query<Mode>,
     headers: HeaderMap,
 ) -> ApiResult {
-    let rows=sqlx::query("SELECT s.*,MAX(o.collected_at) last_collected_at,COUNT(DISTINCT CASE WHEN b.active=1 THEN b.id END) branch_count,COUNT(DISTINCT o.product_id) product_count FROM supermarkets s LEFT JOIN branches b ON b.supermarket_id=s.id LEFT JOIN offers o ON o.branch_id=b.id AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) WHERE s.is_demo=? GROUP BY s.id ORDER BY s.name").bind(if m.historical {"public_report"} else {"retail"}).bind(m.demo).fetch_all(&s.pool).await?;
+    let kind = if m.historical {
+        "public_report"
+    } else {
+        "retail"
+    };
+    let rows=sqlx::query("SELECT s.*,(SELECT MAX(o.collected_at) FROM offers o JOIN source_products sp ON sp.id=o.source_product_id WHERE o.supermarket_id=s.id AND sp.source_kind=?) last_collected_at,(SELECT COUNT(*) FROM branches b WHERE b.supermarket_id=s.id AND b.active=1) branch_count,(SELECT COUNT(DISTINCT o.product_id) FROM offers o JOIN source_products sp ON sp.id=o.source_product_id WHERE o.supermarket_id=s.id AND sp.source_kind=?) product_count FROM supermarkets s WHERE s.is_demo=? ORDER BY s.name").bind(kind).bind(kind).bind(m.demo).fetch_all(&s.pool).await?;
     let items:Vec<Value>=rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"name":r.get::<String,_>("name"),"website":r.get::<Option<String>,_>("website"),"integration_status":r.get::<String,_>("integration_status"),"audit_class":r.get::<String,_>("audit_class"),"is_demo":r.get::<bool,_>("is_demo"),"last_collected_at":r.get::<Option<i64>,_>("last_collected_at"),"branch_count":r.get::<i64,_>("branch_count"),"product_count":r.get::<i64,_>("product_count")})).collect();
     Ok(cached(&headers, &json!({"items":items})))
 }
@@ -180,7 +185,12 @@ async fn branches(
     Query(m): Query<Mode>,
     headers: HeaderMap,
 ) -> ApiResult {
-    let rows=sqlx::query("SELECT b.*,s.name supermarket_name,MAX(o.collected_at) last_collected_at FROM branches b JOIN supermarkets s ON s.id=b.supermarket_id LEFT JOIN offers o ON o.branch_id=b.id AND o.source_product_id IN(SELECT id FROM source_products WHERE source_kind=?) WHERE s.is_demo=? GROUP BY b.id ORDER BY s.name,b.name").bind(if m.historical {"public_report"} else {"retail"}).bind(m.demo).fetch_all(&s.pool).await?;
+    let kind = if m.historical {
+        "public_report"
+    } else {
+        "retail"
+    };
+    let rows=sqlx::query("SELECT b.*,s.name supermarket_name,(SELECT MAX(o.collected_at) FROM offers o JOIN source_products sp ON sp.id=o.source_product_id WHERE o.branch_id=b.id AND sp.source_kind=?) last_collected_at FROM branches b JOIN supermarkets s ON s.id=b.supermarket_id WHERE s.is_demo=? ORDER BY s.name,b.name").bind(kind).bind(m.demo).fetch_all(&s.pool).await?;
     let items:Vec<Value>=rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"supermarket_id":r.get::<String,_>("supermarket_id"),"supermarket_name":r.get::<String,_>("supermarket_name"),"name":r.get::<String,_>("name"),"address":r.get::<String,_>("address"),"city":"Sorriso","state":"MT","last_collected_at":r.get::<Option<i64>,_>("last_collected_at")})).collect();
     Ok(cached(&headers, &json!({"items":items})))
 }

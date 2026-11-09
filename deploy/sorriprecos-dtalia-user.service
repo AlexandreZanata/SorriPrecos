@@ -1,0 +1,16 @@
+[Unit]
+Description=SorriPrecos - cardapio publico da Pizzaria D'Talia Sorriso
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/PESSOAL-PROJETOS-ALEXANDRE/SorriPrecos
+Environment=DATABASE_URL=sqlite://data/sorriprecos.db
+ExecStart=/usr/bin/flock -n /tmp/sorriprecos-dtalia.lock /usr/bin/python3 scripts/collect_dtalia_menu.py --database-url sqlite://data/sorriprecos.db --binary target/release/sorriprecos --watch
+Restart=on-failure
+RestartSec=30
+NoNewPrivileges=true
+MemoryMax=128M
+
+[Install]
+WantedBy=default.target

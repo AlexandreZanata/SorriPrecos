@@ -30,6 +30,7 @@ Fontes adicionais da revisão individual:
 - [Loja vinculada pelo DelMoro](https://www.delmorosupermercados.com.br/): catálogo público e CD de Belo Horizonte/Sorriso posteriormente verificados; ver PUBLIC_CATALOGUES.md.
 - [Sorriso Supermercados — app local](https://play.google.com/store/apps/details?id=br.com.sorrisosuper.omnichannel): distinto do Mais Sorriso de Uberlândia.
 - [Mercado Amazonas no aiqfome](https://aiqfome.com/MT/sorriso/mercado-amazonas): vendedor/endereço locais confirmados, sem cardápio de produtos/preços observado.
+- [Cardápio da Pizzaria D'Tália Sorriso](https://sorriso.pizzariadtalia.com/cardapio): vitrine pública com categorias, itens e preços; usada pelo coletor `scripts/collect_dtalia_menu.py`. [Revisão dos aplicativos](APPS_SORRISO_DESCOMPILADOS.md).
 - [Procon municipal](https://site.sorriso.mt.gov.br/procon): pesquisa recente exibida é de combustíveis/GLP, não catálogo de supermercado; não importada.
 - [Índice Custo por Prato em Sorriso](https://indice.custoporprato.com.br/cidades/sorriso-mt): observações de outubro de 2026, mas supermercados deliberadamente pseudonimizados. Não foram atribuídos seus preços a nenhuma rede/filial identificada.
 

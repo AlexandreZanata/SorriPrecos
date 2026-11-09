@@ -11,6 +11,12 @@
         "name": "Loja virtual · Sorriso",
         "address": "Avenida Curitiba, 2734 · Sorriso-MT",
         "source_id": "cnpj:01780384000175"
+      },
+      {
+        "id": "therapeutica-farmacia-blumenau",
+        "name": "Blumenau",
+        "address": "Avenida Blumenau, 2265 · Sorriso-MT",
+        "source_id": "cnpj:01780384000337"
       }
     ]
   },
@@ -101,6 +107,12 @@
         "name": "Tangará",
         "address": "Rua Tangará, 709 · Sorriso-MT",
         "source_id": "cnpj:09039622000360"
+      },
+      {
+        "id": "drogaria-nebrasca-porto-alegre",
+        "name": "Porto Alegre Sul",
+        "address": "Av. Porto Alegre Sul, 1321, sala 01 · Sorriso-MT",
+        "source_id": "cnpj:09039622000440"
       }
     ]
   }

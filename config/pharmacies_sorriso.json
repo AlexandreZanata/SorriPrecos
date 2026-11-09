@@ -1,0 +1,995 @@
+[
+  {
+    "id": "drogarias-farmelhor",
+    "name": "DROGARIAS FARMELHOR",
+    "website": "https://unidades.franquiafarmelhor.com.br/farmelhor-centro-sorriso-mt-73568",
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogarias-farmelhor-ph-02",
+        "name": "TANCREDO NEVES",
+        "address": "TANCREDO NEVES, 2302 - CENTRO · Sorriso-MT",
+        "source_id": "cnpj:31216969000128"
+      }
+    ]
+  },
+  {
+    "id": "suprema-farma",
+    "name": "SUPREMA FARMA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "suprema-farma-ph-04",
+        "name": "TANCREDO NEVES",
+        "address": "TANCREDO NEVES, 1935 - BELA VISTA · Sorriso-MT",
+        "source_id": "cnpj:52950355000145"
+      },
+      {
+        "id": "suprema-farma-ph-05",
+        "name": "NOEMIA TONELLO DALMOLIN",
+        "address": "NOEMIA TONELLO DALMOLIN, 2285 - PARQUE UNIVERSITARIO · Sorriso-MT",
+        "source_id": "cnpj:52950355000226"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-multiz-popular",
+    "name": "FARMACIA MULTIZ POPULAR",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-multiz-popular-ph-07",
+        "name": "NOROESTE",
+        "address": "NOROESTE, 2319 - JARDIM BELA VISTA · Sorriso-MT",
+        "source_id": "cnpj:40721975000476"
+      }
+    ]
+  },
+  {
+    "id": "formula-certa-manipulacao",
+    "name": "FORMULA CERTA MANIPULACAO",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "formula-certa-manipulacao-ph-13",
+        "name": "AVENIDA BLUMENAU",
+        "address": "AVENIDA BLUMENAU, 3165 - CENTRO · Sorriso-MT",
+        "source_id": "cnpj:05456662000194"
+      }
+    ]
+  },
+  {
+    "id": "biomagistral",
+    "name": "BIOMAGISTRAL",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "biomagistral-ph-14",
+        "name": "AVENIDA BLUMENAU",
+        "address": "AVENIDA BLUMENAU, 2234 - JARDIM ALVORADA · Sorriso-MT",
+        "source_id": "cnpj:46455133000153"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-de-manipulacao-arte-farma",
+    "name": "FARMACIA DE MANIPULACAO ARTE FARMA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-de-manipulacao-arte-farma-ph-16",
+        "name": "AVENIDA TANCREDO NEVES",
+        "address": "AVENIDA TANCREDO NEVES, 1075 - JARDIM ALVORADA · Sorriso-MT",
+        "source_id": "cnpj:39538037000294"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-madeira",
+    "name": "FARMACIA MADEIRA",
+    "website": "https://app.farmaciamadeira.com.br/",
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-madeira-ph-23",
+        "name": "NATALINO JOAO BRESCANSIN",
+        "address": "NATALINO JOAO BRESCANSIN, 577 - CENTRO · Sorriso-MT",
+        "source_id": "cnpj:09404121000173"
+      }
+    ]
+  },
+  {
+    "id": "drogaria-amaral",
+    "name": "DROGARIA AMARAL",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-amaral-ph-24",
+        "name": "AVENIDA TANCREDO NEVES",
+        "address": "AVENIDA TANCREDO NEVES, 960 - CENTRO · Sorriso-MT",
+        "source_id": "cnpj:03245248000100"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-farma",
+    "name": "FARMACIA FARMA",
+    "website": "https://www.farmaefarma.com.br/",
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-farma-ph-25",
+        "name": "NATALINO JOAO BRESCANSIN",
+        "address": "NATALINO JOAO BRESCANSIN, 451 - CENTRO · Sorriso-MT",
+        "source_id": "cnpj:26661675000175"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-sorrifarma",
+    "name": "FARMACIA SORRIFARMA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-sorrifarma-ph-26",
+        "name": "AVENIDA TANCREDO NEVES",
+        "address": "AVENIDA TANCREDO NEVES, 1208 - CENTRO · Sorriso-MT",
+        "source_id": "cnpj:09589272000143"
+      }
+    ]
+  },
+  {
+    "id": "farmacias-super-preco-popular-1",
+    "name": "FARMACIAS SUPER PRECO POPULAR 1",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacias-super-preco-popular-1-ph-27",
+        "name": "AVENIDA NATALINO JOAO BRESCANSIN",
+        "address": "AVENIDA NATALINO JOAO BRESCANSIN, 364 - CENTRO · Sorriso-MT",
+        "source_id": "cnpj:09632338000130"
+      }
+    ]
+  },
+  {
+    "id": "drogaria-aurora",
+    "name": "Drogaria Aurora",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-aurora-ph-28",
+        "name": "Avenida Belo Horizonte 94 Anexo ao Del Moro Superm",
+        "address": "Avenida Belo Horizonte 94 Anexo ao Del Moro Supermercado · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "drogaria-biofarma-filial",
+    "name": "Drogaria Biofarma Filial",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-biofarma-filial-ph-29",
+        "name": "R. Tangará",
+        "address": "R. Tangará, 770 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "drogaria-bom-jesusltda",
+    "name": "Drogaria Bom Jesusltda",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-bom-jesusltda-ph-30",
+        "name": "Av. Natalino João Brescansin",
+        "address": "Av. Natalino João Brescansin, 300 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "drogaria-drogamedic",
+    "name": "Drogaria Drogamedic",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-drogamedic-ph-31",
+        "name": "Av. Natalino João Brescansin",
+        "address": "Av. Natalino João Brescansin, 435 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "drogaria-jurema",
+    "name": "Drogaria Jurema",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-jurema-ph-32",
+        "name": "Av. Tancredo Neves",
+        "address": "Av. Tancredo Neves, 2123 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "drogaria-poupe-mais",
+    "name": "Drogaria Poupe Mais",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-poupe-mais-ph-34",
+        "name": "Av. Brasil",
+        "address": "Av. Brasil, 2204 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "drogaria-sansei-ltda",
+    "name": "Drogaria Sansei Ltda",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-sansei-ltda-ph-35",
+        "name": "Av. Natalino João Brescansin",
+        "address": "Av. Natalino João Brescansin, 364 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "drogaria-sao-domingos",
+    "name": "Drogaria São Domingos",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-sao-domingos-ph-36",
+        "name": "R. Tangará",
+        "address": "R. Tangará, 540 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "drogaria-sao-matheus",
+    "name": "Drogaria São Matheus",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-sao-matheus-ph-37",
+        "name": "Rua Passo Fundo · Sorriso",
+        "address": "Rua Passo Fundo · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "drogaria-vida-e-saude",
+    "name": "Drogaria Vida e Saúde",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "drogaria-vida-e-saude-ph-38",
+        "name": "Av. dos Imigrantes",
+        "address": "Av. dos Imigrantes, 1140 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "elifarma-drogaria-ltda",
+    "name": "ELIFARMA DROGARIA LTDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "elifarma-drogaria-ltda-ph-40",
+        "name": "Av. Perimental Sudoeste",
+        "address": "Av. Perimental Sudoeste, 2345 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-bela-vista",
+    "name": "Farmácia Bela Vista",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-bela-vista-ph-41",
+        "name": "Perimetral Noroeste",
+        "address": "Perimetral Noroeste, 2162 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-descontao-popular",
+    "name": "Farmacia Descontao Popular",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-descontao-popular-ph-42",
+        "name": "Av. Natalino João Brescansin",
+        "address": "Av. Natalino João Brescansin, 936 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-do-trabalhador",
+    "name": "Farmácia do Trabalhador",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-do-trabalhador-ph-43",
+        "name": "R. Tangará",
+        "address": "R. Tangará, 554 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-estrela",
+    "name": "Farmácia Estrela",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-estrela-ph-45",
+        "name": "Av. Porto Alegre",
+        "address": "Av. Porto Alegre, 2984 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-farmaverde",
+    "name": "FARMACIA FARMAVERDE",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-farmaverde-ph-47",
+        "name": "Sorriso",
+        "address": "Sorriso - MT",
+        "source_id": null
+      },
+      {
+        "id": "farmacia-farmaverde-ph-48",
+        "name": "R. Graciliano Ramos",
+        "address": "R. Graciliano Ramos, 323 - Sala 02 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-hiper-popular",
+    "name": "Farmacia Hiper Popular",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-hiper-popular-ph-49",
+        "name": "Av. Tancredo Neves",
+        "address": "Av. Tancredo Neves, 1208 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-karina",
+    "name": "Farmacia karina",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-karina-ph-51",
+        "name": "R. Tangará",
+        "address": "R. Tangará, 490 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-mais-saude",
+    "name": "FARMACIA MAIS SAUDE",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-mais-saude-ph-53",
+        "name": "Rua Caminho do Sol",
+        "address": "Rua Caminho do Sol, 1245 · Sorriso-MT",
+        "source_id": null
+      },
+      {
+        "id": "farmacia-mais-saude-ph-54",
+        "name": "R. Vale Dourado",
+        "address": "R. Vale Dourado, nº 1641 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-proquifarma",
+    "name": "Farmácia Proquifarma",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-proquifarma-ph-55",
+        "name": "Rua S Francisco Assis",
+        "address": "Rua S Francisco Assis, 1393 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-santa-rita",
+    "name": "Farmácia Santa Rita",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-santa-rita-ph-56",
+        "name": "Av. Natalino João Brescansin",
+        "address": "Av. Natalino João Brescansin, 774 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-sorriso",
+    "name": "Farmacia Sorriso",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-sorriso-ph-57",
+        "name": "Rua São Francisco de Assis",
+        "address": "Rua São Francisco de Assis, 379 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-unidade-sorriso",
+    "name": "Farmácia – Unidade Sorriso",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-unidade-sorriso-ph-62",
+        "name": "Av. Luiz Amadeu Lodi",
+        "address": "Av. Luiz Amadeu Lodi, 949 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacias-desconto-facil",
+    "name": "Farmácias Desconto Fácil",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacias-desconto-facil-ph-63",
+        "name": "Perimetral Sudoeste",
+        "address": "Perimetral Sudoeste, 1478 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "florallis-farmacia-de-manipulacao-e-drogaria",
+    "name": "Florallis Fármacia de Manipulação e Drogaria",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "florallis-farmacia-de-manipulacao-e-drogaria-ph-65",
+        "name": "Av. Blumenau Sul",
+        "address": "Av. Blumenau Sul, 2265 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "ideal-farma-popular",
+    "name": "IDEAL FARMA POPULAR",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "ideal-farma-popular-ph-66",
+        "name": "Av. Tancredo Neves",
+        "address": "Av. Tancredo Neves, 218 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "r-nardi-cia-ltd",
+    "name": "R Nardi & Cia Ltd",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "r-nardi-cia-ltd-ph-67",
+        "name": "Av. Tancredo Neves",
+        "address": "Av. Tancredo Neves, 1228 · Sorriso-MT",
+        "source_id": null
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-46041390000300",
+    "name": "C. P. WEIPPERT LTDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-46041390000300-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA PERIMETRAL SUDOESTE, 2885 - JARDIM AURORA · Sorriso-MT",
+        "source_id": "cnpj:46041390000300"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-09290985000101",
+    "name": "DROGARIAS DESCONTAO POPULAR",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-09290985000101-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA TANCREDO NEVES, 2163 - CENTRO-NORTE · Sorriso-MT",
+        "source_id": "cnpj:09290985000101"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-44426688000141",
+    "name": "DROGARIA ROPIFARMA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-44426688000141-sorriso",
+        "name": "Sorriso",
+        "address": "RUA SAO FRANCISCO DE ASSIS, 1314 - VILA BELA · Sorriso-MT",
+        "source_id": "cnpj:44426688000141"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-45512238000134",
+    "name": "A. MAZZOLA E CIA LTDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-45512238000134-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA BRASIL, 3042 - VILA ROMANA · Sorriso-MT",
+        "source_id": "cnpj:45512238000134"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-23854705000171",
+    "name": "FARMACIA ULTRA PRECO BAIXO",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-23854705000171-sorriso",
+        "name": "Sorriso",
+        "address": "RUA SAO FRANCISCO DE ASSIS, 2153 - SAO MATEUS · Sorriso-MT",
+        "source_id": "cnpj:23854705000171"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-25129920000135",
+    "name": "DROGARIA SAO MATHEUS",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-25129920000135-sorriso",
+        "name": "Sorriso",
+        "address": "RUA PASSO FUNDO, 2014 - SAO MATEUS · Sorriso-MT",
+        "source_id": "cnpj:25129920000135"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-10718069000109",
+    "name": "FARMACIAS DESCONTO FACIL",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-10718069000109-sorriso",
+        "name": "Sorriso",
+        "address": "RUA SAO FRANCISCO DE ASSIS, 773 - JARDIM NOVOS CAMPOS · Sorriso-MT",
+        "source_id": "cnpj:10718069000109"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-46041390000149",
+    "name": "C. P. WEIPPERT LTDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-46041390000149-sorriso",
+        "name": "Sorriso",
+        "address": "RUA TANGARA, 869B - INDUSTRIAL - 1A ETAPA · Sorriso-MT",
+        "source_id": "cnpj:46041390000149"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-50585179000164",
+    "name": "FARMACIA ACESSO POPULAR",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-50585179000164-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA BLUMENAU, 999 - JARDIM AMAZONIA · Sorriso-MT",
+        "source_id": "cnpj:50585179000164"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-61026927000195",
+    "name": "FARMACIA MAIS SAUDE",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-61026927000195-sorriso",
+        "name": "Sorriso",
+        "address": "RUA SAO FRANCISCO DE ASSIS, 2033 - SAO MATEUS · Sorriso-MT",
+        "source_id": "cnpj:61026927000195"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-40816299000171",
+    "name": "DROGAVET FARMACIA DE MANIPULACAO",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-40816299000171-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA SANTA MARIA, 845 - CENTRO-NORTE · Sorriso-MT",
+        "source_id": "cnpj:40816299000171"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-67571282000158",
+    "name": "FARMACIA SAUDE SORRISO",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-67571282000158-sorriso",
+        "name": "Sorriso",
+        "address": "RUA SAO FRANCISCO DE ASSIS, 1552 - SAO DOMINGOS · Sorriso-MT",
+        "source_id": "cnpj:67571282000158"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-10440010000100",
+    "name": "MAXPHARMA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-10440010000100-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA NATALINO JOAO BRESCANSIN, 1680 - CENTRO-NORTE · Sorriso-MT",
+        "source_id": "cnpj:10440010000100"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-33711409000337",
+    "name": "TREVISOL & CIA LTDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-33711409000337-sorriso",
+        "name": "Sorriso",
+        "address": "RUA CRICIUMA, 538 - CENTRO-SUL · Sorriso-MT",
+        "source_id": "cnpj:33711409000337"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-17577531000144",
+    "name": "FARMACIA ECONOMIZE SORRISO",
+    "website": "https://www.farmaciaeconomize.com.br/",
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-17577531000144-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA TANCREDO NEVES, 2991 - JARDIM BELA VISTA · Sorriso-MT",
+        "source_id": "cnpj:17577531000144"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-33184266000433",
+    "name": "DROGARIA MAIS VIDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-33184266000433-sorriso",
+        "name": "Sorriso",
+        "address": "RUA CARLOS DRUMMOND DE ANDRADE, 965 - TAIAMA · Sorriso-MT",
+        "source_id": "cnpj:33184266000433"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-07093267000110",
+    "name": "FARMACIA ALIFARMA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-07093267000110-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA PORTO ALEGRE, 3164 - CENTRO · Sorriso-MT",
+        "source_id": "cnpj:07093267000110"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-63121704000132",
+    "name": "FARMACIO IMPERIO LTDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-63121704000132-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA LOS ANGELES, 389 - JARDIM CALIFORNIA · Sorriso-MT",
+        "source_id": "cnpj:63121704000132"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-42065419000171",
+    "name": "DROGARIA ULTRA VIDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-42065419000171-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA PERIMETRAL SUDOESTE, 3235 - COLINAS · Sorriso-MT",
+        "source_id": "cnpj:42065419000171"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-29261967000109",
+    "name": "DROGA VIDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-29261967000109-sorriso",
+        "name": "Sorriso",
+        "address": "RUA BR 163, KM 713 - DISTRITO DE PRIMAVERINHA · Sorriso-MT",
+        "source_id": "cnpj:29261967000109"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-33184266000352",
+    "name": "DROGARIAS HIPER ECONOMICA POPULAR",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-33184266000352-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA BLUMENAU, 2000 - JARDIM ALVORADA · Sorriso-MT",
+        "source_id": "cnpj:33184266000352"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-18991160000105",
+    "name": "FARMACIA SUPER POPULAR",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-18991160000105-sorriso",
+        "name": "Sorriso",
+        "address": "RUA CAMINHO DO SOL, 1684 - ROTA DO SOL · Sorriso-MT",
+        "source_id": "cnpj:18991160000105"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-14445200000162",
+    "name": "DROGARIA NOSSA SENHORA APARECIDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-14445200000162-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA PERIMETRAL SUDOESTE, 2135 - JARDIM AURORA · Sorriso-MT",
+        "source_id": "cnpj:14445200000162"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-61973233000165",
+    "name": "DROGARIA BOM PRECO",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-61973233000165-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA LOS ANGELES, 736 - JARDIM CALIFORNIA · Sorriso-MT",
+        "source_id": "cnpj:61973233000165"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-33184266000271",
+    "name": "DROGARIA MAIS VIDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-33184266000271-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA NOVO HORIZONTE, 1477 - ROTA DO SOL · Sorriso-MT",
+        "source_id": "cnpj:33184266000271"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-55868240000102",
+    "name": "R. FERNANDES LTDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-55868240000102-sorriso",
+        "name": "Sorriso",
+        "address": "RUA LA PAZ, 340 - SANTA MONICA · Sorriso-MT",
+        "source_id": "cnpj:55868240000102"
+      }
+    ]
+  },
+  {
+    "id": "farmacia-gc-28933717000105",
+    "name": "S. SILVESTRE DA SILVA LTDA",
+    "website": null,
+    "audit_class": "C",
+    "sector": "pharmacy",
+    "branches": [
+      {
+        "id": "farmacia-gc-28933717000105-sorriso",
+        "name": "Sorriso",
+        "address": "AVENIDA LUIZ AMADEU LODI, 1161 - CENTRO · Sorriso-MT",
+        "source_id": "cnpj:28933717000105"
+      }
+    ]
+  }
+]

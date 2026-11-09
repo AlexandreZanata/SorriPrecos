@@ -7,8 +7,9 @@ Levantamento público para o escopo Sorriso-MT (IBGE 5107925). A base combina o 
 - **73 registros** brutos e **61 chaves de endereço** após consolidar duplicatas de nome/endereço.
 - **Catálogo público com preço/estoque por filial:** Therapeutica (matriz Curitiba 2734; a filial Blumenau 2265 existe e não é uma segunda fonte automaticamente atribuível), Drogaria São Paulo Brescansin, Pague Menos Brescansin/Tancredo e **Drogarias Ultra Popular** (API pública do app Radar/Farmarcas; 1.319 produtos no primeiro ciclo e 1.260 no ciclo validado na filial Centro).
 - **Estoque público sem preço local:** três unidades Drogasil (Blumenau 2995, Brescansin 488 e Tancredo 2942).
-- **Somente aplicativo sem catálogo público validado:** FarMelhor (vitrine web 403), Farma & Farma (filial Sorriso com `modules.sales=false`) e Farmácia Madeira (app Remédio Brasil sem vínculo local confirmado). Os apps não foram descompilados para uso de endpoints privados.
+- **Somente aplicativo sem catálogo público validado:** FarMelhor (a rede eDelivery não lista a unidade de Sorriso), Farma & Farma (filial Sorriso com `modules.sales=false`) e Farmácia Madeira (app Remédio Brasil; a vitrine pública aponta para Sinop). Os APKs foram descompilados apenas para localizar a origem pública; nenhum coletor contorna CAPTCHA, 403 ou login. Detalhes em [Aplicativos de Sorriso descompilados](APPS_SORRISO_DESCOMPILADOS.md).
 - **Programa público:** Farmácia Popular, Farmácia Cidadã (seis unidades), CAF e congêneres; não são ofertas de varejo comparáveis.
+- **Inventário no aplicativo:** o cadastro `config/pharmacies.json` e `config/pharmacies_sorriso.json` cobre 71 fontes de farmácia e 83 filiais. As redes com catálogo continuam com preço; as demais aparecem como **coleta pendente**, com endereço e CNPJ quando publicado, sem preço inventado.
 - **Demais farmácias independentes:** sem catálogo público de produto/preço verificado; contato por WhatsApp, site institucional ou diretório local.
 
 ## Inventário completo
@@ -91,4 +92,4 @@ Levantamento público para o escopo Sorriso-MT (IBGE 5107925). A base combina o 
 
 ## Limite de cobertura
 
-Os catálogos de app-only restantes não têm endpoint público verificado. A extração de endpoints por descompilação, engenharia reversa ou uso de credenciais internas contraria a regra do projeto (`docs/LEGAL_CONSIDERATIONS.md`) e os termos das plataformas. Para levar essas redes ao ingestor, o caminho correto é solicitar à rede um feed CSV/JSON ou uma API autorizada, com filial, produto, preço, estoque e validade. O mesmo vale para as farmácias independentes que hoje só atendem por WhatsApp.
+Os catálogos de app-only restantes não têm endpoint público verificado. A descompilação localizou as rotas usadas pelas próprias vitrines, mas nenhuma delas publica produto e preço vinculados à filial de Sorriso sem contornar uma proteção. O projeto não contorna CAPTCHA, 403, login, rate limit ou credencial interna (`docs/LEGAL_CONSIDERATIONS.md`). Para levar essas redes ao ingestor, o caminho correto é solicitar à rede um feed CSV/JSON ou uma API autorizada, com filial, produto, preço, estoque e validade. O mesmo vale para as farmácias independentes que hoje só atendem por WhatsApp.

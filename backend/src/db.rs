@@ -27,12 +27,15 @@ pub async fn seed_sources(pool: &SqlitePool) -> Result<()> {
         serde_json::from_str(include_str!("../../config/supermarkets.json"))?;
     let pharmacy: serde_json::Value =
         serde_json::from_str(include_str!("../../config/pharmacies.json"))?;
+    let pharmacy_sorriso: serde_json::Value =
+        serde_json::from_str(include_str!("../../config/pharmacies_sorriso.json"))?;
     let mut tx = pool.begin().await?;
     for m in data
         .as_array()
         .unwrap()
         .iter()
         .chain(pharmacy.as_array().unwrap())
+        .chain(pharmacy_sorriso.as_array().unwrap())
     {
         sqlx::query(
             "INSERT INTO supermarkets(id,name,website,audit_class,sector) VALUES(?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,website=excluded.website,audit_class=excluded.audit_class,sector=excluded.sector",

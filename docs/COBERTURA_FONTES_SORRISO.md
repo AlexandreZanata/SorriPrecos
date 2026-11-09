@@ -14,6 +14,8 @@ Para repetir o processo:
 
 A rota descoberta cobre encartes oficiais em imagem. A publicação de um catálogo completo da filial continua pendente.
 
+Revalidação de 09/11/2026: o e-commerce `casaaurorasupermercados.com.br` continua identificando a loja de Sinop (CNPJ 26.777.276/0003-36); o `pickups` público só lista a unidade Sinop 503. O tipo de conteúdo `ofertas-aurora` está vazio e a mídia mais recente é o encarte Quarta da Carne de 04/11/2026, já fora da validade. A loja de Sorriso segue apenas com os encartes oficiais revisados, sem catálogo de produto por SKU.
+
 ## Drogasil
 
 As [páginas públicas de categoria](https://www.drogasil.com.br/saude/saude-sexual/preservativos.html) expõem SKUs próprios, embalagem, marca e imagem no estado do frontend. A página 2 por `?p=2` retornou deslocamento 48 e SKUs distintos da página 1. O teste também confirmou produtos na [categoria Medicamentos](https://www.drogasil.com.br/medicamentos.html).
@@ -46,3 +48,5 @@ python3 scripts/collect_atacadao_flyers.py --binary /caminho/para/sorriprecos
 A consulta anônima de CEP foi repetida para 78893-110. O site recusou a cobertura e a primeira página do Clube Mais devolveu 50 preços associados à filial 3, CNPJ 03.790.896/0003-00, em Sinop. A loja de Sorriso usa o CNPJ 03.790.896/0011-10. O [portal de encartes vinculado pelo site institucional](https://jcm.net.br/ms/ofertas) só oferece Colíder no seletor de supermercados. O seletor de atacados oferece cinco outras cidades de MT e também não lista Sorriso. As verificações estão detalhadas em [Machado de Sorriso](MACHADO_SORRISO_PRICES.md).
 
 Para avançar com preços atuais, falta uma fonte pública que vincule os produtos ao CNPJ de Sorriso, como um encarte vigente da unidade ou uma vitrine pública com identificação de filial. O Procon continua separado no histórico.
+
+Revalidação de 09/11/2026: o app oficial `br.com.redemachado` (Agile E-commerce) foi instalado e aberto no aparelho físico. Ele carrega o mesmo catálogo de `www.redemachado.com.br`, sem seletor de loja, e mantém a filial 3 de Sinop; o app `Clube + Machado` é o programa de relacionamento de Sinop. O CEP 78893-110 continua recusado. Nenhum preço foi atribuído a Sorriso.

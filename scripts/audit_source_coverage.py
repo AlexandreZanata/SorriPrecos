@@ -28,6 +28,7 @@ EXCLUDED = {
     "paieiro",
     "polenteiras eletricas bivolt",
     "presentes",
+    "sabores",
     "tabacaria",
     "utensilios",
 }
